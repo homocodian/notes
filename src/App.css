@@ -40,6 +40,11 @@
     margin-bottom: 1rem;
 }
 
+.all_todo_lists{
+    height: 63%;
+    overflow-y: auto;
+}
+
 .addTodo {
     border: none;
     height: 45px;
@@ -80,6 +85,11 @@
         height: 4rem;
     }
 }
+@media only screen and (max-width: 460px) {
+    .all_todo_lists{
+        height: 58%;
+    }
+}
 @media only screen and (max-width: 768px) and (max-height:1024px){
     .todo_box {
         width: 100%;
@@ -100,5 +110,10 @@
     }
     #title{
         height: 4rem;
+    }
+}
+@media only screen and (min-width:1500px) {
+    .all_todo_lists{
+        height: 80%;
     }
 }
