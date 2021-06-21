@@ -15,6 +15,10 @@
     display: inline-block;
     margin: 0.5rem 1rem;
 }
+
+.list span{
+    color: gray;
+}
 .deleteButton {
     cursor: pointer;
     text-align: center;

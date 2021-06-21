@@ -7,11 +7,22 @@ import './App.css';
 
 const App = () => {
     const [todoInputValue, setTodoInput] = useState("");
-    let [allTodos, setAllTodos] = useState([]);
-    const addTodo = () => {
+    let [allTodos, setAllTodos] = useState([{
+        text:"",
+        date:"",
+        time:""
+    }]);
+    const addTodo = (event) => {
         if (todoInputValue !== "") {
-            setAllTodos((oldTodos) => [...oldTodos, todoInputValue])
+            let modifiedInput = {
+                text:todoInputValue,
+                date:new Date().toLocaleDateString(),
+                time:new Date().toLocaleTimeString()
+            }
+            setAllTodos((oldTodos) => [...oldTodos,modifiedInput]);
             setTodoInput("");
+        }else{
+            event.target.previousSibling.focus();
         }
     }
     const deleteTodo = (id) => {
@@ -40,16 +51,18 @@ const App = () => {
                 <h1 id="title">Todo List</h1>
                 <br />
                 <div className="todoListInput">
-                    <input type="text" name="todoInput" id="todo_input" onChange={(e) => setTodoInput(e.target.value)} value={todoInputValue} placeholder="text" />
+                    <input type="text" name="todoInput" id="todo_input" onChange={(e) => setTodoInput(e.target.value)} value={todoInputValue} placeholder="todo" />
                     <button className="addTodo" onClick={addTodo}>+</button>
                 </div>
-                <div className="all_todo_lists">
+                <div className="all_todo_lists" style={{overflow:"auto"}}>
                     {allTodos.map((todos, index) => {
                         return (
                             <TodoList
                                 key={index}
                                 id={index}
-                                text={todos}
+                                text={todos.text}
+                                date={todos.date}
+                                time={todos.time}
                                 onSelect={deleteTodo}
                             />
                         )
