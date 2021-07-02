@@ -5,13 +5,12 @@ import TodoList from './TodoList';
 import DeleteButton from './DeleteButton';
 import SettingsIcon from '@material-ui/icons/Settings';
 import SettingMenu from './SettingMenu';
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 import './App.css';
 
 const App = () => {
-    let match = window.matchMedia('(prefers-color-scheme:dark)').matches;
-    if (match) {
-        document.body.style.backgroundColor = "#2c3e50";
-    }
     const [todoInputValue, setTodoInput] = useState("");
     let [allTodos, setAllTodos] = useState([{
         text: "",
@@ -19,10 +18,25 @@ const App = () => {
         time: ""
     }]);
     const [isSettingOpen, setIsSettingOpen] = useState(false);
-    const [settingOptions,setSettingOptions] = useState({
+    const [settingOptions, setSettingOptions] = useState({
         darkMode: false,
         timer: false,
     })
+    const [autoDarkModeOn, setDarkMode] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [notifications,setNotifications] = useState("");
+
+    const handleClick = () => {
+        setOpen(true);
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpen(false);
+    };
 
     const addTodo = (event) => {
         if (todoInputValue !== "") {
@@ -33,6 +47,8 @@ const App = () => {
             }
             setAllTodos((oldTodos) => [...oldTodos, modifiedInput]);
             setTodoInput("");
+            setNotifications("Todo added");
+            handleClick();
         } else {
             event.target.previousSibling.focus();
         }
@@ -42,6 +58,8 @@ const App = () => {
         setAllTodos(oldTodos => {
             return oldTodos.filter((todo, index) => index !== id)
         })
+        setNotifications("Todo deleted");
+        handleClick();
     }
 
     useEffect(() => {
@@ -59,6 +77,8 @@ const App = () => {
 
     const deleteAllTodos = () => {
         setAllTodos([]);
+        setNotifications("All todos deleted")
+        handleClick();
     }
 
     const openMenu = () => {
@@ -69,40 +89,54 @@ const App = () => {
         }
     }
 
-    const passState = (childData)=>{
+    const passState = (childData) => {
         setSettingOptions(childData)
     }
-    useEffect(()=>{
-        if(settingOptions.darkMode || window.matchMedia('(prefers-color-scheme:dark)').matches){
-            document.body.style.backgroundColor="#2c3e50";
+
+    const handleNotifications = (message)=>{
+        setNotifications(String(message));
+    }
+    
+    useEffect(() => {
+        if (settingOptions.darkMode || window.matchMedia('(prefers-color-scheme:dark)').matches) {
+            if (window.matchMedia('(prefers-color-scheme:dark)').matches) {
+                setDarkMode(true);
+            }
+            document.body.style.backgroundColor = "#2c3e50";
             let background = document.querySelector('.background')
-            background.style.backgroundColor="#2c3e50";
+            background.style.backgroundColor = "#2c3e50";
             let todo_box = document.querySelector('.todo_box');
-            todo_box.style.backgroundColor="#34495e"
-            todo_box.style.color="#ffffff";
+            todo_box.style.backgroundColor = "#34495e"
+            todo_box.style.color = "#ffffff";
             let settingMenu = document.getElementById("settingMenu");
-            settingMenu.style.backgroundColor="#34495e"
-            settingMenu.style.color="#ffffff";
-        }else{
-            document.body.style.backgroundColor="";
+            settingMenu.style.backgroundColor = "#34495e"
+            settingMenu.style.color = "#ffffff";
+        } else {
+            document.body.style.backgroundColor = "";
             let background = document.querySelector('.background')
-            background.style.backgroundColor="";
+            background.style.backgroundColor = "";
             let todo_box = document.querySelector('.todo_box');
-            todo_box.style.backgroundColor=""
-            todo_box.style.color="";
+            todo_box.style.backgroundColor = ""
+            todo_box.style.color = "";
             let settingMenu = document.getElementById("settingMenu");
-            settingMenu.style.backgroundColor=""
-            settingMenu.style.color="";
-            
+            settingMenu.style.backgroundColor = ""
+            settingMenu.style.color = "";
+
         }
-    },[settingOptions])
+    }, [settingOptions])
     return (
         <div className="background">
             <div className="todo_box">
                 <br />
                 <h1 id="title">Todo List <span id="settingIcon" onClick={openMenu}>{<SettingsIcon />}</span></h1>
                 <br />
-                <SettingMenu passState={passState} isSettingOpen={isSettingOpen} />
+                <SettingMenu 
+                    passState={passState} 
+                    isSettingOpen={isSettingOpen} 
+                    autoDarkModeOn={autoDarkModeOn} 
+                    handleClick={handleClick}
+                    handleNotifications={handleNotifications}
+                />
                 <TodoInput
                     setTodoInput={setTodoInput}
                     todoInputValue={todoInputValue}
@@ -125,6 +159,26 @@ const App = () => {
                         return 1;
                     })}
                 </div>
+                <Snackbar
+                    style={
+                        {marginBottom:"1.3rem"}
+                    }
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                    }}
+                    open={open}
+                    autoHideDuration={6000}
+                    onClose={handleClose}
+                    message={notifications?notifications:"Dark mode is Synced with system preference"}
+                    action={
+                        <>
+                            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+                                <CloseIcon fontSize="small" />
+                            </IconButton>
+                        </>
+                    }
+                />
                 <DeleteButton deleteAllTodos={deleteAllTodos} />
             </div>
         </div>

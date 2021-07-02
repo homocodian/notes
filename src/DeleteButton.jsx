@@ -5,7 +5,7 @@ function DeleteButton(props) {
     return (
         <div id="clear_all_todos">
             <Button variant="contained" color="secondary" startIcon={<DeleteIcon />} onClick={props.deleteAllTodos}>
-                Clear All
+                Delete All
             </Button>
         </div>
     )
