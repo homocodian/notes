@@ -15,6 +15,9 @@
     display: inline-block;
     margin: 0.5rem 1rem;
 }
+.whiteList{
+    color: #ffffff;
+}
 
 .list span{
     color: gray;

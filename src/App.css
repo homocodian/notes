@@ -14,6 +14,8 @@
 }
 
 #title {
+    display: grid;
+    place-items: center;
     font-size: 2rem;
     width: 100%;
     height: 3rem;
@@ -21,11 +23,21 @@
     color: #ffffff;
     text-align: center;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    position: relative;
+}
+
+#settingIcon{
+    position: absolute;
+    right: 1rem;
+    cursor: pointer;
+
 }
 
 .todoListInput {
     width: 100%;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #todo_input {
@@ -38,6 +50,7 @@
     border-bottom: 2px solid #121212;
     font-family: "Ubuntu", sans-serif;
     margin-bottom: 1rem;
+    background: transparent;
 }
 
 .all_todo_lists{
