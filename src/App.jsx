@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { useCallback } from 'react';
 import TodoInput from './TodoInput';
 import TodoList from './TodoList';
 import DeleteButton from './DeleteButton';
@@ -22,13 +23,13 @@ const App = () => {
         darkMode: false,
         timer: false,
     })
-    const [autoDarkModeOn, setDarkMode] = useState(false);
     const [open, setOpen] = useState(false);
     const [notifications,setNotifications] = useState("");
+    const [autoDarkModeOn, setDarkMode] = useState(false);
 
-    const handleClick = () => {
+    const handleClick = useCallback(() => {
         setOpen(true);
-    };
+    },[]);
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -89,13 +90,13 @@ const App = () => {
         }
     }
 
-    const passState = (childData) => {
+    const passState = useCallback((childData) => {
         setSettingOptions(childData)
-    }
+    },[]);
 
-    const handleNotifications = (message)=>{
+    const handleNotifications = useCallback((message)=>{
         setNotifications(String(message));
-    }
+    },[])
     
     useEffect(() => {
         if (settingOptions.darkMode || window.matchMedia('(prefers-color-scheme:dark)').matches) {
@@ -123,7 +124,7 @@ const App = () => {
             settingMenu.style.color = "";
 
         }
-    }, [settingOptions])
+    }, [settingOptions]);
     return (
         <div className="background">
             <div className="todo_box">
@@ -156,7 +157,7 @@ const App = () => {
                                 />
                             )
                         }
-                        return 1;
+                        return "";
                     })}
                 </div>
                 <Snackbar
@@ -168,7 +169,7 @@ const App = () => {
                         horizontal: 'center',
                     }}
                     open={open}
-                    autoHideDuration={6000}
+                    autoHideDuration={1000}
                     onClose={handleClose}
                     message={notifications?notifications:"Dark mode is Synced with system preference"}
                     action={

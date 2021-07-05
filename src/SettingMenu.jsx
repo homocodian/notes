@@ -7,39 +7,50 @@ import { useState } from 'react';
 import { useRef } from 'react';
 
 export default function SettingMenu({passState,isSettingOpen,autoDarkModeOn,handleClick,handleNotifications}) {
+
+  let initialRenderOfTimer = useRef(true);
+  let initialState = useRef(true);
+  let initialRenderOfDarkMode = useRef(true);
+
   const [state, setState] = useState({
     darkMode: false,
     timer: false,
   });
 
   const handleChange = (event) => {
-    if (autoDarkModeOn) {
-      handleClick();
-      return;
+    if(event.target.name === "darkMode"){
+      if (autoDarkModeOn) {
+        handleClick();
+        return;
+      }
     }
     setState({ ...state, [event.target.name]: event.target.checked });
   };
 
   useEffect(()=>{
-    let options = localStorage.getItem("setting");
+    const options = localStorage.getItem("setting");
     if(options !== null){
-      setState(JSON.parse(options))
+      const setting = JSON.parse(options);
+      console.log("settings",setting);
+      setState(setting);
+      passState(setting);
     }
-  },[])
+  },[passState])
 
   useEffect(()=>{
-    autoDarkModeOn?setState({
-      darkMode:autoDarkModeOn,
-      timer:state.timer
-    }):setState(state);
+    if(autoDarkModeOn){
+      setState(oldstate=>({...oldstate,["darkMode"]:autoDarkModeOn}))
+    }
   },[autoDarkModeOn])
 
-  let initialRenderOfTimer = useRef(true);
-
   useEffect(() => {
-    localStorage.setItem("setting",JSON.stringify(state));
-    passState(state);
-  }, [state]);
+    if(initialState.current){
+      initialState.current = false;
+    }else{
+      localStorage.setItem("setting",JSON.stringify(state));
+      passState(state);
+    }
+  }, [state,passState]);
 
   useEffect(()=>{
     if(initialRenderOfTimer.current){
@@ -56,9 +67,7 @@ export default function SettingMenu({passState,isSettingOpen,autoDarkModeOn,hand
         handleClick()
       }
     }
-  },[state.timer]);
-
-  let initialRenderOfDarkMode = useRef(true);
+  },[state.timer,handleClick,handleNotifications]);
 
   useEffect(()=>{
     if(initialRenderOfDarkMode.current){
@@ -75,7 +84,7 @@ export default function SettingMenu({passState,isSettingOpen,autoDarkModeOn,hand
         handleClick()
       }
     }
-  },[state.darkMode]);
+  },[state.darkMode,handleClick,handleNotifications]);
 
   return (
     <div id="settingMenu" style={isSettingOpen ? {display:"flex"} : {display:""}}>
