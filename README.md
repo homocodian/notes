@@ -1,4 +1,3 @@
-
 # Daily Task Manager
 
 Manage your daily important task with ease
