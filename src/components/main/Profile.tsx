@@ -42,8 +42,8 @@ function Profile({ isOpen, setIsOpen }: ProfileProps) {
             Hello {user && user.displayName ? user.displayName : user?.email}
           </Typography>
         </DialogContentText>
-        <Typography variant="subtitle1" fontWeight="bold" mt={2}>
-          Thanks using Notes
+        <Typography variant="caption" fontWeight="bold" mt={2}>
+          Thanks for using Notes
         </Typography>
       </DialogContent>
       <DialogActions>
