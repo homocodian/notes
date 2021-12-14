@@ -1,4 +1,4 @@
-# Daily Task Manager
+# Notes
 
 Manage your daily important task with ease
 
