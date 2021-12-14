@@ -7,6 +7,7 @@ Manage your daily important task with ease
 ## Tech Stack
 
 **Client:** React, Material Ui, Firebase, Firestore
+**Server:** netlify
 
 ## Screenshots
 
