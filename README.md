@@ -1,6 +1,6 @@
 # Notes
 
-Manage your notes with ease of realtime sync
+Manage your notes with ease of realtime sync and user friendly UI
 
 ![Logo](https://www.dropbox.com/s/raw/k0u156i1hkle93c/logo.png?dl=0)
 
@@ -17,8 +17,6 @@ Manage your notes with ease of realtime sync
 ![Notes login in dark mode](https://www.dropbox.com/s/raw/jhp3r3iuqoduhq9/Notes_dark_login.png?dl=0)
 
 ![Notes](https://www.dropbox.com/s/raw/9t0v2vfnnihz7y8/Notes.png?dl=0)
-
-![Notes in dark mode](https://www.dropbox.com/s/raw/9t0v2vfnnihz7y8/Notes.png?dl=0)
 
 ![Drawer](https://www.dropbox.com/s/raw/ui8vndxmh3iao89/Notes_Drawer.png?dl=0)
 
