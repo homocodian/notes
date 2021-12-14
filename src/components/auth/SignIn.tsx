@@ -181,7 +181,7 @@ export default function SignIn() {
               startIcon={!isLoading ? <GoogleIcon /> : null}
               onClick={signInWithPopup}
             >
-              Sign In With Google
+              Continue With Google
             </Button>
             <Grid container>
               <Grid item xs>

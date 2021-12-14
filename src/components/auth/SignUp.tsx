@@ -197,7 +197,7 @@ export default function SignUp() {
               startIcon={<GoogleIcon />}
               onClick={signInWithPopup}
             >
-              Sign Up With Google
+              Continue With Google
             </Button>
             <Grid container>
               <Grid item>

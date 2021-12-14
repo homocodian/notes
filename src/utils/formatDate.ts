@@ -37,7 +37,7 @@ function getMonthName(month:number) {
 function getTime(date:Date) {
   let hours:number | string = date.getHours();
   let minutes:number | string = date.getMinutes();
-  let ampm = hours >= 12 ? 'pm' : 'am';
+  let ampm = hours >= 12 ? 'PM' : 'AM';
   hours = hours % 12;
   hours = hours ? hours : 12; // the hour '0' should be '12'
   minutes = minutes < 10 ? '0'+minutes : minutes;
