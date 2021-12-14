@@ -1,48 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App</title>
-    <style type="text/css">
-        html {
-            height: 100%;
-        }
-
-        body {
-            height: 100%;
-            margin: 0;
-            background: #2c3e50;
-            display: flex;
-            align-items: center;
-            text-align: center;
-            justify-content: center;
-        }
-
-        .city {
-            align-items: center;
-            width: 80%;
-            display: flex;
-            justify-content: center;
-            flex-direction: column;
-            border-radius: 50px;
-            background: #ffa69d;
-            color: white;
-        }
-
-        .city-name {
-            font-size: 2em;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>offline</title>
+  <style>
+    html,body{
+      height: 100%;
+    }
+    #main{
+      display: grid;
+      place-items: center;
+      height: 100%;
+    }
+    #offline{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    #image{
+      height: 80vh;
+    }
+    #tryagain{
+      outline: none;
+      border: none;
+      position: sticky;
+      bottom: 20px;
+      width: 150px;
+      background-color: #FF7043;
+      color: #fff;
+      padding: 1em;
+      border-radius: 50px;
+      font-size: 15px;
+      cursor: pointer;
+      letter-spacing: 2px;
+    }
+  </style>
 </head>
-
 <body>
-    <div class="city">
-        <h2 class="city-name">
-            <span>You are offline</span>
-        </h2>
-    </div>
+  <div id="main">
+    <img src="./offline.svg" alt="offline" id="image">
+    <button id="tryagain">Retry</button>
+  </div>
 </body>
-
 </html>
