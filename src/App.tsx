@@ -1,22 +1,21 @@
-import { useEffect, useMemo, useState } from "react";
-import { Routes, Route } from "react-router-dom";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { getDesignTokens } from "./utils/getDesignToken";
+import useUpdate from "./utils/useUpdate";
 import { PaletteMode } from "@mui/material";
+import SignUp from "./components/auth/SignUp";
+import SignIn from "./components/auth/SignIn";
+import { Routes, Route } from "react-router-dom";
 import AuthProvider from "./context/AuthContext";
 import MenuAppBar from "./components/MenuAppBar";
-import SignUp from "./components/auth/SignUp";
-import PrivateRoute from "./components/PrivateRoute";
-import SignIn from "./components/auth/SignIn";
-import TodoBoard from "./components/main/TodosBoard";
-import useUpdate from "./utils/useUpdate";
-import DrawerProvider from "./context/DrawerContext";
-import TodoTypeProvider from './context/TodoTypeContext';
-import AccountMenuProvider from "./context/AccountMenuContext";
 import TodosProvider from "./context/TodoContext";
+import TodoBoard from "./components/main/TodosBoard";
+import PrivateRoute from "./components/PrivateRoute";
+import { useEffect, useMemo, useState } from "react";
+import DrawerProvider from "./context/DrawerContext";
+import { getDesignTokens } from "./utils/getDesignToken";
+import TodoTypeProvider from "./context/TodoTypeContext";
+import AccountMenuProvider from "./context/AccountMenuContext";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 function App() {
-
   const [mode, setMode] = useState<PaletteMode>("light");
 
   useEffect(() => {
@@ -44,22 +43,22 @@ function App() {
       <AuthProvider>
         <DrawerProvider>
           <AccountMenuProvider>
-            <MenuAppBar
-              appThemeMode={theme.palette.mode}
-              setMode={setMode}
-            />
+            <MenuAppBar appThemeMode={theme.palette.mode} setMode={setMode} />
             <Routes>
               <Route path="/">
-                <Route index element={
-                  // @ts-expect-error
-                  <PrivateRoute>
-                    <TodoTypeProvider>
-                      <TodosProvider>
-                        <TodoBoard />
-                      </TodosProvider>
-                    </TodoTypeProvider>
-                  </PrivateRoute>
-                } />
+                <Route
+                  index
+                  element={
+                    // @ts-expect-error
+                    <PrivateRoute>
+                      <TodoTypeProvider>
+                        <TodosProvider>
+                          <TodoBoard />
+                        </TodosProvider>
+                      </TodoTypeProvider>
+                    </PrivateRoute>
+                  }
+                />
                 <Route path="signup" element={<SignUp />} />
                 <Route path="login" element={<SignIn />} />
               </Route>
@@ -68,7 +67,7 @@ function App() {
         </DrawerProvider>
       </AuthProvider>
     </ThemeProvider>
-  )
+  );
 }
 
 export default App;

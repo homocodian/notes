@@ -1,35 +1,34 @@
-import { useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import GoogleIcon from '@mui/icons-material/Google';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import CustomDialog from '../CustomDailog';
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
-import VerifyErroCode from '../../utils/authError';
+import { useState } from "react";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import Link from "@mui/material/Link";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CustomDialog from "../CustomDailog";
+import Backdrop from "@mui/material/Backdrop";
+import { useNavigate } from "react-router-dom";
+import Container from "@mui/material/Container";
+import TextField from "@mui/material/TextField";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import VerifyErroCode from "../../utils/authError";
+import { useAuth } from "../../context/AuthContext";
+import GoogleIcon from "@mui/icons-material/Google";
+import Visibility from "@mui/icons-material/Visibility";
+import InputAdornment from "@mui/material/InputAdornment";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import CircularProgress from "@mui/material/CircularProgress";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
 interface State {
-  email: string,
-  password: string,
-  confirmPassword: string,
-  showPassword: boolean,
-  showConfirmPassword: boolean
+  email: string;
+  password: string;
+  confirmPassword: string;
+  showPassword: boolean;
+  showConfirmPassword: boolean;
 }
 
 export default function SignUp() {
-
   const { signUp, signInWithGooglePopup } = useAuth();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -40,21 +39,29 @@ export default function SignUp() {
     password: "",
     confirmPassword: "",
     showPassword: false,
-    showConfirmPassword: false
+    showConfirmPassword: false,
   });
 
-  const handleChange = (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValues({ ...values, [prop]: event.target.value });
-  };
+  const handleChange =
+    (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setValues({ ...values, [prop]: event.target.value });
+    };
 
-  const handleClickShowPassword = (prop: 'showPassword' | 'showConfirmPassword') => {
+  const handleClickShowPassword = (
+    prop: "showPassword" | "showConfirmPassword"
+  ) => {
     setValues({
       ...values,
-      [prop]: prop === 'showPassword' ? !values.showPassword : !values.showConfirmPassword,
+      [prop]:
+        prop === "showPassword"
+          ? !values.showPassword
+          : !values.showConfirmPassword,
     });
   };
 
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     event.preventDefault();
   };
 
@@ -70,7 +77,7 @@ export default function SignUp() {
         try {
           await signUp(email, password);
           setIsLoading(false);
-          navigate("/",{replace:true});
+          navigate("/", { replace: true });
         } catch (error) {
           // @ts-ignore
           setErrorMessage(VerifyErroCode(error.code));
@@ -94,14 +101,14 @@ export default function SignUp() {
     try {
       await signInWithGooglePopup();
       setIsLoading(false);
-      navigate("/")
+      navigate("/");
     } catch (error) {
       // @ts-ignore
       setErrorMessage(VerifyErroCode(error.code));
       setOpen(true);
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <>
@@ -109,21 +116,30 @@ export default function SignUp() {
         <Box
           sx={{
             marginTop: 3,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5" sx={{ color: "text.primary" }}>
+          <Typography
+            component="h1"
+            variant="h5"
+            sx={{ color: "text.primary" }}
+          >
             Sign Up
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
+          >
             <TextField
               value={values.email}
-              onChange={handleChange('email')}
+              onChange={handleChange("email")}
               margin="normal"
               id="email"
               required
@@ -135,7 +151,7 @@ export default function SignUp() {
             />
             <TextField
               value={values.password}
-              onChange={handleChange('password')}
+              onChange={handleChange("password")}
               margin="normal"
               required
               fullWidth
@@ -145,16 +161,18 @@ export default function SignUp() {
               id="password"
               autoComplete="current-password"
               InputProps={{
-                endAdornment: <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={() => handleClickShowPassword('showPassword')}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {values.showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => handleClickShowPassword("showPassword")}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
               }}
             />
             <TextField
@@ -164,21 +182,29 @@ export default function SignUp() {
               fullWidth
               required
               value={values.confirmPassword}
-              onChange={handleChange('confirmPassword')}
+              onChange={handleChange("confirmPassword")}
               type={values.showConfirmPassword ? "text" : "password"}
               id="confirm-password"
               autoComplete="current-password"
               InputProps={{
-                endAdornment: <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={() => handleClickShowPassword('showConfirmPassword')}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {values.showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() =>
+                        handleClickShowPassword("showConfirmPassword")
+                      }
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {values.showConfirmPassword ? (
+                        <VisibilityOff />
+                      ) : (
+                        <Visibility />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
               }}
             />
             <Button
@@ -209,7 +235,12 @@ export default function SignUp() {
           </Box>
         </Box>
       </Container>
-      <CustomDialog title="Sign up error" message={errorMessage} open={isOpen} setOpen={setOpen} />
+      <CustomDialog
+        title="Sign up error"
+        message={errorMessage}
+        open={isOpen}
+        setOpen={setOpen}
+      />
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={isLoading}

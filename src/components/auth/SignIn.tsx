@@ -1,35 +1,34 @@
-import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router';
-import { useState } from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import GoogleIcon from '@mui/icons-material/Google';
-import CircularProgress from '@mui/material/CircularProgress';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
+import { useState } from "react";
+import Box from "@mui/material/Box";
+import Link from "@mui/material/Link";
+import Grid from "@mui/material/Grid";
+import FormDialog from "../FormDailog";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import { useNavigate } from "react-router";
+import CustomDialog from "../CustomDailog";
 import Backdrop from "@mui/material/Backdrop";
-import CustomDialog from '../CustomDailog';
-import VerifyErroCode from '../../utils/authError';
-import FormDialog from '../FormDailog';
-import CustomSnackbar from '../CustomSnackbar';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import CustomSnackbar from "../CustomSnackbar";
+import Container from "@mui/material/Container";
+import TextField from "@mui/material/TextField";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import VerifyErroCode from "../../utils/authError";
+import GoogleIcon from "@mui/icons-material/Google";
+import { useAuth } from "../../context/AuthContext";
+import Visibility from "@mui/icons-material/Visibility";
+import InputAdornment from "@mui/material/InputAdornment";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import CircularProgress from "@mui/material/CircularProgress";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
 interface State {
-  email: string,
-  password: string,
-  showPassword: boolean
+  email: string;
+  password: string;
+  showPassword: boolean;
 }
 
 export default function SignIn() {
-
   const [isCustomDailogOpen, setIsCustomDailogOpen] = useState(false);
   const [isResetFormOpen, setIsResetFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -40,12 +39,13 @@ export default function SignIn() {
   const [values, setValues] = useState<State>({
     email: "",
     password: "",
-    showPassword: false
+    showPassword: false,
   });
 
-  const handleChange = (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValues({ ...values, [prop]: event.target.value });
-  };
+  const handleChange =
+    (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setValues({ ...values, [prop]: event.target.value });
+    };
 
   const handleClickShowPassword = () => {
     setValues({
@@ -54,7 +54,9 @@ export default function SignIn() {
     });
   };
 
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     event.preventDefault();
   };
 
@@ -80,21 +82,21 @@ export default function SignIn() {
       setIsCustomDailogOpen(true);
       setIsLoading(false);
     }
-  }
+  };
 
   const signInWithPopup = async () => {
     setIsLoading(true);
     try {
       await signInWithGooglePopup();
       setIsLoading(false);
-      navigate("/",{replace:true});
+      navigate("/", { replace: true });
     } catch (error) {
       // @ts-ignore
       setErrorMessage(VerifyErroCode(error.code));
       setIsCustomDailogOpen(true);
       setIsLoading(false);
     }
-  }
+  };
 
   const sendPasswordResetEmail = async (email: string, cb: () => void) => {
     try {
@@ -109,7 +111,7 @@ export default function SignIn() {
       setIsCustomDailogOpen(true);
       setIsResetFormOpen(false);
     }
-  }
+  };
 
   return (
     <>
@@ -117,21 +119,25 @@ export default function SignIn() {
         <Box
           sx={{
             marginTop: 3,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5" sx={{ color: "text.primary" }}>
+          <Typography
+            component="h1"
+            variant="h5"
+            sx={{ color: "text.primary" }}
+          >
             Sign in
           </Typography>
           <Box component="form" sx={{ mt: 1 }} noValidate>
             <TextField
               value={values.email}
-              onChange={handleChange('email')}
+              onChange={handleChange("email")}
               margin="normal"
               id="email"
               required
@@ -143,7 +149,7 @@ export default function SignIn() {
             />
             <TextField
               value={values.password}
-              onChange={handleChange('password')}
+              onChange={handleChange("password")}
               margin="normal"
               required
               fullWidth
@@ -153,16 +159,18 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
               InputProps={{
-                endAdornment: <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {values.showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
               }}
             />
             <Button
@@ -185,7 +193,9 @@ export default function SignIn() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2"
+                <Link
+                  href="#"
+                  variant="body2"
                   onClick={(e) => {
                     e.preventDefault();
                     setIsResetFormOpen(true);
@@ -203,7 +213,8 @@ export default function SignIn() {
           </Box>
         </Box>
       </Container>
-      <FormDialog isOpen={isResetFormOpen}
+      <FormDialog
+        isOpen={isResetFormOpen}
         setOpen={setIsResetFormOpen}
         title="Reset Password"
         content="To reset your password, please enter your email address here. We will send you reset link on your mail."
@@ -231,5 +242,5 @@ export default function SignIn() {
         setOpen={setIsAlertOpen}
       />
     </>
-  )
+  );
 }

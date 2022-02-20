@@ -1,5 +1,12 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from "react"
-import {User,
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import {
+  User,
   signOut,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -7,76 +14,75 @@ import {User,
   UserCredential,
   GoogleAuthProvider,
   signInWithPopup,
-  sendPasswordResetEmail
-} from "firebase/auth"
-import { auth } from "../firebase"
-import LinearIndeterminate from "../components/LinearIndeterminate"
+  sendPasswordResetEmail,
+} from "firebase/auth";
+import { auth } from "../firebase";
+import LinearIndeterminate from "../components/LinearIndeterminate";
 
 type AuthContextProps = {
-  children: ReactNode
-}
+  children: ReactNode;
+};
 
 type ProviderValues = {
-  user: User | null | undefined,
-  signUp: (email:string,password:string) => Promise<UserCredential>,
-  signIn: (email:string,password:string) => Promise<UserCredential>,
-  signInWithGooglePopup: () => Promise<UserCredential>,
-  sendPasswordResetLink: (email:string) => Promise<void>
-  logout: () => Promise<void>
-}
+  user: User | null | undefined;
+  signUp: (email: string, password: string) => Promise<UserCredential>;
+  signIn: (email: string, password: string) => Promise<UserCredential>;
+  signInWithGooglePopup: () => Promise<UserCredential>;
+  sendPasswordResetLink: (email: string) => Promise<void>;
+  logout: () => Promise<void>;
+};
 
 const signUp = (email: string, password: string) => {
-  return createUserWithEmailAndPassword(auth,email,password)
-}
+  return createUserWithEmailAndPassword(auth, email, password);
+};
 
 const signIn = (email: string, password: string) => {
-  return signInWithEmailAndPassword(auth,email,password)
-}
+  return signInWithEmailAndPassword(auth, email, password);
+};
 
 const signInWithGooglePopup = () => {
   const provider = new GoogleAuthProvider();
-  return signInWithPopup(auth,provider);
-}
+  return signInWithPopup(auth, provider);
+};
 
 const logout = () => {
-  return signOut(auth)
-}
+  return signOut(auth);
+};
 
-const sendPasswordResetLink = (email:string) => {
-  return sendPasswordResetEmail(auth,email);
-}
+const sendPasswordResetLink = (email: string) => {
+  return sendPasswordResetEmail(auth, email);
+};
 
-const AuthContext = createContext({} as ProviderValues)
+const AuthContext = createContext({} as ProviderValues);
 
-export const useAuth = () => useContext(AuthContext)
+export const useAuth = () => useContext(AuthContext);
 
-function AuthProvider({children}:AuthContextProps) {
+function AuthProvider({ children }: AuthContextProps) {
+  const [user, setUser] = useState<User | null>();
+  const [isLoading, setLoading] = useState(true);
 
-  const [user,setUser] = useState<User | null>()
-  const [isLoading,setLoading] = useState(true)
-
-  useEffect(()=>{
-    const unsubscribe = onAuthStateChanged(auth,user => {
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setLoading(false);
-    })
-    return unsubscribe
-  },[])
+    });
+    return unsubscribe;
+  }, []);
 
-  const value:ProviderValues = {
+  const value: ProviderValues = {
     user,
     signUp,
     signIn,
     logout,
     signInWithGooglePopup,
-    sendPasswordResetLink
-  }
+    sendPasswordResetLink,
+  };
 
   return (
     <AuthContext.Provider value={value}>
-      {isLoading ? <LinearIndeterminate/> : children}
+      {isLoading ? <LinearIndeterminate /> : children}
     </AuthContext.Provider>
-  )
+  );
 }
 
-export default AuthProvider
+export default AuthProvider;

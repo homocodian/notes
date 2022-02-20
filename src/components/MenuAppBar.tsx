@@ -1,53 +1,52 @@
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import LightModeIcon from '@mui/icons-material/LightMode';
-import { PaletteMode } from '@mui/material';
-import CustomTooltip from './CustomTooltip';
-import { useAuth } from '../context/AuthContext';
-import AccountMenu from './AccountMenu';
-import { useDrawer } from '../context/DrawerContext';
+import Box from "@mui/material/Box";
+import AccountMenu from "./AccountMenu";
+import AppBar from "@mui/material/AppBar";
+import CustomTooltip from "./CustomTooltip";
+import { PaletteMode } from "@mui/material";
+import Toolbar from "@mui/material/Toolbar";
+import MenuIcon from "@mui/icons-material/Menu";
+import { useAuth } from "../context/AuthContext";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import { useDrawer } from "../context/DrawerContext";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
 
 type MenuAppBarProps = {
-  appThemeMode: string,
-  setMode: React.Dispatch<React.SetStateAction<PaletteMode>>,
-}
+  appThemeMode: string;
+  setMode: React.Dispatch<React.SetStateAction<PaletteMode>>;
+};
 
 export default function MenuAppBar({ appThemeMode, setMode }: MenuAppBarProps) {
-
-  const {user} = useAuth();
-  const {isDrawerOpen,setDrawerIsOpen} = useDrawer();
+  const { user } = useAuth();
+  const { isDrawerOpen, setDrawerIsOpen } = useDrawer();
 
   const handleTheme = () => {
     if (appThemeMode === "light") {
-      setMode("dark")
-    }else{
-      setMode("light")
+      setMode("dark");
+    } else {
+      setMode("light");
     }
-  }
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          {user && 
+          {user && (
             <IconButton
               size="large"
               edge="start"
               color="inherit"
               aria-label="menu"
               sx={{ mr: 2 }}
-              onClick={()=>{
+              onClick={() => {
                 setDrawerIsOpen(!isDrawerOpen);
               }}
             >
               <MenuIcon />
             </IconButton>
-          }
+          )}
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Notes
           </Typography>
@@ -59,7 +58,7 @@ export default function MenuAppBar({ appThemeMode, setMode }: MenuAppBarProps) {
             color="inherit"
           >
             <CustomTooltip title="Toogle Theme">
-              {appThemeMode === "light" ? <DarkModeIcon/>: <LightModeIcon/>}
+              {appThemeMode === "light" ? <DarkModeIcon /> : <LightModeIcon />}
             </CustomTooltip>
           </IconButton>
         </Toolbar>

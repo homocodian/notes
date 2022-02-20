@@ -1,10 +1,10 @@
-import { AccountCircleOutlined } from '@mui/icons-material';
-import Avatar from '@mui/material/Avatar';
-import Stack from '@mui/material/Stack';
+import AccountCircleOutlined from "@mui/icons-material/AccountCircleOutlined";
+import Avatar from "@mui/material/Avatar";
+import Stack from "@mui/material/Stack";
 
 type InitialsAvatarProps = {
-  name: string | null | undefined
-}
+  name: string | null | undefined;
+};
 
 // takes name and returns hex code of color
 function stringToColor(string: string) {
@@ -16,7 +16,7 @@ function stringToColor(string: string) {
     hash = string.charCodeAt(i) + ((hash << 5) - hash);
   }
 
-  let color = '#';
+  let color = "#";
 
   for (i = 0; i < 3; i += 1) {
     const value = (hash >> (i * 8)) & 0xff;
@@ -33,16 +33,26 @@ function stringAvatar(name: string) {
     sx: {
       bgcolor: stringToColor(name),
     },
-    children: name.split(' ').length > 1 ? `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`.toUpperCase() : 
-              `${name.split(' ')[0][0]}${name.split(' ')[0][1]}`.toUpperCase(),
+    children:
+      name.split(" ").length > 1
+        ? `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`.toUpperCase()
+        : `${name.split(" ")[0][0]}${name.split(" ")[0][1]}`.toUpperCase(),
   };
 }
 
 // Profile avatar
-export default function InitialsAvatar({name}:InitialsAvatarProps) {
+export default function InitialsAvatar({ name }: InitialsAvatarProps) {
   return (
     <Stack direction="row" spacing={2}>
-      {name ? <Avatar {...stringAvatar(name)} /> : <AccountCircleOutlined/>}
+      {name ? (
+        <Avatar
+          {...stringAvatar(name)}
+          alt={name}
+          sx={{ width: 30, height: 30 }}
+        />
+      ) : (
+        <AccountCircleOutlined width={30} height={30} />
+      )}
     </Stack>
   );
 }
