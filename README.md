@@ -2,6 +2,10 @@
 
 Manage your notes with ease of realtime sync and user friendly UI
 
+## Status
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/4692e1cc-7eae-4611-9bb9-59c476fb36e0/deploy-status)](https://app.netlify.com/sites/notes-ashish/deploys)
+
 ![Logo](https://www.dropbox.com/s/raw/k0u156i1hkle93c/logo.png?dl=0)
 
 ## Tech Stack
