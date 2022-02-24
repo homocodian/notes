@@ -2,14 +2,16 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router";
 import { useAccountMenu } from "../context/AccountMenuContext";
-import Avatar from "@mui/material/Avatar";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
 import Logout from "@mui/icons-material/Logout";
 import InitialsAvatar from "./InitialsAvatar";
+import {
+  Avatar,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  Divider,
+  IconButton,
+} from "@mui/material";
 
 function AccountMenu() {
   const { user, logout } = useAuth();

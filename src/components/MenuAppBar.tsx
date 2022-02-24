@@ -1,16 +1,14 @@
-import Box from "@mui/material/Box";
+import {
+  Menu as MenuIcon,
+  DarkMode as DarkModeIcon,
+  LightMode as LightModeIcon,
+} from "@mui/icons-material";
 import AccountMenu from "./AccountMenu";
-import AppBar from "@mui/material/AppBar";
-import CustomTooltip from "./CustomTooltip";
 import { PaletteMode } from "@mui/material";
-import Toolbar from "@mui/material/Toolbar";
-import MenuIcon from "@mui/icons-material/Menu";
+import CustomTooltip from "./CustomTooltip";
 import { useAuth } from "../context/AuthContext";
-import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
 import { useDrawer } from "../context/DrawerContext";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import LightModeIcon from "@mui/icons-material/LightMode";
+import { Box, Toolbar, AppBar, Typography, IconButton } from "@mui/material";
 
 type MenuAppBarProps = {
   appThemeMode: string;

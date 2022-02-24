@@ -1,12 +1,12 @@
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
 import Box from "@mui/system/Box";
-import IconButton from "@mui/material/IconButton";
+import Dialog from "@mui/material/Dialog";
 import CloseIcon from "@mui/icons-material/Close";
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import DialogContentText from "@mui/material/DialogContentText";
 
 export interface DialogTitleProps {
   id: string;

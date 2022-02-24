@@ -5,9 +5,6 @@ import {
   ReactNode,
   useEffect,
 } from "react";
-import { useAuth } from "./AuthContext";
-import { db } from "../firebase";
-import { TODOTYPE } from "./TodoTypeContext";
 import {
   doc,
   getDoc,
@@ -16,7 +13,10 @@ import {
   deleteField,
   deleteDoc,
 } from "firebase/firestore";
+import { db } from "../firebase";
+import { useAuth } from "./AuthContext";
 import formatTodo from "../utils/formatTodo";
+import { TODOTYPE } from "./TodoTypeContext";
 
 interface TodoContextType {
   todos: any[];

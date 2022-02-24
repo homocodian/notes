@@ -1,6 +1,6 @@
-import AccountCircleOutlined from "@mui/icons-material/AccountCircleOutlined";
-import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
+import Avatar from "@mui/material/Avatar";
+import AccountCircleOutlined from "@mui/icons-material/AccountCircleOutlined";
 
 type InitialsAvatarProps = {
   name: string | null | undefined;

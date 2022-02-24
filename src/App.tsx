@@ -1,18 +1,18 @@
+import {
+  AuthProvider,
+  AccountMenuProvider,
+  DrawerProvider,
+  TodosProvider,
+  TodoTypeProvider,
+} from "./context";
 import useUpdate from "./utils/useUpdate";
 import { PaletteMode } from "@mui/material";
-import SignUp from "./components/auth/SignUp";
-import SignIn from "./components/auth/SignIn";
+import { TodosBoard } from "./components/main";
 import { Routes, Route } from "react-router-dom";
-import AuthProvider from "./context/AuthContext";
-import MenuAppBar from "./components/MenuAppBar";
-import TodosProvider from "./context/TodoContext";
-import TodoBoard from "./components/main/TodosBoard";
-import PrivateRoute from "./components/PrivateRoute";
+import { SignIn, SignUp } from "./components/auth";
 import { useEffect, useMemo, useState } from "react";
-import DrawerProvider from "./context/DrawerContext";
+import { PrivateRoute, MenuAppBar } from "./components";
 import { getDesignTokens } from "./utils/getDesignToken";
-import TodoTypeProvider from "./context/TodoTypeContext";
-import AccountMenuProvider from "./context/AccountMenuContext";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 function App() {
@@ -53,7 +53,7 @@ function App() {
                     <PrivateRoute>
                       <TodoTypeProvider>
                         <TodosProvider>
-                          <TodoBoard />
+                          <TodosBoard />
                         </TodosProvider>
                       </TodoTypeProvider>
                     </PrivateRoute>

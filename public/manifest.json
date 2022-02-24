@@ -1,27 +1,27 @@
 {
-  "short_name": "Task Manager",
-  "name": "Daily Task Manager",
+  "short_name": "Notes",
+  "name": "Notes",
   "icons": [
     {
-      "src": "/assets/icon/manifest-icon-192.maskable.png",
+      "src": "/icon/manifest-icon-192.maskable.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/assets/icon/manifest-icon-192.maskable.png",
+      "src": "/icon/manifest-icon-192.maskable.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/assets/icon/manifest-icon-512.maskable.png",
+      "src": "/icon/manifest-icon-512.maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/assets/icon/manifest-icon-512.maskable.png",
+      "src": "/icon/manifest-icon-512.maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

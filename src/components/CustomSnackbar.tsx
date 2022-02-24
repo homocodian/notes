@@ -1,19 +1,27 @@
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
 import Slide from "@mui/material/Slide";
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
 
-interface ICustomSnackbarProps{
-  alertType: "success" | "info" | "error" | "warning",
-  message: string,
-  open:boolean
-  autoHideDuration?:number|null,
-  setOpen: (open:boolean) => void
+interface ICustomSnackbarProps {
+  alertType: "success" | "info" | "error" | "warning";
+  message: string;
+  open: boolean;
+  autoHideDuration?: number | null;
+  setOpen: (open: boolean) => void;
 }
 
-function CustomSnackbar({alertType,message,open,autoHideDuration=null,setOpen}:ICustomSnackbarProps) {
-
-  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
+function CustomSnackbar({
+  alertType,
+  message,
+  open,
+  autoHideDuration = null,
+  setOpen,
+}: ICustomSnackbarProps) {
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
       return;
     }
 
@@ -21,17 +29,17 @@ function CustomSnackbar({alertType,message,open,autoHideDuration=null,setOpen}:I
   };
 
   return (
-    <Snackbar 
+    <Snackbar
       open={open}
       onClose={handleClose}
       autoHideDuration={autoHideDuration}
       TransitionComponent={Slide}
     >
-      <Alert onClose={handleClose} severity={alertType} sx={{width:"100%"}}>
+      <Alert onClose={handleClose} severity={alertType} sx={{ width: "100%" }}>
         {message}
       </Alert>
     </Snackbar>
-  )
+  );
 }
 
-export default CustomSnackbar
+export default CustomSnackbar;
