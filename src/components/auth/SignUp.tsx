@@ -1,24 +1,28 @@
-import { useState } from "react";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import Link from "@mui/material/Link";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
+import {
+  Box,
+  Grid,
+  Link,
+  Avatar,
+  Button,
+  Backdrop,
+  TextField,
+  Typography,
+  IconButton,
+  InputAdornment,
+  CircularProgress,
+} from "@mui/material";
+import {
+  Visibility,
+  VisibilityOff,
+  Google as GoogleIcon,
+  LockOutlined as LockIcon,
+} from "@mui/icons-material";
 import CustomDialog from "../CustomDailog";
-import Backdrop from "@mui/material/Backdrop";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Container from "@mui/material/Container";
-import TextField from "@mui/material/TextField";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import VerifyErroCode from "../../utils/authError";
 import { useAuth } from "../../context/AuthContext";
-import GoogleIcon from "@mui/icons-material/Google";
-import Visibility from "@mui/icons-material/Visibility";
-import InputAdornment from "@mui/material/InputAdornment";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import CircularProgress from "@mui/material/CircularProgress";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
 interface State {
   email: string;
@@ -29,11 +33,6 @@ interface State {
 }
 
 export default function SignUp() {
-  const { signUp, signInWithGooglePopup } = useAuth();
-  const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isOpen, setOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const [values, setValues] = useState<State>({
     email: "",
     password: "",
@@ -41,6 +40,18 @@ export default function SignUp() {
     showPassword: false,
     showConfirmPassword: false,
   });
+  const navigate = useNavigate();
+  const [isOpen, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const { signUp, signInWithGooglePopup, user } = useAuth();
+
+  // check for user
+  useEffect(() => {
+    if (user) {
+      navigate("/", { replace: true });
+    }
+  }, [user]);
 
   const handleChange =
     (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,8 +89,7 @@ export default function SignUp() {
           await signUp(email, password);
           setIsLoading(false);
           navigate("/", { replace: true });
-        } catch (error) {
-          // @ts-ignore
+        } catch (error: any) {
           setErrorMessage(VerifyErroCode(error.code));
           setOpen(true);
           setIsLoading(false);
@@ -101,9 +111,8 @@ export default function SignUp() {
     try {
       await signInWithGooglePopup();
       setIsLoading(false);
-      navigate("/");
-    } catch (error) {
-      // @ts-ignore
+      navigate("/", { replace: true });
+    } catch (error: any) {
       setErrorMessage(VerifyErroCode(error.code));
       setOpen(true);
       setIsLoading(false);
@@ -122,7 +131,7 @@ export default function SignUp() {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
+            <LockIcon />
           </Avatar>
           <Typography
             component="h1"

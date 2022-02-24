@@ -1,26 +1,30 @@
-import { useState } from "react";
-import Box from "@mui/material/Box";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
+import {
+  Box,
+  Grid,
+  Link,
+  Avatar,
+  Button,
+  Backdrop,
+  Container,
+  IconButton,
+  Typography,
+  TextField,
+} from "@mui/material";
+import {
+  Visibility,
+  VisibilityOff,
+  Google as GoogleIcon,
+  LockOutlined as LockIcon,
+} from "@mui/icons-material";
+import { useEffect, useState } from "react";
 import FormDialog from "../FormDailog";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import { useNavigate } from "react-router";
 import CustomDialog from "../CustomDailog";
-import Backdrop from "@mui/material/Backdrop";
 import CustomSnackbar from "../CustomSnackbar";
-import Container from "@mui/material/Container";
-import TextField from "@mui/material/TextField";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import VerifyErroCode from "../../utils/authError";
-import GoogleIcon from "@mui/icons-material/Google";
 import { useAuth } from "../../context/AuthContext";
-import Visibility from "@mui/icons-material/Visibility";
 import InputAdornment from "@mui/material/InputAdornment";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import CircularProgress from "@mui/material/CircularProgress";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
 interface State {
   email: string;
@@ -29,18 +33,26 @@ interface State {
 }
 
 export default function SignIn() {
-  const [isCustomDailogOpen, setIsCustomDailogOpen] = useState(false);
-  const [isResetFormOpen, setIsResetFormOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isAlertOpen, setIsAlertOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const { signIn, signInWithGooglePopup, sendPasswordResetLink } = useAuth();
-  const navigate = useNavigate();
   const [values, setValues] = useState<State>({
     email: "",
     password: "",
     showPassword: false,
   });
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [isResetFormOpen, setIsResetFormOpen] = useState(false);
+  const [isCustomDailogOpen, setIsCustomDailogOpen] = useState(false);
+  const { signIn, signInWithGooglePopup, sendPasswordResetLink, user } =
+    useAuth();
+
+  // check for user
+  useEffect(() => {
+    if (user) {
+      navigate("/", { replace: true });
+    }
+  }, [user]);
 
   const handleChange =
     (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,8 +83,7 @@ export default function SignIn() {
         await signIn(email, password);
         setIsLoading(false);
         navigate("/");
-      } catch (error) {
-        // @ts-ignore
+      } catch (error: any) {
         setErrorMessage(VerifyErroCode(error.code));
         setIsCustomDailogOpen(true);
         setIsLoading(false);
@@ -90,8 +101,7 @@ export default function SignIn() {
       await signInWithGooglePopup();
       setIsLoading(false);
       navigate("/", { replace: true });
-    } catch (error) {
-      // @ts-ignore
+    } catch (error: any) {
       setErrorMessage(VerifyErroCode(error.code));
       setIsCustomDailogOpen(true);
       setIsLoading(false);
@@ -104,9 +114,8 @@ export default function SignIn() {
       cb();
       setIsResetFormOpen(false);
       setIsAlertOpen(true);
-    } catch (error) {
+    } catch (error: any) {
       cb();
-      // @ts-ignore
       setErrorMessage(VerifyErroCode(error.code));
       setIsCustomDailogOpen(true);
       setIsResetFormOpen(false);
@@ -125,7 +134,7 @@ export default function SignIn() {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
+            <LockIcon />
           </Avatar>
           <Typography
             component="h1"

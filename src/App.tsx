@@ -1,5 +1,4 @@
 import {
-  AuthProvider,
   AccountMenuProvider,
   DrawerProvider,
   TodosProvider,
@@ -40,32 +39,29 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <AuthProvider>
-        <DrawerProvider>
-          <AccountMenuProvider>
-            <MenuAppBar appThemeMode={theme.palette.mode} setMode={setMode} />
-            <Routes>
-              <Route path="/">
-                <Route
-                  index
-                  element={
-                    // @ts-expect-error
-                    <PrivateRoute>
-                      <TodoTypeProvider>
-                        <TodosProvider>
-                          <TodosBoard />
-                        </TodosProvider>
-                      </TodoTypeProvider>
-                    </PrivateRoute>
-                  }
-                />
-                <Route path="signup" element={<SignUp />} />
-                <Route path="login" element={<SignIn />} />
-              </Route>
-            </Routes>
-          </AccountMenuProvider>
-        </DrawerProvider>
-      </AuthProvider>
+      <DrawerProvider>
+        <AccountMenuProvider>
+          <MenuAppBar appThemeMode={theme.palette.mode} setMode={setMode} />
+          <Routes>
+            <Route path="/">
+              <Route
+                index
+                element={
+                  <PrivateRoute>
+                    <TodoTypeProvider>
+                      <TodosProvider>
+                        <TodosBoard />
+                      </TodosProvider>
+                    </TodoTypeProvider>
+                  </PrivateRoute>
+                }
+              />
+              <Route path="signup" element={<SignUp />} />
+              <Route path="login" element={<SignIn />} />
+            </Route>
+          </Routes>
+        </AccountMenuProvider>
+      </DrawerProvider>
     </ThemeProvider>
   );
 }
