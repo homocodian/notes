@@ -1,9 +1,6 @@
 import { useState } from "react";
-import Menu from "@mui/material/Menu";
-import Switch from "@mui/material/Switch";
-import MenuItem from "@mui/material/MenuItem";
 import Timer from "@mui/icons-material/Timer";
-import ListItemIcon from "@mui/material/ListItemIcon";
+import { Menu, Switch, MenuItem, ListItemIcon } from "@mui/material";
 
 type settingMenuProps = {
   anchorEl: HTMLElement | null;

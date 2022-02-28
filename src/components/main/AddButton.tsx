@@ -1,14 +1,13 @@
-import { useTodos } from "../../context/TodoContext";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
+import { useAppState } from "../../context/AppState";
 
 interface IProps {
-  openAddTodo: () => void
+  openAddTodo: () => void;
 }
 
-function AddTodoButton({openAddTodo}:IProps) {
-
-  const { isLoading } = useTodos();
+function AddButton({ openAddTodo }: IProps) {
+  const { isLoading } = useAppState();
 
   return (
     <Fab
@@ -18,14 +17,14 @@ function AddTodoButton({openAddTodo}:IProps) {
       sx={{
         position: "fixed",
         right: "20px",
-        bottom: "20px"
+        bottom: "20px",
       }}
       onClick={openAddTodo}
     >
       <AddIcon sx={{ mr: 1 }} />
       Add
     </Fab>
-  )
+  );
 }
 
-export default AddTodoButton
+export default AddButton;

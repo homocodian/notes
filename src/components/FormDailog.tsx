@@ -1,13 +1,15 @@
+import {
+  Dialog,
+  Button,
+  TextField,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  CircularProgress,
+  DialogContentText,
+} from "@mui/material";
 import Box from "@mui/system/Box";
-import Dialog from "@mui/material/Dialog";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
 import { HTMLInputTypeAttribute, useState } from "react";
-import CircularProgress from "@mui/material/CircularProgress";
-import DialogContentText from "@mui/material/DialogContentText";
 
 type FormDialogProps = {
   isOpen: boolean;

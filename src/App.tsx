@@ -1,67 +1,59 @@
-import {
-  AccountMenuProvider,
-  DrawerProvider,
-  TodosProvider,
-  TodoTypeProvider,
-} from "./context";
-import useUpdate from "./utils/useUpdate";
+import { useMemo } from "react";
 import { PaletteMode } from "@mui/material";
-import { TodosBoard } from "./components/main";
+import { useLocalStorage } from "usehooks-ts";
+import Seperator from "./components/Seperator";
 import { Routes, Route } from "react-router-dom";
+import AppStateProvider from "./context/AppState";
 import { SignIn, SignUp } from "./components/auth";
-import { useEffect, useMemo, useState } from "react";
+import { NotesContainer } from "./components/main";
 import { PrivateRoute, MenuAppBar } from "./components";
 import { getDesignTokens } from "./utils/getDesignToken";
+import { AccountMenuProvider, DrawerProvider } from "./context";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import NotesCategoryProvider from "./context/NotesCategoryProvider";
 
 function App() {
-  const [mode, setMode] = useState<PaletteMode>("light");
-
-  useEffect(() => {
-    const appTheme = localStorage.getItem("appTheme");
-    if (appTheme === "dark") {
-      setMode("dark");
-    }
-  }, []);
+  const [appTheme, setAppTheme] = useLocalStorage<PaletteMode>(
+    "appTheme",
+    "light"
+  );
 
   const theme = useMemo(() => {
-    if (mode === "dark") {
-      document.body.style.backgroundColor = "#121212";
-    } else {
-      document.body.style.backgroundColor = "#fff";
-    }
-    return createTheme(getDesignTokens(mode));
-  }, [mode]);
-
-  useUpdate(() => {
-    localStorage.setItem("appTheme", mode.toString());
-  }, [mode]);
+    if (appTheme === "dark") document.body.style.backgroundColor = "#18181b";
+    else document.body.style.backgroundColor = "#fff";
+    return createTheme(getDesignTokens(appTheme));
+  }, [appTheme]);
 
   return (
     <ThemeProvider theme={theme}>
-      <DrawerProvider>
-        <AccountMenuProvider>
-          <MenuAppBar appThemeMode={theme.palette.mode} setMode={setMode} />
-          <Routes>
-            <Route path="/">
-              <Route
-                index
-                element={
-                  <PrivateRoute>
-                    <TodoTypeProvider>
-                      <TodosProvider>
-                        <TodosBoard />
-                      </TodosProvider>
-                    </TodoTypeProvider>
-                  </PrivateRoute>
-                }
-              />
-              <Route path="signup" element={<SignUp />} />
-              <Route path="login" element={<SignIn />} />
-            </Route>
-          </Routes>
-        </AccountMenuProvider>
-      </DrawerProvider>
+      <AppStateProvider>
+        <DrawerProvider>
+          <AccountMenuProvider>
+            <MenuAppBar
+              appThemeMode={theme.palette.mode}
+              setAppTheme={setAppTheme}
+            />
+            <Seperator>
+              <Routes>
+                <Route path="/">
+                  <Route
+                    index
+                    element={
+                      <PrivateRoute>
+                        <NotesCategoryProvider>
+                          <NotesContainer />
+                        </NotesCategoryProvider>
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route path="signup" element={<SignUp />} />
+                  <Route path="login" element={<SignIn />} />
+                </Route>
+              </Routes>
+            </Seperator>
+          </AccountMenuProvider>
+        </DrawerProvider>
+      </AppStateProvider>
     </ThemeProvider>
   );
 }

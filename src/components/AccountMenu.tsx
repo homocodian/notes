@@ -1,9 +1,3 @@
-import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router";
-import { useAccountMenu } from "../context/AccountMenuContext";
-import Logout from "@mui/icons-material/Logout";
-import InitialsAvatar from "./InitialsAvatar";
 import {
   Avatar,
   Menu,
@@ -12,6 +6,12 @@ import {
   Divider,
   IconButton,
 } from "@mui/material";
+import { useState } from "react";
+import { useNavigate } from "react-router";
+import InitialsAvatar from "./InitialsAvatar";
+import Logout from "@mui/icons-material/Logout";
+import { useAuth } from "../context/AuthContext";
+import { useAccountMenu } from "../context/AccountMenuContext";
 
 function AccountMenu() {
   const { user, logout } = useAuth();

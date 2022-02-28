@@ -1,21 +1,26 @@
-import { TODOTYPE, useTodoType } from '../../context/TodoTypeContext';
-import { useDrawer } from '../../context/DrawerContext';
-import { useTodos } from '../../context/TodoContext';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Drawer from '@mui/material/Drawer';
-import Divider from '@mui/material/Divider';
-import Button from '@mui/material/Button';
+import { useDrawer } from "../../context/DrawerContext";
+import { Typography, Box, Drawer, Divider, Button } from "@mui/material";
+import { NOTES, useCategory } from "../../context/NotesCategoryProvider";
+import useDeleteAllNotes from "../../hooks/useDeleteAllNotes";
 
-const SideDrawer = () => {
-
+function SideDrawer() {
+  const deleteAllNote = useDeleteAllNotes();
+  const { handleCategoryChange } = useCategory();
   const { isDrawerOpen, setDrawerIsOpen } = useDrawer();
-  const { setTodoType } = useTodoType();
-  const { deleteAllTodos } = useTodos();
 
   const handleClose = () => {
     setDrawerIsOpen(false);
-  }
+  };
+
+  const handleClick = (prop: NOTES) => {
+    handleCategoryChange(prop);
+    handleClose();
+  };
+
+  const handleDeleteAll = async () => {
+    handleClose();
+    await deleteAllNote();
+  };
 
   return (
     <Drawer
@@ -26,7 +31,7 @@ const SideDrawer = () => {
         flexShrink: 0,
         [`& .MuiDrawer-paper`]: {
           width: 200,
-          boxSizing: 'border-box',
+          boxSizing: "border-box",
         },
       }}
     >
@@ -52,45 +57,32 @@ const SideDrawer = () => {
           <Button
             variant="text"
             fullWidth
-            onClick={() => {
-              setTodoType(TODOTYPE.GENERAL);
-              handleClose();
-            }}
+            onClick={() => handleClick(NOTES.GENERAL)}
           >
             All Notes
           </Button>
           <Button
             variant="text"
             fullWidth
-            onClick={() => {
-              setTodoType(TODOTYPE.IMPORTANT);
-              handleClose();
-            }}
+            onClick={() => handleClick(NOTES.IMPORTANT)}
           >
             Important Notes
           </Button>
         </Box>
       </Box>
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignContent="center"
-      >
+      <Box display="flex" justifyContent="center" alignContent="center">
         <Button
           variant="outlined"
           size="medium"
           fullWidth
           sx={{ position: "absolute", bottom: "20px", width: "80%" }}
-          onClick={() => {
-            handleClose();
-            deleteAllTodos();
-          }}
+          onClick={handleDeleteAll}
         >
           Delete All
         </Button>
       </Box>
     </Drawer>
-  )
+  );
 }
 
-export default SideDrawer
+export default SideDrawer;

@@ -1,8 +1,8 @@
-export { default as Todos } from "./Todos";
-export { default as AddTodo } from "./AddTodo";
+export { default as Notes } from "./Notes";
+export { default as AddNote } from "./AddNote";
 export { default as Profile } from "./Profile";
-export { default as TodoMenu } from "./TodoMenu";
-export { default as TodoCard } from "./TodoCard";
-export { default as TodosBoard } from "./TodosBoard";
+export { default as NoteMenu } from "./NoteMenu";
+export { default as NoteCard } from "./NoteCard";
 export { default as SideDrawer } from "./SideDrawer";
-export { default as AddTodoButton } from "./AddTodoButton";
+export { default as AddButton } from "./AddButton";
+export { default as NotesContainer } from "./NotesContainer";

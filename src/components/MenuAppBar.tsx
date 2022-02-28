@@ -12,24 +12,24 @@ import { Box, Toolbar, AppBar, Typography, IconButton } from "@mui/material";
 
 type MenuAppBarProps = {
   appThemeMode: string;
-  setMode: React.Dispatch<React.SetStateAction<PaletteMode>>;
+  setAppTheme: React.Dispatch<React.SetStateAction<PaletteMode>>;
 };
 
-export default function MenuAppBar({ appThemeMode, setMode }: MenuAppBarProps) {
+export default function MenuAppBar({
+  appThemeMode,
+  setAppTheme,
+}: MenuAppBarProps) {
   const { user } = useAuth();
   const { isDrawerOpen, setDrawerIsOpen } = useDrawer();
 
   const handleTheme = () => {
-    if (appThemeMode === "light") {
-      setMode("dark");
-    } else {
-      setMode("light");
-    }
+    if (appThemeMode === "light") setAppTheme("dark");
+    else setAppTheme("light");
   };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="fixed">
         <Toolbar>
           {user && (
             <IconButton

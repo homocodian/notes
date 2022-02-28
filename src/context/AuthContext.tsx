@@ -8,13 +8,13 @@ import {
 import {
   User,
   signOut,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
   UserCredential,
-  GoogleAuthProvider,
   signInWithPopup,
+  onAuthStateChanged,
+  GoogleAuthProvider,
   sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "../firebase";
 import LinearIndeterminate from "../components/LinearIndeterminate";
@@ -59,12 +59,12 @@ export const useAuth = () => useContext(AuthContext);
 
 function AuthProvider({ children }: AuthContextProps) {
   const [user, setUser] = useState<User | null>();
-  const [isLoading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
-      setLoading(false);
+      setIsLoading(false);
     });
     return unsubscribe;
   }, []);
