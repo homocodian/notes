@@ -1,31 +1,13 @@
-import {
-  Menu as MenuIcon,
-  DarkMode as DarkModeIcon,
-  LightMode as LightModeIcon,
-} from "@mui/icons-material";
 import AccountMenu from "./AccountMenu";
-import { PaletteMode } from "@mui/material";
-import CustomTooltip from "./CustomTooltip";
+import SelectAppTheme from "./SelectAppTheme";
 import { useAuth } from "../context/AuthContext";
 import { useDrawer } from "../context/DrawerContext";
-import { Box, Toolbar, AppBar, Typography, IconButton } from "@mui/material";
+import { Menu as MenuIcon } from "@mui/icons-material";
+import { Box, AppBar, Toolbar, Typography, IconButton } from "@mui/material";
 
-type MenuAppBarProps = {
-  appThemeMode: string;
-  setAppTheme: React.Dispatch<React.SetStateAction<PaletteMode>>;
-};
-
-export default function MenuAppBar({
-  appThemeMode,
-  setAppTheme,
-}: MenuAppBarProps) {
+function MenuAppBar() {
   const { user } = useAuth();
   const { isDrawerOpen, setDrawerIsOpen } = useDrawer();
-
-  const handleTheme = () => {
-    if (appThemeMode === "light") setAppTheme("dark");
-    else setAppTheme("light");
-  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -49,18 +31,11 @@ export default function MenuAppBar({
             Notes
           </Typography>
           {user ? <AccountMenu /> : null}
-          <IconButton
-            size="large"
-            aria-label="toggle theme"
-            onClick={handleTheme}
-            color="inherit"
-          >
-            <CustomTooltip title="Toogle Theme">
-              {appThemeMode === "light" ? <DarkModeIcon /> : <LightModeIcon />}
-            </CustomTooltip>
-          </IconButton>
+          <SelectAppTheme />
         </Toolbar>
       </AppBar>
     </Box>
   );
 }
+
+export default MenuAppBar;

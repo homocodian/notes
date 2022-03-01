@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -14,7 +14,7 @@ function PrivateRoute({ children }: PrivateRouteProps) {
       navigate("/login");
     }
   }, [user]);
-  return <>{children}</>;
+  return <Fragment>{children}</Fragment>;
 }
 
 export default PrivateRoute;
