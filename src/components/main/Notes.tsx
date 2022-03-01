@@ -4,9 +4,7 @@ import Box from "@mui/material/Box";
 import Masonry from "@mui/lab/Masonry";
 import { useAppState } from "../../context/AppState";
 import { useNotes, useCategoryNotes } from "../../hooks";
-import { useMediaQuery, useTheme } from "@mui/material";
 import { NOTES, useCategory } from "../../context/NotesCategoryProvider";
-import { experimentalStyled as styled } from "@mui/material/styles";
 
 interface ITodos {
   setAlert: (prop: boolean) => void;
@@ -14,7 +12,6 @@ interface ITodos {
 
 function Notes({ setAlert }: ITodos) {
   const notes = useNotes();
-  const theme = useTheme();
   const { category } = useCategory();
   const { isLoading } = useAppState();
   const categoryNotes = useCategoryNotes(category);

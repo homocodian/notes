@@ -19,10 +19,13 @@ function useNotes() {
   const [notes, setNotes] = useState<QueryDocumentSnapshot<DocumentData>[]>([]);
 
   useEffect(() => {
+    if (!user || !user.uid) {
+      return;
+    }
     handleLoadingState(true);
     const q = query(
       collection(db, "notes"),
-      where("userId", "==", user?.uid),
+      where("userId", "==", user.uid),
       orderBy("timestamp", "desc")
     );
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -32,7 +35,7 @@ function useNotes() {
       }
     });
     return unsubscribe;
-  }, []);
+  }, [user]);
 
   return notes;
 }
