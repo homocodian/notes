@@ -1,9 +1,12 @@
+import { Fragment, useState } from "react";
+import ConfirmDialog from "../ConfirmDialog";
 import { useDrawer } from "../../context/DrawerContext";
-import { Typography, Box, Drawer, Divider, Button } from "@mui/material";
-import { NOTES, useCategory } from "../../context/NotesCategoryProvider";
 import useDeleteAllNotes from "../../hooks/useDeleteAllNotes";
+import { NOTES, useCategory } from "../../context/NotesCategoryProvider";
+import { Typography, Box, Drawer, Divider, Button } from "@mui/material";
 
 function SideDrawer() {
+  const [open, setOpen] = useState(false);
   const deleteAllNote = useDeleteAllNotes();
   const { handleCategoryChange } = useCategory();
   const { isDrawerOpen, setDrawerIsOpen } = useDrawer();
@@ -17,71 +20,96 @@ function SideDrawer() {
     handleClose();
   };
 
+  const handleDialogOpen = () => {
+    handleClose();
+    setOpen(true);
+  };
+
   const handleDeleteAll = async () => {
     handleClose();
     await deleteAllNote();
   };
 
+  const handleDialogClose = () => {
+    setOpen(false);
+  };
+
+  const OnPositiveButtonPress = () => {
+    handleDialogClose();
+    handleDeleteAll();
+  };
+
   return (
-    <Drawer
-      open={isDrawerOpen}
-      onClose={handleClose}
-      sx={{
-        width: 200,
-        flexShrink: 0,
-        [`& .MuiDrawer-paper`]: {
+    <Fragment>
+      <Drawer
+        open={isDrawerOpen}
+        onClose={handleClose}
+        sx={{
           width: 200,
-          boxSizing: "border-box",
-        },
-      }}
-    >
-      <Box>
+          flexShrink: 0,
+          [`& .MuiDrawer-paper`]: {
+            width: 200,
+            boxSizing: "border-box",
+          },
+        }}
+      >
         <Box>
-          <Typography
-            textAlign="center"
-            fontSize="large"
-            fontWeight="bold"
-            py="1rem"
+          <Box>
+            <Typography
+              textAlign="center"
+              fontSize="large"
+              fontWeight="bold"
+              py="1rem"
+            >
+              Notes
+            </Typography>
+          </Box>
+          <Divider />
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignContent="center"
+            marginTop="1rem"
+            flexDirection="column"
           >
-            Notes
-          </Typography>
+            <Button
+              variant="text"
+              fullWidth
+              onClick={() => handleClick(NOTES.GENERAL)}
+            >
+              All Notes
+            </Button>
+            <Button
+              variant="text"
+              fullWidth
+              onClick={() => handleClick(NOTES.IMPORTANT)}
+            >
+              Important Notes
+            </Button>
+          </Box>
         </Box>
-        <Divider />
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignContent="center"
-          marginTop="1rem"
-          flexDirection="column"
-        >
+        <Box display="flex" justifyContent="center" alignContent="center">
           <Button
-            variant="text"
+            variant="outlined"
+            size="medium"
             fullWidth
-            onClick={() => handleClick(NOTES.GENERAL)}
+            sx={{ position: "absolute", bottom: "20px", width: "80%" }}
+            onClick={handleDialogOpen}
           >
-            All Notes
-          </Button>
-          <Button
-            variant="text"
-            fullWidth
-            onClick={() => handleClick(NOTES.IMPORTANT)}
-          >
-            Important Notes
+            Delete All
           </Button>
         </Box>
-      </Box>
-      <Box display="flex" justifyContent="center" alignContent="center">
-        <Button
-          variant="outlined"
-          size="medium"
-          fullWidth
-          sx={{ position: "absolute", bottom: "20px", width: "80%" }}
-          onClick={handleDeleteAll}
-        >
-          Delete All
-        </Button>
-      </Box>
-    </Drawer>
+      </Drawer>
+      <ConfirmDialog
+        title="Delete all notes ?"
+        message="This action is permanent, 
+        after deleting all notes you cannot recover it."
+        open={open}
+        handleClose={handleDialogClose}
+        positiveButtonLabel="Ok"
+        onPositiveButtonPress={OnPositiveButtonPress}
+      />
+    </Fragment>
   );
 }
 

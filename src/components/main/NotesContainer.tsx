@@ -9,11 +9,10 @@ import AddButton from "./AddButton";
 import { useTheme } from "@mui/material/styles";
 import { useAppState } from "../../context/AppState";
 import { useAccountMenu } from "../../context/AccountMenuContext";
-import { useMediaQuery } from "usehooks-ts";
 
 function NotesContainer() {
   const { palette } = useTheme();
-  const [noTodos, SetNoTodos] = useState(false);
+  const [noNotes, setNoNotes] = useState(false);
   const [isAddNoteOpen, setIsAddNoteOpen] = useState(false);
   const { isError, setIsError, isProfileOpen, setIsProfileOpen } =
     useAccountMenu();
@@ -47,7 +46,7 @@ function NotesContainer() {
       >
         <SideDrawer />
         <Box sx={{ width: "100%" }} mt={3}>
-          <Notes setAlert={SetNoTodos} />
+          <Notes setAlert={setNoNotes} />
         </Box>
         <Profile isOpen={isProfileOpen} setIsOpen={setIsProfileOpen} />
         <AddNote open={isAddNoteOpen} setOpen={setIsAddNoteOpen} />
@@ -57,9 +56,10 @@ function NotesContainer() {
           message="Logout error, please try later."
         />
         <AlertMessage
-          open={noTodos}
-          setOpen={SetNoTodos}
-          message="No todos available."
+          open={noNotes}
+          setOpen={setNoNotes}
+          severity="warning"
+          message="No notes available."
         />
         <AlertMessage
           open={appError.isOpen}

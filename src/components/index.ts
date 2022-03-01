@@ -5,6 +5,7 @@ export { default as AccountMenu } from "./AccountMenu";
 export { default as PrivateRoute } from "./PrivateRoute";
 export { default as AlertMessage } from "./AlertMessage";
 export { default as CustomDailog } from "./CustomDailog";
+export { default as ConfirmDialog } from "./ConfirmDialog";
 export { default as CustomTooltip } from "./CustomTooltip";
 export { default as InitialsAvatar } from "./InitialsAvatar";
 export { default as CustomSnackbar } from "./CustomSnackbar";

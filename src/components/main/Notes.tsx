@@ -19,8 +19,11 @@ function Notes({ setAlert }: ITodos) {
   useEffect(() => {
     if (isLoading) {
       return;
-    } else if (!notes.length) setAlert(true);
-    else setAlert(false);
+    } else if (!notes.length) {
+      setAlert(true);
+    } else {
+      setAlert(false);
+    }
   }, [notes, setAlert, category, isLoading]);
 
   return (
