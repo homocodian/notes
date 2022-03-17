@@ -1,34 +1,35 @@
 import { db } from "../firebase";
 import useOnlineStatus from "./useOnlineStatus";
-import { useAppState } from "../context/AppState";
 import { deleteDoc, doc } from "firebase/firestore";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
-function useDeleteNote() {
+type UseDeleteNote = [
+  deleteNote: (id: string) => Promise<void>,
+  loading: boolean,
+  error: string | null
+];
+
+function useDeleteNote(): UseDeleteNote {
   const isOnline = useOnlineStatus();
-  const { handleLoadingState, handleErrorState } = useAppState();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const deleteNote = useCallback(async (id: string) => {
     if (!isOnline) {
-      handleErrorState({
-        isOpen: true,
-        message: "You're offline.",
-      });
+      setError("Check you internet.");
       return;
     }
+    setLoading(true);
     try {
-      handleLoadingState(true);
       await deleteDoc(doc(db, "notes", id));
     } catch (error) {
-      handleErrorState({
-        isOpen: true,
-        message: "Unable to delete at this moment.",
-      });
+      setError("Deleting failed, try later.");
     } finally {
-      handleLoadingState(false);
+      setLoading(false);
     }
   }, []);
-  return deleteNote;
+
+  return [deleteNote, loading, error];
 }
 
 export default useDeleteNote;

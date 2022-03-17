@@ -1,5 +1,5 @@
 export { default as Notes } from "./Notes";
-export { default as AddNote } from "./AddNote";
+export { default as AddNoteModal } from "./AddNoteModal";
 export { default as Profile } from "./Profile";
 export { default as NoteMenu } from "./NoteMenu";
 export { default as NoteCard } from "./NoteCard";

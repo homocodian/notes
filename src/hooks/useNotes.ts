@@ -1,7 +1,6 @@
 import {
   where,
   query,
-  getDocs,
   collection,
   DocumentData,
   QueryDocumentSnapshot,
@@ -11,18 +10,25 @@ import {
 import { db } from "../firebase";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useAppState } from "../context/AppState";
 
-function useNotes() {
+type UseNotes = [
+  notes: QueryDocumentSnapshot<DocumentData>[],
+  loading: boolean,
+  error: string | null
+];
+
+function useNotes(): UseNotes {
   const { user } = useAuth();
-  const { handleLoadingState, handleErrorState } = useAppState();
   const [notes, setNotes] = useState<QueryDocumentSnapshot<DocumentData>[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user || !user.uid) {
+      setLoading(false);
+      setError("Notes not found");
       return;
     }
-    handleLoadingState(true);
     const q = query(
       collection(db, "notes"),
       where("userId", "==", user.uid),
@@ -31,13 +37,14 @@ function useNotes() {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       if (!snapshot.metadata.hasPendingWrites) {
         setNotes(snapshot.docs);
-        handleLoadingState(false);
+        setLoading(false);
+        setError(null);
       }
     });
     return unsubscribe;
   }, [user]);
 
-  return notes;
+  return [notes, loading, error];
 }
 
 export default useNotes;

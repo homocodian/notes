@@ -7,7 +7,7 @@ import { Typography, Box, Drawer, Divider, Button } from "@mui/material";
 
 function SideDrawer() {
   const [open, setOpen] = useState(false);
-  const deleteAllNote = useDeleteAllNotes();
+  const [deleteAllNote] = useDeleteAllNotes();
   const { handleCategoryChange } = useCategory();
   const { isDrawerOpen, setDrawerIsOpen } = useDrawer();
 

@@ -1,39 +1,41 @@
 import { db } from "../firebase";
 import { useNotes, useOnlineStatus } from ".";
-import { useAppState } from "../context/AppState";
 import { deleteDoc, doc } from "firebase/firestore";
+import { useState } from "react";
 
-function useDeleteAllNotes() {
-  const notes = useNotes();
+type UseDeleteAllNotes = [
+  deleteAllNote: () => Promise<void>,
+  loading: boolean,
+  error: string | null
+];
+
+function useDeleteAllNotes(): UseDeleteAllNotes {
+  const [notes] = useNotes();
   const isOnline = useOnlineStatus();
-  const { handleLoadingState, handleErrorState } = useAppState();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const deleteAllNote = async () => {
     if (!isOnline) {
-      handleErrorState({
-        isOpen: true,
-        message: "Check you internet connection",
-      });
+      setError("Check your internet.");
       return;
     }
-    handleLoadingState(true);
+    setLoading(true);
     const deletePromise: Promise<void>[] = [];
     try {
       notes.forEach((note) => {
         deletePromise.push(deleteDoc(doc(db, "notes", note.id)));
       });
       await Promise.all(deletePromise);
+      setError(null);
     } catch (error) {
-      handleErrorState({
-        isOpen: true,
-        message: "Unable to delete all notes, try later.",
-      });
+      setError("Deleting all notes failed.");
     } finally {
-      handleLoadingState(false);
+      setLoading(false);
     }
   };
 
-  return deleteAllNote;
+  return [deleteAllNote, loading, error];
 }
 
 export default useDeleteAllNotes;

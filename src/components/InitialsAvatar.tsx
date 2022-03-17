@@ -48,7 +48,7 @@ export default function InitialsAvatar({ name }: InitialsAvatarProps) {
         <Avatar
           {...stringAvatar(name)}
           alt={name}
-          sx={{ width: 30, height: 30 }}
+          sx={{ width: 30, height: 30, fontSize: 14 }}
         />
       ) : (
         <AccountCircleOutlined width={30} height={30} />

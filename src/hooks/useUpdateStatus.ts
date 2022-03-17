@@ -1,43 +1,44 @@
 import { db } from "../firebase";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import useOnlineStatus from "./useOnlineStatus";
-import { useAppState } from "../context/AppState";
 import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
 
-function useCompleteNote() {
+type UseCompleteNote = [
+  toggleComplete: (id: string, isComplete: boolean) => Promise<void>,
+  loading: boolean,
+  error: string | null
+];
+
+function useCompleteNote(): UseCompleteNote {
   const isOnline = useOnlineStatus();
-  const { handleErrorState, handleLoadingState } = useAppState();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const toggleComplete = useCallback(
     async (id: string, isComplete: boolean) => {
       if (!isOnline) {
-        handleErrorState({
-          isOpen: true,
-          message: "You are offline, check your internet connection.",
-        });
+        setError("Check your internet.");
         return;
       }
-      handleLoadingState(true);
       try {
+        setLoading(true);
         const docRef = doc(db, "notes", id);
         const data = {
           isComplete: !isComplete,
           updatedAt: serverTimestamp(),
         };
         await updateDoc(docRef, data);
+        setError(null);
       } catch (error) {
-        handleErrorState({
-          isOpen: true,
-          message: "Failed updating note status, try later.",
-        });
+        setError("Update failed, try later.");
       } finally {
-        handleLoadingState(false);
+        setLoading(false);
       }
     },
     []
   );
 
-  return toggleComplete;
+  return [toggleComplete, loading, error];
 }
 
 export default useCompleteNote;

@@ -1,9 +1,14 @@
 import MenuItem from "@mui/material/MenuItem";
 import DoneIcon from "@mui/icons-material/Done";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import { styled, alpha } from "@mui/material/styles";
 import Menu, { MenuProps } from "@mui/material/Menu";
 import { useDeleteNote, useUpdateStatus } from "../../hooks";
+import { Fragment, useState } from "react";
+import ConfirmDialog from "../ConfirmDialog";
+import EditNoteModal from "./EditNoteModal";
+import { NOTES } from "../../context/NotesCategoryProvider";
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -53,12 +58,23 @@ interface ITodoMenu {
   setAnchorEl: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
   id: string;
   complete: boolean;
+  text: string;
+  category: NOTES;
 }
 
-function NoteMenu({ anchorEl, setAnchorEl, id, complete }: ITodoMenu) {
+function NoteMenu({
+  anchorEl,
+  setAnchorEl,
+  id,
+  complete,
+  text,
+  category,
+}: ITodoMenu) {
   const open = Boolean(anchorEl);
-  const updateStatus = useUpdateStatus();
-  const deleteNote = useDeleteNote();
+  const [updateStatus] = useUpdateStatus();
+  const [deleteNote] = useDeleteNote();
+  const [confirm, setConfirm] = useState(false);
+  const [editNoteModal, setEditNoteModal] = useState(false);
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -69,30 +85,69 @@ function NoteMenu({ anchorEl, setAnchorEl, id, complete }: ITodoMenu) {
     updateStatus(id, complete);
   };
 
-  const handleDelete = () => {
-    handleClose();
+  const closeModal = () => {
+    setConfirm(false);
+  };
+
+  const onPositivePress = () => {
+    closeModal();
     deleteNote(id);
   };
 
+  const handleDelete = () => {
+    handleClose();
+    setConfirm(true);
+  };
+
+  const closeEditNoteModal = () => {
+    setEditNoteModal(false);
+  };
+
+  const openEditModal = () => {
+    handleClose();
+    setEditNoteModal(true);
+  };
+
   return (
-    <StyledMenu
-      MenuListProps={{
-        "aria-labelledby": "Note menu",
-        "aria-label": "Note menu",
-      }}
-      anchorEl={anchorEl}
-      open={open}
-      onClose={handleClose}
-    >
-      <MenuItem onClick={handleStatusUpdate} disableRipple>
-        <DoneIcon />
-        {complete ? "Undone" : "Done"}
-      </MenuItem>
-      <MenuItem onClick={handleDelete} disableRipple>
-        <DeleteIcon />
-        Delete
-      </MenuItem>
-    </StyledMenu>
+    <Fragment>
+      <StyledMenu
+        MenuListProps={{
+          "aria-labelledby": "Note menu",
+          "aria-label": "Note menu",
+        }}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handleStatusUpdate} disableRipple>
+          <DoneIcon />
+          {complete ? "Undone" : "Done"}
+        </MenuItem>
+        <MenuItem onClick={handleDelete} disableRipple>
+          <DeleteIcon />
+          Delete
+        </MenuItem>
+        <MenuItem onClick={openEditModal} disableRipple>
+          <EditIcon />
+          Edit
+        </MenuItem>
+      </StyledMenu>
+      <ConfirmDialog
+        open={confirm}
+        title="This is a permanent action"
+        message="Delete permanently?"
+        positiveButtonLabel="Delete"
+        handleClose={closeModal}
+        onPositiveButtonPress={onPositivePress}
+      />
+      <EditNoteModal
+        open={editNoteModal}
+        closeModal={closeEditNoteModal}
+        category={category}
+        text={text}
+        id={id}
+      />
+    </Fragment>
   );
 }
 

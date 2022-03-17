@@ -3,7 +3,7 @@ import Snackbar from "@mui/material/Snackbar";
 
 interface AlertDialogProps {
   open: boolean;
-  message: string;
+  message: string | null;
   severity?: AlertProps["severity"];
   setOpen: (value: boolean) => void;
 }
@@ -14,10 +14,7 @@ const SnackbarPosition = {
 };
 
 function AlertMessage({ open, setOpen, message, severity }: AlertDialogProps) {
-  const handleAlertClose = (
-    event: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
+  const closeAlert = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
       return;
     }
@@ -31,13 +28,13 @@ function AlertMessage({ open, setOpen, message, severity }: AlertDialogProps) {
       open={open}
       anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       key={SnackbarPosition.vertical + SnackbarPosition.horizontal}
-      onClose={handleAlertClose}
+      onClose={closeAlert}
     >
       <Alert
         variant="filled"
         severity={severity ? severity : "error"}
         sx={{ width: "100%" }}
-        onClose={handleAlertClose}
+        onClose={closeAlert}
       >
         {message}
       </Alert>

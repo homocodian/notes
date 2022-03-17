@@ -20,9 +20,9 @@ interface IProps {
   setOpen: (value: boolean) => void;
 }
 
-function AddNote({ open, setOpen }: IProps) {
+function AddNoteModal({ open, setOpen }: IProps) {
   const theme = useTheme();
-  const addNote = useAddNote();
+  const [addNote, loading, error] = useAddNote();
   const [noteError, setNoteError] = useState(false);
   const [note, setNote] = useState<string | null>("");
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -110,4 +110,4 @@ function AddNote({ open, setOpen }: IProps) {
   );
 }
 
-export default AddNote;
+export default AddNoteModal;

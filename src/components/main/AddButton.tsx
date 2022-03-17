@@ -1,28 +1,29 @@
-import Fab from "@mui/material/Fab";
+import { Fab, useMediaQuery } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { useAppState } from "../../context/AppState";
 
 interface IProps {
-  openAddTodo: () => void;
+  openAddTodoModal: (prop: boolean) => void;
 }
 
-function AddButton({ openAddTodo }: IProps) {
-  const { isLoading } = useAppState();
+function AddButton({ openAddTodoModal }: IProps) {
+  const isMobile = useMediaQuery("(max-width: 540px)");
 
   return (
     <Fab
       aria-label="add"
-      disabled={isLoading}
-      variant="extended"
+      variant={isMobile ? "circular" : "extended"}
       sx={{
         position: "fixed",
         right: "20px",
         bottom: "20px",
+        gap: "5px",
+        width: isMobile ? 40 : null,
+        height: isMobile ? 40 : null,
       }}
-      onClick={openAddTodo}
+      onClick={() => openAddTodoModal(true)}
     >
-      <AddIcon sx={{ mr: 1 }} />
-      Add
+      <AddIcon />
+      {!isMobile ? "Take a note" : null}
     </Fab>
   );
 }

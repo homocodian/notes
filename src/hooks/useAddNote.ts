@@ -1,38 +1,40 @@
 import { db } from "../firebase";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import useOnlineStatus from "./useOnlineStatus";
 import { useAuth } from "../context/AuthContext";
-import { useAppState } from "../context/AppState";
 import { NOTES } from "../context/NotesCategoryProvider";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
-function useAddNote() {
+type UseAddNote = [
+  addNote: (text: string, category: NOTES) => Promise<void>,
+  loading: boolean,
+  error: string | null
+];
+
+function useAddNote(): UseAddNote {
   const { user } = useAuth();
   const isOnline = useOnlineStatus();
-  const { handleErrorState, handleLoadingState } = useAppState();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const addNote = useCallback(async (text: string, category: NOTES) => {
     if (!isOnline || !user) {
-      handleErrorState({
-        isOpen: true,
-        message: "You are offline, check your internet connection.",
-      });
+      setError("Check your internet.");
       return;
     }
-    handleLoadingState(true);
+    setLoading(true);
     try {
       const data = formatNote(user.uid, text, category);
       await addDoc(collection(db, "notes"), data);
+      setError(null);
     } catch (error) {
-      handleErrorState({
-        isOpen: true,
-        message: "Adding todo failed, try later.",
-      });
+      setError("Adding note failed.");
     } finally {
-      handleLoadingState(false);
+      setLoading(false);
     }
   }, []);
-  return addNote;
+
+  return [addNote, loading, error];
 }
 
 export default useAddNote;

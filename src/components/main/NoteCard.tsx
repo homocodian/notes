@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import CardActions from "@mui/material/CardActions";
 import NoteMenu from "./NoteMenu";
+import { NOTES } from "../../context/NotesCategoryProvider";
 
 interface ITodoCard {
   id: string;
@@ -36,10 +37,12 @@ function NoteCard({ id, text, category, isComplete, timestamp }: ITodoCard) {
         }
       />
       <NoteMenu
-        anchorEl={anchorEl}
-        setAnchorEl={setAnchorEl}
         id={id}
+        text={text}
+        category={category as NOTES}
+        anchorEl={anchorEl}
         complete={isComplete}
+        setAnchorEl={setAnchorEl}
       />
       <CardContent>
         <Typography
