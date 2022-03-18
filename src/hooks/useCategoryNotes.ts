@@ -5,7 +5,7 @@ import { NOTES, useCategory } from "../context/NotesCategoryProvider";
 import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 
 function useCategoryNotes(noteType: NOTES) {
-  const notes = useNotes();
+  const [notes] = useNotes();
   const isFirstRender = useIsFirstRender();
   const [filteredNotes, setFilteredNotes] = useState<
     QueryDocumentSnapshot<DocumentData>[]
