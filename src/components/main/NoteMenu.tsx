@@ -2,13 +2,16 @@ import MenuItem from "@mui/material/MenuItem";
 import DoneIcon from "@mui/icons-material/Done";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { styled, alpha } from "@mui/material/styles";
 import Menu, { MenuProps } from "@mui/material/Menu";
-import { useDeleteNote, useUpdateStatus } from "../../hooks";
 import { Fragment, useState } from "react";
 import ConfirmDialog from "../ConfirmDialog";
 import EditNoteModal from "./EditNoteModal";
 import { NOTES } from "../../context/NotesCategoryProvider";
+import CustomSnackbar from "../CustomSnackbar";
+import { useCopyToClipboard } from "usehooks-ts";
+import { useDeleteNote, useUpdateStatus } from "../../hooks";
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -75,6 +78,9 @@ function NoteMenu({
   const [deleteNote] = useDeleteNote();
   const [confirm, setConfirm] = useState(false);
   const [editNoteModal, setEditNoteModal] = useState(false);
+  const [_, copy] = useCopyToClipboard();
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [copyError, setCopyError] = useState<string | null>(null);
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -108,6 +114,17 @@ function NoteMenu({
     setEditNoteModal(true);
   };
 
+  const copyText = async () => {
+    handleClose();
+    const isCopied = await copy(text);
+    if (isCopied) {
+      setCopyError(null);
+      setIsAlertOpen(true);
+    } else {
+      setIsAlertOpen(true);
+    }
+  };
+
   return (
     <Fragment>
       <StyledMenu
@@ -131,6 +148,10 @@ function NoteMenu({
           <EditIcon />
           Edit
         </MenuItem>
+        <MenuItem onClick={copyText} disableRipple>
+          <ContentCopyIcon />
+          Copy
+        </MenuItem>
       </StyledMenu>
       <ConfirmDialog
         open={confirm}
@@ -146,6 +167,13 @@ function NoteMenu({
         category={category}
         text={text}
         id={id}
+      />
+      <CustomSnackbar
+        open={isAlertOpen}
+        setOpen={setIsAlertOpen}
+        alertType="success"
+        message={copyError ? copyError : "Text Copied"}
+        autoHideDuration={6000}
       />
     </Fragment>
   );
