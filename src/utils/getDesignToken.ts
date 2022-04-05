@@ -1,4 +1,4 @@
-import { PaletteMode } from "@mui/material";
+import { PaletteMode, ThemeOptions } from "@mui/material";
 import { deepOrange, grey, lightBlue } from "@mui/material/colors";
 
 export const getDesignTokens = (mode: PaletteMode) => ({
@@ -27,5 +27,12 @@ export const getDesignTokens = (mode: PaletteMode) => ({
             secondary: grey[500],
           },
         }),
+  },
+  typography: {
+    fontFamily: "'Poppins', 'Roboto', sans-serif",
+    fontWeightLight: 300,
+    fontWeightRegular: 400,
+    fontWeightMedium: 500,
+    fontWeightBold: 700,
   },
 });

@@ -81,17 +81,21 @@ function SelectAppTheme() {
         <FormControl
           fullWidth
           sx={{
-            width: "150px",
             display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+            paddingX: "25px",
           }}
         >
           <RadioGroup
-            aria-labelledby="demo-controlled-radio-buttons-group"
-            name="controlled-radio-buttons-group"
+            aria-labelledby="select app theme"
+            name="select app theme"
             value={ternaryDarkMode}
             onChange={handleChange}
+            sx={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "baseline",
+            }}
           >
             <FormControlLabel
               value="system"

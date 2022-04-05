@@ -35,6 +35,7 @@ function NoteCard({ id, text, category, isComplete, timestamp }: ITodoCard) {
             <MoreVertIcon />
           </IconButton>
         }
+        sx={{ fontWeight: 500 }}
       />
       <NoteMenu
         id={id}
