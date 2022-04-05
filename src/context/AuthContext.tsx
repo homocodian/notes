@@ -3,6 +3,7 @@ import {
   ReactNode,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import {
@@ -17,7 +18,7 @@ import {
   createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "../firebase";
-import LinearIndeterminate from "../components/LinearIndeterminate";
+import lottie from "lottie-web";
 
 type AuthContextProps = {
   children: ReactNode;
@@ -60,8 +61,21 @@ export const useAuth = () => useContext(AuthContext);
 function AuthProvider({ children }: AuthContextProps) {
   const [user, setUser] = useState<User | null>();
   const [isLoading, setIsLoading] = useState(true);
+  const animationContainer = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    if (animationContainer.current) {
+      lottie
+        .loadAnimation({
+          container: animationContainer.current,
+          // @ts-ignore
+          animationData: require("../animation/loading.json"),
+          autoplay: true,
+          loop: true,
+          renderer: "svg",
+        })
+        .play();
+    }
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setIsLoading(false);
@@ -80,7 +94,13 @@ function AuthProvider({ children }: AuthContextProps) {
 
   return (
     <AuthContext.Provider value={value}>
-      {isLoading ? <LinearIndeterminate /> : children}
+      {isLoading ? (
+        <div className="container">
+          <div className="animation-container" ref={animationContainer} />
+        </div>
+      ) : (
+        children
+      )}
     </AuthContext.Provider>
   );
 }

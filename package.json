@@ -16,11 +16,13 @@
     "@mui/material": "^5.4.2",
     "@mui/system": "^5.4.2",
     "firebase": "^9.6.7",
+    "lottie-web": "^5.9.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router": "^6.2.1",
     "react-router-dom": "6",
-    "usehooks-ts": "^2.4.1"
+    "usehooks-ts": "^2.4.1",
+    "vite-plugin-require-transform": "^1.0.3"
   },
   "devDependencies": {
     "@types/react": "^17.0.33",

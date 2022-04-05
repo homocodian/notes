@@ -12,6 +12,7 @@ specifiers:
   '@types/react-dom': ^17.0.10
   '@vitejs/plugin-react': ^1.0.7
   firebase: ^9.6.7
+  lottie-web: ^5.9.1
   react: ^17.0.2
   react-dom: ^17.0.2
   react-router: ^6.2.1
@@ -19,6 +20,7 @@ specifiers:
   typescript: ^4.5.4
   usehooks-ts: ^2.4.1
   vite: ^2.8.0
+  vite-plugin-require-transform: ^1.0.3
 
 dependencies:
   '@babel/core': 7.17.5
@@ -29,11 +31,13 @@ dependencies:
   '@mui/material': 5.4.2_a557939b8cd577a0014b488227bec235
   '@mui/system': 5.4.2_c6213411fad5ab06c1404c7945e6b2f5
   firebase: 9.6.7
+  lottie-web: 5.9.1
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-router: 6.2.1_react@17.0.2
   react-router-dom: 6.2.1_react-dom@17.0.2+react@17.0.2
   usehooks-ts: 2.4.1_react@17.0.2
+  vite-plugin-require-transform: 1.0.3
 
 devDependencies:
   '@types/react': 17.0.39
@@ -1960,6 +1964,10 @@ packages:
       js-tokens: 4.0.0
     dev: false
 
+  /lottie-web/5.9.1:
+    resolution: {integrity: sha512-3uKtU6BhIK6ZRCE/QyiXq/KuRvPeEAz/VFwqd99jPbpgFY9gHLw2krqvcuCFGepeW94BipS/B3TqIfTc9pUeZg==}
+    dev: false
+
   /minimatch/3.1.2:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
     dependencies:
@@ -2339,6 +2347,17 @@ packages:
 
   /util-deprecate/1.0.2:
     resolution: {integrity: sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=}
+    dev: false
+
+  /vite-plugin-require-transform/1.0.3:
+    resolution: {integrity: sha512-zTymn40H+T3GVAhEP9Aqk5R4gKngiPCb3KImDBI91f97126hoS15ugOO2fnlCJwuIj/J78A9oU+xS6QD8ytCaw==}
+    dependencies:
+      '@babel/generator': 7.17.3
+      '@babel/parser': 7.17.3
+      '@babel/traverse': 7.17.3
+      '@babel/types': 7.17.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /vite/2.8.4:
