@@ -34,7 +34,7 @@ function Notes() {
         setOpen(false);
       }
     }
-  }, [notes, category, loading]);
+  }, [notes, category, loading, categoryNotes]);
 
   useEffect(() => {
     if (error) {
