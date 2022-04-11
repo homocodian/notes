@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+
 import { useIsFirstRender } from "usehooks-ts";
+import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
+
 import useNotes from "./useNotes";
 import { NOTES, useCategory } from "../context/NotesCategoryProvider";
-import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 
 function useCategoryNotes(noteType: NOTES) {
   const [notes] = useNotes();

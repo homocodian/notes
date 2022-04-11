@@ -1,13 +1,15 @@
 import { useMemo } from "react";
-import Seperator from "./components/Seperator";
-import { useTernaryDarkMode } from "usehooks-ts";
+
 import { Routes, Route } from "react-router-dom";
+import { useTernaryDarkMode } from "usehooks-ts";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+import Seperator from "./components/Seperator";
 import { SignIn, SignUp } from "./components/auth";
 import { NotesContainer } from "./components/main";
 import { PrivateRoute, MenuAppBar } from "./components";
 import { getDesignTokens } from "./utils/getDesignToken";
 import { AccountMenuProvider, DrawerProvider } from "./context";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import NotesCategoryProvider from "./context/NotesCategoryProvider";
 
 function App() {

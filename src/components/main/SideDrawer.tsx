@@ -1,9 +1,11 @@
 import { Fragment, useState } from "react";
+
+import { Typography, Box, Drawer, Divider, Button } from "@mui/material";
+
 import ConfirmDialog from "../ConfirmDialog";
 import { useDrawer } from "../../context/DrawerContext";
 import useDeleteAllNotes from "../../hooks/useDeleteAllNotes";
 import { NOTES, useCategory } from "../../context/NotesCategoryProvider";
-import { Typography, Box, Drawer, Divider, Button } from "@mui/material";
 
 function SideDrawer() {
   const [open, setOpen] = useState(false);

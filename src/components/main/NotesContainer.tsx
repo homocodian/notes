@@ -1,12 +1,13 @@
+import { useLayoutEffect, useState, Fragment } from "react";
+import Box from "@mui/system/Box";
+import { useTheme } from "@mui/material/styles";
+
 import Notes from "./Notes";
 import Profile from "./Profile";
 import AddNoteModal from "./AddNoteModal";
-import { useLayoutEffect, useState } from "react";
-import Box from "@mui/system/Box";
 import SideDrawer from "./SideDrawer";
 import AlertMessage from "../AlertMessage";
 import AddButton from "./AddButton";
-import { useTheme } from "@mui/material/styles";
 import { useAccountMenu } from "../../context/AccountMenuContext";
 
 function NotesContainer() {
@@ -23,7 +24,7 @@ function NotesContainer() {
   }, [palette]);
 
   return (
-    <>
+    <Fragment>
       <Box
         sx={{
           display: "flex",
@@ -48,7 +49,7 @@ function NotesContainer() {
         />
       </Box>
       <AddButton openAddTodoModal={setIsNoteModalOpen} />
-    </>
+    </Fragment>
   );
 }
 

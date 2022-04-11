@@ -1,3 +1,5 @@
+import { HTMLInputTypeAttribute, useState } from "react";
+
 import {
   Dialog,
   Button,
@@ -9,7 +11,6 @@ import {
   DialogContentText,
 } from "@mui/material";
 import Box from "@mui/system/Box";
-import { HTMLInputTypeAttribute, useState } from "react";
 
 type FormDialogProps = {
   isOpen: boolean;

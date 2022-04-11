@@ -1,3 +1,5 @@
+import { ChangeEvent, Fragment, useState, MouseEvent } from "react";
+
 import {
   Menu,
   Radio,
@@ -6,10 +8,10 @@ import {
   RadioGroup,
   FormControlLabel,
 } from "@mui/material";
-import CustomTooltip from "./CustomTooltip";
 import { LightMode as LightModeIcon } from "@mui/icons-material";
-import { ChangeEvent, Fragment, useState, MouseEvent } from "react";
 import { useTernaryDarkMode } from "usehooks-ts";
+
+import CustomTooltip from "./CustomTooltip";
 
 type TernaryDarkMode = "system" | "light" | "dark";
 

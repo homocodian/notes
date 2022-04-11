@@ -1,3 +1,5 @@
+import { Fragment, useState } from "react";
+
 import MenuItem from "@mui/material/MenuItem";
 import DoneIcon from "@mui/icons-material/Done";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -5,12 +7,12 @@ import EditIcon from "@mui/icons-material/Edit";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { styled, alpha } from "@mui/material/styles";
 import Menu, { MenuProps } from "@mui/material/Menu";
-import { Fragment, useState } from "react";
+import { useCopyToClipboard } from "usehooks-ts";
+
 import ConfirmDialog from "../ConfirmDialog";
 import EditNoteModal from "./EditNoteModal";
 import { NOTES } from "../../context/NotesCategoryProvider";
 import CustomSnackbar from "../CustomSnackbar";
-import { useCopyToClipboard } from "usehooks-ts";
 import { useDeleteNote, useUpdateStatus } from "../../hooks";
 
 const StyledMenu = styled((props: MenuProps) => (

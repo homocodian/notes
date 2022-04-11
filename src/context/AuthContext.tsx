@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
 } from "react";
+
 import {
   User,
   signOut,
@@ -17,8 +18,9 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { auth } from "../firebase";
 import lottie from "lottie-web";
+
+import { auth } from "../firebase";
 
 type AuthContextProps = {
   children: ReactNode;

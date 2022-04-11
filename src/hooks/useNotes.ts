@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import {
   where,
   query,
@@ -7,8 +9,8 @@ import {
   orderBy,
   onSnapshot,
 } from "firebase/firestore";
+
 import { db } from "../firebase";
-import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
 type UseNotes = [

@@ -1,3 +1,5 @@
+import { forwardRef, ReactElement, Ref } from "react";
+
 import {
   Dialog,
   DialogContent,
@@ -7,7 +9,6 @@ import {
   Slide,
   Button,
 } from "@mui/material";
-import { forwardRef, ReactElement, Ref } from "react";
 import { TransitionProps } from "@mui/material/transitions";
 
 const Transition = forwardRef(

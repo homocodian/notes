@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import {
   Avatar,
   Menu,
@@ -6,10 +8,10 @@ import {
   Divider,
   IconButton,
 } from "@mui/material";
-import { useState } from "react";
-import { useNavigate } from "react-router";
-import InitialsAvatar from "./InitialsAvatar";
 import Logout from "@mui/icons-material/Logout";
+import { useNavigate } from "react-router";
+
+import InitialsAvatar from "./InitialsAvatar";
 import { useAuth } from "../context/AuthContext";
 import { useAccountMenu } from "../context/AccountMenuContext";
 

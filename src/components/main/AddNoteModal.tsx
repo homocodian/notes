@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   useMediaQuery,
   Dialog,
@@ -9,11 +10,11 @@ import {
   Chip,
   MenuItem,
 } from "@mui/material";
-import { useState } from "react";
-import { useAddNote } from "../../hooks";
 import { useTheme } from "@mui/material/styles";
-import { NOTES } from "../../context/NotesCategoryProvider";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+
+import { useAddNote } from "../../hooks";
+import { NOTES } from "../../context/NotesCategoryProvider";
 
 interface IProps {
   open: boolean;

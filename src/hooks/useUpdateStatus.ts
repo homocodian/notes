@@ -1,7 +1,9 @@
-import { db } from "../firebase";
 import { useCallback, useState } from "react";
-import useOnlineStatus from "./useOnlineStatus";
+
 import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
+
+import { db } from "../firebase";
+import useOnlineStatus from "./useOnlineStatus";
 
 type UseCompleteNote = [
   toggleComplete: (id: string, isComplete: boolean) => Promise<void>,

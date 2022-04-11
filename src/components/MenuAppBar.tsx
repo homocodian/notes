@@ -1,9 +1,10 @@
+import { Menu as MenuIcon } from "@mui/icons-material";
+import { Box, AppBar, Toolbar, Typography, IconButton } from "@mui/material";
+
 import AccountMenu from "./AccountMenu";
 import SelectAppTheme from "./SelectAppTheme";
 import { useAuth } from "../context/AuthContext";
 import { useDrawer } from "../context/DrawerContext";
-import { Menu as MenuIcon } from "@mui/icons-material";
-import { Box, AppBar, Toolbar, Typography, IconButton } from "@mui/material";
 
 function MenuAppBar() {
   const { user } = useAuth();

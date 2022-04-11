@@ -1,9 +1,11 @@
-import { db } from "../firebase";
 import { useCallback, useState } from "react";
+
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+
+import { db } from "../firebase";
 import useOnlineStatus from "./useOnlineStatus";
 import { useAuth } from "../context/AuthContext";
 import { NOTES } from "../context/NotesCategoryProvider";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 type UseAddNote = [
   addNote: (text: string, category: NOTES) => Promise<void>,

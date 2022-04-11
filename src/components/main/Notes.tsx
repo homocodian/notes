@@ -1,7 +1,9 @@
 import { Fragment, useEffect, useState } from "react";
-import NoteCard from "./NoteCard";
-import Box from "@mui/material/Box";
+
 import Masonry from "@mui/lab/Masonry";
+import Box from "@mui/material/Box";
+
+import NoteCard from "./NoteCard";
 import { useNotes, useCategoryNotes } from "../../hooks";
 import { NOTES, useCategory } from "../../context/NotesCategoryProvider";
 import AlertMessage from "../AlertMessage";

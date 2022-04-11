@@ -1,7 +1,9 @@
+import { useState } from "react";
+
+import { deleteDoc, doc } from "firebase/firestore";
+
 import { db } from "../firebase";
 import { useNotes, useOnlineStatus } from ".";
-import { deleteDoc, doc } from "firebase/firestore";
-import { useState } from "react";
 
 type UseDeleteAllNotes = [
   deleteAllNote: () => Promise<void>,

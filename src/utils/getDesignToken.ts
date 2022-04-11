@@ -1,4 +1,4 @@
-import { PaletteMode, ThemeOptions } from "@mui/material";
+import { PaletteMode } from "@mui/material";
 import { deepOrange, grey, lightBlue } from "@mui/material/colors";
 
 export const getDesignTokens = (mode: PaletteMode) => ({

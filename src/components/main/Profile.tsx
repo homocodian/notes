@@ -9,6 +9,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+
 import { useAuth } from "../../context/AuthContext";
 
 export type ProfileProps = {
