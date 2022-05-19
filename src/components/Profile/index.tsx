@@ -7,10 +7,13 @@ import {
   Button,
   Typography,
   useMediaQuery,
+  Box,
+  Avatar,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
 import { useAuth } from "../../context/AuthContext";
+import InitialsAvatar from "../InitialsAvatar";
 
 export type ProfileProps = {
   isOpen: boolean;
@@ -35,7 +38,31 @@ function Profile({ isOpen, setIsOpen }: ProfileProps) {
       aria-labelledby={"User-Profile"}
     >
       <DialogTitle id={"User-Profile"}>Profile</DialogTitle>
-      <DialogContent>
+      <DialogContent
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+          gap: "1rem",
+        }}
+      >
+        <Box>
+          <Box>
+            {user && user.photoURL ? (
+              <Avatar
+                alt={user.displayName ? user.displayName : undefined}
+                src={user.photoURL}
+                sx={{
+                  width: 72,
+                  height: 72,
+                }}
+              />
+            ) : (
+              <Avatar />
+            )}
+          </Box>
+        </Box>
         <DialogContentText>
           <Typography variant="caption" fontSize={18} fontWeight="bold">
             Hello {user && user.displayName ? user.displayName : user?.email}

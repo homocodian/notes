@@ -1,16 +1,17 @@
 import { useLayoutEffect, useState, Fragment } from "react";
+
 import Box from "@mui/system/Box";
 import { useTheme } from "@mui/material/styles";
 
-import Notes from "./Notes";
-import Profile from "./Profile";
-import AddNoteModal from "./AddNoteModal";
-import SideDrawer from "./SideDrawer";
-import AlertMessage from "../AlertMessage";
-import AddButton from "./AddButton";
-import { useAccountMenu } from "../../context/AccountMenuContext";
+import Notes from "../components/main/Notes";
+import Profile from "../components/Profile";
+import AddButton from "../components/main/AddButton";
+import AlertMessage from "../components/AlertMessage";
+import SideDrawer from "../components/main/SideDrawer";
+import AddNoteModal from "../components/main/AddNoteModal";
+import { useAccountMenu } from "../context/AccountMenuContext";
 
-function NotesContainer() {
+function Home() {
   const { palette } = useTheme();
   const accountMenuOptions = useAccountMenu();
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
@@ -53,4 +54,4 @@ function NotesContainer() {
   );
 }
 
-export default NotesContainer;
+export default Home;

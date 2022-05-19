@@ -4,9 +4,10 @@ import { Routes, Route } from "react-router-dom";
 import { useTernaryDarkMode } from "usehooks-ts";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
+import Home from "./pages/Home";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
 import Seperator from "./components/Seperator";
-import { SignIn, SignUp } from "./components/auth";
-import { NotesContainer } from "./components/main";
 import { PrivateRoute, MenuAppBar } from "./components";
 import { getDesignTokens } from "./utils/getDesignToken";
 import { AccountMenuProvider, DrawerProvider } from "./context";
@@ -36,7 +37,7 @@ function App() {
                   element={
                     <PrivateRoute>
                       <NotesCategoryProvider>
-                        <NotesContainer />
+                        <Home />
                       </NotesCategoryProvider>
                     </PrivateRoute>
                   }

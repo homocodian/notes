@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import {
   Box,
   Grid,
@@ -17,12 +19,12 @@ import {
   Google as GoogleIcon,
   LockOutlined as LockIcon,
 } from "@mui/icons-material";
-import CustomDialog from "../CustomDailog";
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import Container from "@mui/material/Container";
-import VerifyErroCode from "../../utils/authError";
-import { useAuth } from "../../context/AuthContext";
+import VerifyErroCode from "../utils/authError";
+import { useAuth } from "../context/AuthContext";
+import CustomDialog from "../components/CustomDailog";
 
 interface State {
   email: string;

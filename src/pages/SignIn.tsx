@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import {
   Box,
   Grid,
@@ -16,15 +18,15 @@ import {
   Google as GoogleIcon,
   LockOutlined as LockIcon,
 } from "@mui/icons-material";
-import { useEffect, useState } from "react";
-import FormDialog from "../FormDailog";
-import { useNavigate } from "react-router";
-import CustomDialog from "../CustomDailog";
-import CustomSnackbar from "../CustomSnackbar";
-import VerifyErroCode from "../../utils/authError";
-import { useAuth } from "../../context/AuthContext";
 import InputAdornment from "@mui/material/InputAdornment";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useNavigate } from "react-router";
+
+import FormDialog from "../components/FormDailog";
+import CustomDialog from "../components/CustomDailog";
+import CustomSnackbar from "../components/CustomSnackbar";
+import VerifyErroCode from "../utils/authError";
+import { useAuth } from "../context/AuthContext";
 
 interface State {
   email: string;
