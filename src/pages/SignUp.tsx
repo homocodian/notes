@@ -24,9 +24,9 @@ import { useNavigate } from "react-router-dom";
 import Container from "@mui/material/Container";
 import VerifyErroCode from "../utils/authError";
 import { useAuth } from "../context/AuthContext";
-import CustomDialog from "../components/CustomDailog";
+import { CustomSnackbar } from "../components";
 
-interface State {
+interface InputFields {
   email: string;
   password: string;
   confirmPassword: string;
@@ -35,17 +35,24 @@ interface State {
 }
 
 export default function SignUp() {
-  const [values, setValues] = useState<State>({
+  const [values, setValues] = useState<InputFields>({
     email: "",
     password: "",
     confirmPassword: "",
     showPassword: false,
     showConfirmPassword: false,
   });
+  const [isError, setIsError] = useState({
+    email: false,
+    password: false,
+    confirmPassword: false,
+  });
+  const [alert, setAlert] = useState({
+    message: "",
+    isOpen: false,
+  });
   const navigate = useNavigate();
-  const [isOpen, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const { signUp, signInWithGooglePopup, user } = useAuth();
 
   // check for user
@@ -55,8 +62,13 @@ export default function SignUp() {
     }
   }, [user]);
 
+  const handleSnackbarToggle = (prop: boolean) => {
+    setAlert((prev) => ({ ...prev, isOpen: prop }));
+  };
+
   const handleChange =
-    (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    (prop: keyof InputFields) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       setValues({ ...values, [prop]: event.target.value });
     };
 
@@ -81,29 +93,47 @@ export default function SignUp() {
   const handleSubmit = async () => {
     setIsLoading(true);
 
-    const email = values.email;
-    const password = values.password;
-    const confirm_password = values.confirmPassword;
+    const [email, password, confirm_password] = [
+      values.email,
+      values.password,
+      values.confirmPassword,
+    ];
 
-    if (email !== "" && password !== "" && confirm_password !== "") {
-      if (password === confirm_password) {
-        try {
-          await signUp(email, password);
-          setIsLoading(false);
-          navigate("/", { replace: true });
-        } catch (error: any) {
-          setErrorMessage(VerifyErroCode(error.code));
-          setOpen(true);
-          setIsLoading(false);
-        }
-      } else {
-        setErrorMessage("Password does not match.");
-        setOpen(true);
-        setIsLoading(false);
-      }
-    } else {
-      setErrorMessage("Please fill all required fields.");
-      setOpen(true);
+    if (email === "" || password === "" || confirm_password === "") {
+      setIsError({
+        email: email === "" ? true : false,
+        password: password === "" ? true : false,
+        confirmPassword: confirm_password === "" ? true : false,
+      });
+      setAlert({
+        message: "Password does not match!",
+        isOpen: true,
+      });
+      setIsLoading(false);
+      return;
+    }
+    if (password !== confirm_password) {
+      setIsError({
+        email: false,
+        password: true,
+        confirmPassword: true,
+      });
+      setAlert({
+        message: "Password does not match.",
+        isOpen: true,
+      });
+      setIsLoading(false);
+      return;
+    }
+    try {
+      await signUp(email, password);
+      setIsLoading(false);
+      navigate("/", { replace: true });
+    } catch (error: any) {
+      setAlert({
+        message: VerifyErroCode(error.code),
+        isOpen: true,
+      });
       setIsLoading(false);
     }
   };
@@ -115,8 +145,10 @@ export default function SignUp() {
       setIsLoading(false);
       navigate("/", { replace: true });
     } catch (error: any) {
-      setErrorMessage(VerifyErroCode(error.code));
-      setOpen(true);
+      setAlert({
+        message: VerifyErroCode(error.code),
+        isOpen: true,
+      });
       setIsLoading(false);
     }
   };
@@ -150,18 +182,20 @@ export default function SignUp() {
           >
             <TextField
               value={values.email}
+              error={isError.email}
               onChange={handleChange("email")}
               margin="normal"
               id="email"
               required
               fullWidth
-              label="Email Address"
+              label="Email"
               name="email"
               autoComplete="email"
               autoFocus
             />
             <TextField
               value={values.password}
+              error={isError.password}
               onChange={handleChange("password")}
               margin="normal"
               required
@@ -189,6 +223,7 @@ export default function SignUp() {
             <TextField
               name="confirm-password"
               label="Confirm Password"
+              error={isError.confirmPassword}
               margin="normal"
               fullWidth
               required
@@ -246,11 +281,17 @@ export default function SignUp() {
           </Box>
         </Box>
       </Container>
-      <CustomDialog
-        title="Sign up error"
-        message={errorMessage}
-        open={isOpen}
-        setOpen={setOpen}
+      <CustomSnackbar
+        alertType="error"
+        message={alert.message}
+        open={alert.isOpen}
+        setOpen={handleSnackbarToggle}
+        autoHideDuration={6000}
+        anchorPosition={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        margin={"3rem 0 0.5rem 0"}
       />
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
