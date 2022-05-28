@@ -127,8 +127,6 @@ export default function SignUp() {
     }
     try {
       await signUp(email, password);
-      setIsLoading(false);
-      navigate("/", { replace: true });
     } catch (error: any) {
       setAlert({
         message: VerifyErroCode(error.code),
