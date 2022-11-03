@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Notes</string>
+    <string name="title_activity_main">Notes</string>
+    <string name="package_name">com.notes.homocodians</string>
+    <string name="custom_url_scheme">com.notes.homocodians</string>
+</resources>
