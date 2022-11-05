@@ -83,8 +83,8 @@ export default function SignIn() {
     if (email !== "" && password !== "") {
       try {
         await signIn(email, password);
-        setIsLoading(false);
-        navigate("/");
+        // setIsLoading(false);
+        // navigate("/");
       } catch (error: any) {
         setErrorMessage(VerifyErroCode(error.code));
         setIsCustomDailogOpen(true);
@@ -101,8 +101,8 @@ export default function SignIn() {
     setIsLoading(true);
     try {
       await signInWithGooglePopup();
-      setIsLoading(false);
-      navigate("/", { replace: true });
+      // setIsLoading(false);
+      // navigate("/", { replace: true });
     } catch (error: any) {
       setErrorMessage(VerifyErroCode(error.code));
       setIsCustomDailogOpen(true);
