@@ -8,11 +8,13 @@ specifiers:
   '@capacitor/status-bar': ^4.0.1
   '@emotion/react': ^11.9.0
   '@emotion/styled': ^11.8.1
+  '@loadable/component': ^5.15.2
   '@mui/icons-material': ^5.8.0
   '@mui/lab': ^5.0.0-alpha.82
   '@mui/material': ^5.8.0
   '@mui/system': ^5.8.0
   '@testing-library/cypress': ^8.0.2
+  '@types/loadable__component': ^5.13.4
   '@types/react': ^17.0.45
   '@types/react-dom': ^17.0.17
   '@vitejs/plugin-react': ^1.3.2
@@ -35,6 +37,7 @@ dependencies:
   '@capacitor/status-bar': 4.0.1_@capacitor+core@4.3.0
   '@emotion/react': 11.9.0_tovnxza3ewbqrne2boekua65yu
   '@emotion/styled': 11.8.1_h6jhz2syqun76iafryt4i7puoy
+  '@loadable/component': 5.15.2_react@17.0.2
   '@mui/icons-material': 5.8.0_thescs6epir3llb7jldxow7if4
   '@mui/lab': 5.0.0-alpha.82_lv345ry5cdytsv3tvumhu4nqji
   '@mui/material': 5.8.0_zdaquy43folvhsznh4trclztdq
@@ -51,6 +54,7 @@ dependencies:
 devDependencies:
   '@capacitor/cli': 4.3.0
   '@testing-library/cypress': 8.0.2_cypress@9.6.1
+  '@types/loadable__component': 5.13.4
   '@types/react': 17.0.45
   '@types/react-dom': 17.0.17
   '@vitejs/plugin-react': 1.3.2
@@ -1166,6 +1170,18 @@ packages:
       '@jridgewell/resolve-uri': 3.0.7
       '@jridgewell/sourcemap-codec': 1.4.13
 
+  /@loadable/component/5.15.2_react@17.0.2:
+    resolution: {integrity: sha512-ryFAZOX5P2vFkUdzaAtTG88IGnr9qxSdvLRvJySXcUA4B4xVWurUNADu3AnKPksxOZajljqTrDEDcYjeL4lvLw==}
+    engines: {node: '>=8'}
+    peerDependencies:
+      react: '>=16.3.0'
+    dependencies:
+      '@babel/runtime': 7.17.9
+      hoist-non-react-statics: 3.3.2
+      react: 17.0.2
+      react-is: 16.13.1
+    dev: false
+
   /@mui/base/5.0.0-alpha.81_k2mvpji5i2ojml6m4ftklg47pa:
     resolution: {integrity: sha512-KJP+RdKBLSbhiAliy1b5xFuoAezawupfIHc/MRtEZdqAmUW0+UFNDXIUDlBKR9zLCjgjQ7eVJsSe0TwAgd8OMQ==}
     engines: {node: '>=12.0.0'}
@@ -1504,6 +1520,12 @@ packages:
     resolution: {integrity: sha512-SvSrYXfWSc7R4eqnOzbQF4TZmfpNSM9FrSWLU3EUnWBuyZqNBOrv1B1JA3byUDPUl9z4Ab3jeZG2eDdySlgNMg==}
     dependencies:
       '@types/node': 17.0.34
+    dev: true
+
+  /@types/loadable__component/5.13.4:
+    resolution: {integrity: sha512-YhoCCxyuvP2XeZNbHbi8Wb9EMaUJuA2VGHxJffcQYrJKIKSkymJrhbzsf9y4zpTmr5pExAAEh5hbF628PAZ8Dg==}
+    dependencies:
+      '@types/react': 17.0.45
     dev: true
 
   /@types/long/4.0.2:
