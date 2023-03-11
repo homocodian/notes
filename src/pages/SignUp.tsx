@@ -271,7 +271,7 @@ export default function SignUp() {
 							</Button>
 						)}
 						<Grid container>
-							<Grid item>
+							<Grid item sx={{ mt: 2 }}>
 								<Link href="/login" variant="body2">
 									{"Already have an account? Sign In"}
 								</Link>

@@ -128,7 +128,7 @@ export default function SignIn() {
 			<Container component="main" maxWidth="xs">
 				<Box
 					sx={{
-						marginTop: 3,
+						paddingTop: 3,
 						display: "flex",
 						flexDirection: "column",
 						alignItems: "center",
@@ -203,7 +203,7 @@ export default function SignIn() {
 								Continue With Google
 							</Button>
 						)}
-						<Grid container>
+						<Grid container sx={{ mt: 2 }}>
 							<Grid item xs>
 								<Link
 									href="#"

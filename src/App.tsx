@@ -1,18 +1,17 @@
 import { useMemo } from "react";
 
+import loadable from "@loadable/component";
+import { Capacitor } from "@capacitor/core";
 import { Routes, Route } from "react-router-dom";
 import { useTernaryDarkMode } from "usehooks-ts";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Capacitor } from "@capacitor/core";
 import { StatusBar, Style } from "@capacitor/status-bar";
-import loadable from "@loadable/component";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-import Seperator from "./components/Seperator";
+import Loading from "./components/Loading";
 import { PrivateRoute, MenuAppBar } from "./components";
 import { getDesignTokens } from "./utils/getDesignToken";
 import { AccountMenuProvider, DrawerProvider } from "./context";
 import NotesCategoryProvider from "./context/NotesCategoryProvider";
-import Loading from "./components/Loading";
 
 const HomePage = loadable(() => import("./pages/Home"));
 const SignInPage = loadable(() => import("./pages/SignIn"));
@@ -47,30 +46,28 @@ function App() {
 			<DrawerProvider>
 				<AccountMenuProvider>
 					<MenuAppBar />
-					<Seperator>
-						<Routes>
-							<Route path="/">
-								<Route
-									index
-									element={
-										<PrivateRoute>
-											<NotesCategoryProvider>
-												<HomePage fallback={<Loading />} />
-											</NotesCategoryProvider>
-										</PrivateRoute>
-									}
-								/>
-								<Route
-									path="signup"
-									element={<SignUpPage fallback={<Loading />} />}
-								/>
-								<Route
-									path="login"
-									element={<SignInPage fallback={<Loading />} />}
-								/>
-							</Route>
-						</Routes>
-					</Seperator>
+					<Routes>
+						<Route path="/">
+							<Route
+								index
+								element={
+									<PrivateRoute>
+										<NotesCategoryProvider>
+											<HomePage fallback={<Loading />} />
+										</NotesCategoryProvider>
+									</PrivateRoute>
+								}
+							/>
+							<Route
+								path="signup"
+								element={<SignUpPage fallback={<Loading />} />}
+							/>
+							<Route
+								path="login"
+								element={<SignInPage fallback={<Loading />} />}
+							/>
+						</Route>
+					</Routes>
 				</AccountMenuProvider>
 			</DrawerProvider>
 		</ThemeProvider>
