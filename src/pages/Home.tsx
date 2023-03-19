@@ -25,7 +25,7 @@ function Home() {
 				}}
 			>
 				<SideDrawer />
-				<Box sx={{ width: "100%" }} mt={3}>
+				<Box sx={{ width: "100%" }} pt={3}>
 					<Notes />
 				</Box>
 				<Profile

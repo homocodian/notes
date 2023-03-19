@@ -16,7 +16,8 @@ import { useAuth } from "../context/AuthContext";
 type UseNotes = [
 	notes: QueryDocumentSnapshot<DocumentData>[],
 	loading: boolean,
-	error: string | null
+	error: string | null,
+	setError: React.Dispatch<React.SetStateAction<string | null>>
 ];
 
 function useNotes(): UseNotes {
@@ -46,7 +47,7 @@ function useNotes(): UseNotes {
 		return unsubscribe;
 	}, [user]);
 
-	return [notes, loading, error];
+	return [notes, loading, error, setError];
 }
 
 export default useNotes;
