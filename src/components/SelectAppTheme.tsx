@@ -7,16 +7,19 @@ import {
 	FormControl,
 	RadioGroup,
 	FormControlLabel,
+	MenuItem,
 } from "@mui/material";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import { useTernaryDarkMode } from "usehooks-ts";
 
 import CustomTooltip from "./CustomTooltip";
+import { DarkModeOutlined } from "@mui/icons-material";
 
 type TernaryDarkMode = "system" | "light" | "dark";
 
 function SelectAppTheme() {
-	const { setTernaryDarkMode, ternaryDarkMode } = useTernaryDarkMode();
+	const { setTernaryDarkMode, ternaryDarkMode, isDarkMode } =
+		useTernaryDarkMode();
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
 
@@ -45,8 +48,8 @@ function SelectAppTheme() {
 				onClick={handleClick}
 				color="inherit"
 			>
-				<CustomTooltip title="Toogle Theme">
-					<LightModeIcon />
+				<CustomTooltip title="Switch color Mode">
+					{!isDarkMode ? <LightModeIcon /> : <DarkModeOutlined />}
 				</CustomTooltip>
 			</IconButton>
 			<Menu
@@ -75,37 +78,36 @@ function SelectAppTheme() {
 							transform: "translateY(-50%) rotate(45deg)",
 							zIndex: 0,
 						},
+						minWidth: 180,
 					},
 				}}
 				transformOrigin={{ horizontal: "right", vertical: "top" }}
 				anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
 			>
-				<FormControl
-					fullWidth
-					sx={{
-						display: "flex",
-						paddingX: "25px",
-					}}
-				>
+				<FormControl fullWidth>
 					<RadioGroup
 						aria-labelledby="select app theme"
 						name="select app theme"
 						value={ternaryDarkMode}
 						onChange={handleChange}
-						sx={{
-							width: "100%",
-							display: "flex",
-							justifyContent: "space-between",
-							alignItems: "baseline",
-						}}
 					>
-						<FormControlLabel
-							value="system"
-							control={<Radio />}
-							label="Device"
-						/>
-						<FormControlLabel value="light" control={<Radio />} label="Light" />
-						<FormControlLabel value="dark" control={<Radio />} label="Dark" />
+						<MenuItem>
+							<FormControlLabel
+								value="system"
+								control={<Radio />}
+								label="Device"
+							/>
+						</MenuItem>
+						<MenuItem>
+							<FormControlLabel
+								value="light"
+								control={<Radio />}
+								label="Light"
+							/>
+						</MenuItem>
+						<MenuItem>
+							<FormControlLabel value="dark" control={<Radio />} label="Dark" />
+						</MenuItem>
 					</RadioGroup>
 				</FormControl>
 			</Menu>
