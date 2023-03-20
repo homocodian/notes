@@ -10,6 +10,7 @@
   "dependencies": {
     "@babel/core": "^7.17.12",
     "@capacitor/android": "^4.3.0",
+    "@capacitor/clipboard": "^4.1.0",
     "@capacitor/core": "^4.3.0",
     "@capacitor/status-bar": "^4.0.1",
     "@emotion/react": "^11.9.0",

@@ -4,6 +4,7 @@ specifiers:
   '@babel/core': ^7.17.12
   '@capacitor/android': ^4.3.0
   '@capacitor/cli': ^4.3.0
+  '@capacitor/clipboard': ^4.1.0
   '@capacitor/core': ^4.3.0
   '@capacitor/status-bar': ^4.0.1
   '@emotion/react': ^11.9.0
@@ -33,6 +34,7 @@ specifiers:
 dependencies:
   '@babel/core': 7.17.12
   '@capacitor/android': 4.3.0_@capacitor+core@4.3.0
+  '@capacitor/clipboard': 4.1.0_@capacitor+core@4.3.0
   '@capacitor/core': 4.3.0
   '@capacitor/status-bar': 4.0.1_@capacitor+core@4.3.0
   '@emotion/react': 11.9.0_tovnxza3ewbqrne2boekua65yu
@@ -343,6 +345,14 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@capacitor/clipboard/4.1.0_@capacitor+core@4.3.0:
+    resolution: {integrity: sha512-lfUwDqZces3mQcBOyfxpBCsRWWSfLuPzekA1N3RaMgYVhD6/rdzFnzfRiksj1hm4It+lnULK0y+N5nxVnTt+0Q==}
+    peerDependencies:
+      '@capacitor/core': ^4.0.0
+    dependencies:
+      '@capacitor/core': 4.3.0
+    dev: false
 
   /@capacitor/core/4.3.0:
     resolution: {integrity: sha512-zb225feaiHYcttHqw7SnKVj9gjOh3yoM2ol0Efky4kd80qZvqPHt7nRI1XZmGUKid5j3AVggULd5rRke5OEOXQ==}
