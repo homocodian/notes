@@ -12,6 +12,7 @@ import { PrivateRoute, MenuAppBar } from "./components";
 import { getDesignTokens } from "./utils/getDesignToken";
 import { AccountMenuProvider, DrawerProvider } from "./context";
 import NotesCategoryProvider from "./context/NotesCategoryProvider";
+import Connectivity from "./components/general/Connectivity";
 
 const HomePage = loadable(() => import("./pages/Home"));
 const SignInPage = loadable(() => import("./pages/SignIn"));
@@ -29,7 +30,7 @@ async function changeStatusbarColor(isDarkMode: boolean) {
 }
 
 function App() {
-	// get theme value from localstorage
+	// get theme value from local storage
 	const { isDarkMode } = useTernaryDarkMode();
 
 	// returns theme object for mui
@@ -68,6 +69,7 @@ function App() {
 							/>
 						</Route>
 					</Routes>
+					<Connectivity />
 				</AccountMenuProvider>
 			</DrawerProvider>
 		</ThemeProvider>

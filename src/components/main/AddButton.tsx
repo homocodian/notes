@@ -7,7 +7,6 @@ interface IProps {
 
 function AddButton({ openAddTodoModal }: IProps) {
 	const isMobile = useMediaQuery("(max-width: 540px)");
-
 	return (
 		<Fab
 			aria-label="add"
@@ -15,7 +14,7 @@ function AddButton({ openAddTodoModal }: IProps) {
 			sx={{
 				position: "fixed",
 				right: "20px",
-				bottom: "20px",
+				bottom: "25px",
 				gap: "5px",
 				width: isMobile ? 48 : null,
 				height: isMobile ? 48 : null,
