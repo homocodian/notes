@@ -6,6 +6,7 @@ specifiers:
   '@capacitor/cli': ^4.3.0
   '@capacitor/clipboard': ^4.1.0
   '@capacitor/core': ^4.3.0
+  '@capacitor/network': ^4.1.0
   '@capacitor/status-bar': ^4.0.1
   '@emotion/react': ^11.9.0
   '@emotion/styled': ^11.8.1
@@ -36,6 +37,7 @@ dependencies:
   '@capacitor/android': 4.3.0_@capacitor+core@4.3.0
   '@capacitor/clipboard': 4.1.0_@capacitor+core@4.3.0
   '@capacitor/core': 4.3.0
+  '@capacitor/network': 4.1.0_@capacitor+core@4.3.0
   '@capacitor/status-bar': 4.0.1_@capacitor+core@4.3.0
   '@emotion/react': 11.9.0_tovnxza3ewbqrne2boekua65yu
   '@emotion/styled': 11.8.1_h6jhz2syqun76iafryt4i7puoy
@@ -358,6 +360,14 @@ packages:
     resolution: {integrity: sha512-zb225feaiHYcttHqw7SnKVj9gjOh3yoM2ol0Efky4kd80qZvqPHt7nRI1XZmGUKid5j3AVggULd5rRke5OEOXQ==}
     dependencies:
       tslib: 2.4.0
+    dev: false
+
+  /@capacitor/network/4.1.0_@capacitor+core@4.3.0:
+    resolution: {integrity: sha512-GMJ6LmxmrFA55rAaYxgm4tKSZyUmuLRreQz5Gdu0P09Ja8abSjmXa/DX16gOu1I1+wqHWm2rRI6nPkeUH55Ibw==}
+    peerDependencies:
+      '@capacitor/core': ^4.0.0
+    dependencies:
+      '@capacitor/core': 4.3.0
     dev: false
 
   /@capacitor/status-bar/4.0.1_@capacitor+core@4.3.0:
