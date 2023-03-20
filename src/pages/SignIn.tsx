@@ -21,11 +21,11 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { Capacitor } from "@capacitor/core";
 import { useNavigate } from "react-router";
 
-import FormDialog from "../components/FormDailog";
-import CustomDialog from "../components/CustomDailog";
-import CustomSnackbar from "../components/CustomSnackbar";
-import VerifyErroCode from "../utils/authError";
 import { useAuth } from "../context/AuthContext";
+import FormDialog from "../components/FormDialog";
+import CustomDialog from "../components/CustomDialog";
+import CustomSnackbar from "../components/CustomSnackbar";
+import VerifyFirebaseErrorCode from "../utils/authError";
 
 interface State {
 	email: string;
@@ -44,7 +44,7 @@ export default function SignIn() {
 	const [errorMessage, setErrorMessage] = useState("");
 	const [isAlertOpen, setIsAlertOpen] = useState(false);
 	const [isResetFormOpen, setIsResetFormOpen] = useState(false);
-	const [isCustomDailogOpen, setIsCustomDailogOpen] = useState(false);
+	const [isCustomDialogOpen, setIsCustomDialogOpen] = useState(false);
 	const { signIn, signInWithGooglePopup, sendPasswordResetLink, user } =
 		useAuth();
 
@@ -85,13 +85,13 @@ export default function SignIn() {
 				// setIsLoading(false);
 				// navigate("/");
 			} catch (error: any) {
-				setErrorMessage(VerifyErroCode(error.code));
-				setIsCustomDailogOpen(true);
+				setErrorMessage(VerifyFirebaseErrorCode(error.code));
+				setIsCustomDialogOpen(true);
 				setIsLoading(false);
 			}
 		} else {
 			setErrorMessage("Please fill all required fields");
-			setIsCustomDailogOpen(true);
+			setIsCustomDialogOpen(true);
 			setIsLoading(false);
 		}
 	};
@@ -103,8 +103,8 @@ export default function SignIn() {
 			// setIsLoading(false);
 			// navigate("/", { replace: true });
 		} catch (error: any) {
-			setErrorMessage(VerifyErroCode(error.code));
-			setIsCustomDailogOpen(true);
+			setErrorMessage(VerifyFirebaseErrorCode(error.code));
+			setIsCustomDialogOpen(true);
 			setIsLoading(false);
 		}
 	};
@@ -117,8 +117,8 @@ export default function SignIn() {
 			setIsAlertOpen(true);
 		} catch (error: any) {
 			cb();
-			setErrorMessage(VerifyErroCode(error.code));
-			setIsCustomDailogOpen(true);
+			setErrorMessage(VerifyFirebaseErrorCode(error.code));
+			setIsCustomDialogOpen(true);
 			setIsResetFormOpen(false);
 		}
 	};
@@ -128,10 +128,10 @@ export default function SignIn() {
 			<Container component="main" maxWidth="xs">
 				<Box
 					sx={{
-						paddingTop: 3,
 						display: "flex",
 						flexDirection: "column",
 						alignItems: "center",
+						paddingTop: "80px",
 					}}
 				>
 					<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
@@ -238,8 +238,8 @@ export default function SignIn() {
 			<CustomDialog
 				title={"Login Error"}
 				message={errorMessage}
-				open={isCustomDailogOpen}
-				setOpen={setIsCustomDailogOpen}
+				open={isCustomDialogOpen}
+				setOpen={setIsCustomDialogOpen}
 			/>
 			<Backdrop
 				sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}

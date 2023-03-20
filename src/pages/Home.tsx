@@ -22,6 +22,7 @@ function Home() {
 					width: "100%",
 					overflow: "auto",
 					paddingBottom: "15px",
+					paddingTop: "64px",
 				}}
 			>
 				<SideDrawer />

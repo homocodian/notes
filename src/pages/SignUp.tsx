@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 import Container from "@mui/material/Container";
 import { Capacitor } from "@capacitor/core";
 
-import VerifyErroCode from "../utils/authError";
+import VerifyFirebaseErrorCode from "../utils/authError";
 import { useAuth } from "../context/AuthContext";
 import { CustomSnackbar } from "../components";
 
@@ -128,7 +128,7 @@ export default function SignUp() {
 			await signUp(email, password);
 		} catch (error: any) {
 			setAlert({
-				message: VerifyErroCode(error.code),
+				message: VerifyFirebaseErrorCode(error.code),
 				isOpen: true,
 			});
 			setIsLoading(false);
@@ -143,7 +143,7 @@ export default function SignUp() {
 			navigate("/", { replace: true });
 		} catch (error: any) {
 			setAlert({
-				message: VerifyErroCode(error.code),
+				message: VerifyFirebaseErrorCode(error.code),
 				isOpen: true,
 			});
 			setIsLoading(false);
@@ -155,10 +155,10 @@ export default function SignUp() {
 			<Container component="main" maxWidth="xs">
 				<Box
 					sx={{
-						marginTop: 3,
 						display: "flex",
 						flexDirection: "column",
 						alignItems: "center",
+						paddingTop: "80px",
 					}}
 				>
 					<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>

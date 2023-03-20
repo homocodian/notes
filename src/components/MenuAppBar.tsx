@@ -15,7 +15,7 @@ function MenuAppBar() {
 	const { isDrawerOpen, setDrawerIsOpen } = useDrawer();
 
 	return (
-		<Box sx={{ flexGrow: 1, paddingBottom: "64px" }}>
+		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position="fixed">
 				<Toolbar>
 					{user && (
