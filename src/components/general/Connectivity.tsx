@@ -10,7 +10,7 @@ function Connectivity() {
 	const prevNetworkStatus = useRef<boolean | undefined>(undefined);
 
 	useEffect(() => {
-		let timer: number;
+		let timer: NodeJS.Timeout;
 
 		if (isOnline && prevNetworkStatus.current === undefined) {
 			return;
