@@ -1,4 +1,4 @@
-import { ChangeEvent, Fragment, useState, MouseEvent } from "react";
+import { Fragment, useState, MouseEvent, useCallback } from "react";
 
 import {
 	Menu,
@@ -21,6 +21,7 @@ function SelectAppTheme() {
 	const { setTernaryDarkMode, ternaryDarkMode, isDarkMode } =
 		useTernaryDarkMode();
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
 	const open = Boolean(anchorEl);
 
 	const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -31,10 +32,10 @@ function SelectAppTheme() {
 		setAnchorEl(null);
 	};
 
-	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-		setTernaryDarkMode(event.target.value as TernaryDarkMode);
+	const handleThemeChange = useCallback((mode: TernaryDarkMode) => {
+		setTernaryDarkMode(mode);
 		handleClose();
-	};
+	}, []);
 
 	return (
 		<Fragment>
@@ -89,23 +90,22 @@ function SelectAppTheme() {
 						aria-labelledby="select app theme"
 						name="select app theme"
 						value={ternaryDarkMode}
-						onChange={handleChange}
 					>
-						<MenuItem>
+						<MenuItem onClick={() => handleThemeChange("system")}>
 							<FormControlLabel
 								value="system"
 								control={<Radio />}
 								label="Device"
 							/>
 						</MenuItem>
-						<MenuItem>
+						<MenuItem onClick={() => handleThemeChange("light")}>
 							<FormControlLabel
 								value="light"
 								control={<Radio />}
 								label="Light"
 							/>
 						</MenuItem>
-						<MenuItem>
+						<MenuItem onClick={() => handleThemeChange("dark")}>
 							<FormControlLabel value="dark" control={<Radio />} label="Dark" />
 						</MenuItem>
 					</RadioGroup>
