@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { Capacitor } from "@capacitor/core";
+import { useNavigate } from "react-router";
 
 import {
 	Box,
@@ -18,14 +20,12 @@ import GoogleIcon from "@mui/icons-material/Google";
 import LockIcon from "@mui/icons-material/LockOutlined";
 import InputAdornment from "@mui/material/InputAdornment";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Capacitor } from "@capacitor/core";
-import { useNavigate } from "react-router";
 
-import { useAuth } from "../context/AuthContext";
-import FormDialog from "../components/FormDialog";
-import CustomDialog from "../components/CustomDialog";
-import CustomSnackbar from "../components/CustomSnackbar";
-import VerifyFirebaseErrorCode from "../utils/authError";
+import { useAuth } from "@/context/AuthContext";
+import FormDialog from "@/components/FormDialog";
+import CustomDialog from "@/components/CustomDialog";
+import CustomSnackbar from "@/components/CustomSnackbar";
+import VerifyFirebaseErrorCode from "@/utils/authError";
 
 interface State {
 	email: string;

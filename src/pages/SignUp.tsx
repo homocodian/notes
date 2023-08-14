@@ -21,9 +21,9 @@ import { useNavigate } from "react-router-dom";
 import Container from "@mui/material/Container";
 import { Capacitor } from "@capacitor/core";
 
-import VerifyFirebaseErrorCode from "../utils/authError";
-import { useAuth } from "../context/AuthContext";
-import { CustomSnackbar } from "../components";
+import { useAuth } from "@/context/AuthContext";
+import VerifyFirebaseErrorCode from "@/utils/authError";
+import CustomSnackbar from "@/components/CustomSnackbar";
 
 interface InputFields {
 	email: string;
