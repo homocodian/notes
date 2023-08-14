@@ -1,39 +1,28 @@
 import { useMemo } from "react";
 
 import loadable from "@loadable/component";
-import { Capacitor } from "@capacitor/core";
 import { Routes, Route } from "react-router-dom";
 import { useTernaryDarkMode } from "usehooks-ts";
-import { StatusBar, Style } from "@capacitor/status-bar";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-import Loading from "./components/Loading";
-import { PrivateRoute, MenuAppBar } from "./components";
-import { getDesignTokens } from "./utils/getDesignToken";
-import { AccountMenuProvider, DrawerProvider } from "./context";
-import NotesCategoryProvider from "./context/NotesCategoryProvider";
-import Connectivity from "./components/general/Connectivity";
+import Loading from "@/components/Loading";
+import AppBar from "@/components/AppBar";
+import PrivateRoute from "@/components/PrivateRoute";
+import DrawerProvider from "@/context/DrawerContext";
+import { getDesignTokens } from "@/utils/getDesignToken";
+import Connectivity from "@/components/general/Connectivity";
+import AccountMenuProvider from "@/context/AccountMenuContext";
+import NotesCategoryProvider from "@/context/NotesCategoryProvider";
+import { changeStatusbarColor } from "@/utils/change-statusbar-color";
 
-const HomePage = loadable(() => import("./pages/Home"));
-const SignInPage = loadable(() => import("./pages/SignIn"));
-const SignUpPage = loadable(() => import("./pages/SignUp"));
-
-async function changeStatusbarColor(isDarkMode: boolean) {
-	if (Capacitor.getPlatform() === "android") {
-		if (isDarkMode) {
-			await StatusBar.setBackgroundColor({ color: "#121212" });
-		} else {
-			await StatusBar.setBackgroundColor({ color: "#ff5722" });
-		}
-		await StatusBar.setStyle({ style: Style.Dark });
-	}
-}
+const HomePage = loadable(() => import("@/pages/Home"));
+const SignInPage = loadable(() => import("@/pages/SignIn"));
+const SignUpPage = loadable(() => import("@/pages/SignUp"));
 
 function App() {
 	// get theme value from local storage
 	const { isDarkMode } = useTernaryDarkMode();
 
-	// returns theme object for mui
 	const theme = useMemo(() => {
 		if (isDarkMode) document.body.style.backgroundColor = "#18181b";
 		else document.body.style.backgroundColor = "#fff";
@@ -46,7 +35,7 @@ function App() {
 		<ThemeProvider theme={theme}>
 			<DrawerProvider>
 				<AccountMenuProvider>
-					<MenuAppBar />
+					<AppBar />
 					<Routes>
 						<Route path="/">
 							<Route

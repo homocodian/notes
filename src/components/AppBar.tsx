@@ -1,22 +1,21 @@
 import MenuIcon from "@mui/icons-material/Menu";
 import Box from "@mui/material/Box";
-import AppBar from "@mui/material/AppBar";
+import MuiAppBar from "@mui/material/AppBar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Toolbar from "@mui/material/Toolbar";
 
-import AccountMenu from "./AccountMenu";
-import SelectAppTheme from "./SelectAppTheme";
-import { useAuth } from "../context/AuthContext";
-import { useDrawer } from "../context/DrawerContext";
+import { useAuth } from "@/context/AuthContext";
+import { useDrawer } from "@/context/DrawerContext";
+import SettingsMenu from "@/components/general/SettingsMenu";
 
-function MenuAppBar() {
+function AppBar() {
 	const { user } = useAuth();
 	const { isDrawerOpen, setDrawerIsOpen } = useDrawer();
 
 	return (
 		<Box sx={{ flexGrow: 1 }}>
-			<AppBar position="fixed">
+			<MuiAppBar position="fixed">
 				<Toolbar>
 					{user && (
 						<IconButton
@@ -35,12 +34,11 @@ function MenuAppBar() {
 					<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
 						Notes
 					</Typography>
-					{user ? <AccountMenu /> : null}
-					<SelectAppTheme />
+					<SettingsMenu />
 				</Toolbar>
-			</AppBar>
+			</MuiAppBar>
 		</Box>
 	);
 }
 
-export default MenuAppBar;
+export default AppBar;
