@@ -9,10 +9,22 @@ import AlertMessage from "../components/AlertMessage";
 import SideDrawer from "../components/main/SideDrawer";
 import AddNoteModal from "../components/main/AddNoteModal";
 import { useAccountMenu } from "../context/AccountMenuContext";
+import { useHotkeys } from "react-hotkeys-hook";
 
 function Home() {
 	const accountMenuOptions = useAccountMenu();
 	const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
+
+	useHotkeys(
+		"shift+n",
+		() => {
+			if (isNoteModalOpen) {
+				return;
+			}
+			setIsNoteModalOpen(true);
+		},
+		[isNoteModalOpen]
+	);
 
 	return (
 		<Fragment>

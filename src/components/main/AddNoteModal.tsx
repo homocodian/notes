@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
 	useMediaQuery,
 	Dialog,
@@ -10,13 +10,13 @@ import {
 	Chip,
 	MenuItem,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { LoadingButton } from "@mui/lab";
 import Select from "@mui/material/Select";
+import { useTheme } from "@mui/material/styles";
+import { useHotkeys } from "react-hotkeys-hook";
 
 import { useAddNote } from "../../hooks";
 import { NOTES } from "../../context/NotesCategoryProvider";
-import { LoadingButton } from "@mui/lab";
-import useKeyPress from "../../utils/useKeyPress";
 
 interface IProps {
 	open: boolean;
@@ -25,15 +25,30 @@ interface IProps {
 
 function AddNoteModal({ open, setOpen }: IProps) {
 	const theme = useTheme();
-	const [addNote, loading, error] = useAddNote();
+	const [addNote, loading] = useAddNote();
 	const [noteError, setNoteError] = useState(false);
 	const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 	const formRef = useRef<HTMLFormElement | null>(null);
+	const inputRef = useRef<HTMLTextAreaElement | null>(null);
+	const submitButtonRef = useRef<HTMLButtonElement | null>(null);
 
-	useKeyPress(["Escape"], () => {
-		setOpen(false);
-		formRef.current;
-	});
+	useHotkeys(
+		"shift+enter",
+		(e) => {
+			e.preventDefault();
+			submitButtonRef.current?.click();
+		},
+		{
+			enableOnFormTags: ["INPUT", "TEXTAREA"],
+		}
+	);
+
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			inputRef.current?.focus();
+		}, 0);
+		return () => clearTimeout(timer);
+	}, [open]);
 
 	const handleClose = () => {
 		setNoteError(false);
@@ -60,6 +75,12 @@ function AddNoteModal({ open, setOpen }: IProps) {
 			aria-labelledby="add note"
 			fullScreen={fullScreen}
 			fullWidth
+			closeAfterTransition
+			onKeyDown={(e) => {
+				if (e.key === "Escape") {
+					setOpen(false);
+				}
+			}}
 		>
 			<DialogContent>
 				<DialogContentText>Note</DialogContentText>
@@ -68,7 +89,6 @@ function AddNoteModal({ open, setOpen }: IProps) {
 			<DialogContent>
 				<form onSubmit={onSubmit} id="note_form" ref={formRef}>
 					<TextField
-						autoFocus
 						id="todo"
 						error={noteError}
 						multiline
@@ -78,6 +98,7 @@ function AddNoteModal({ open, setOpen }: IProps) {
 						label="Note"
 						sx={{ marginBottom: "1rem" }}
 						required
+						inputRef={inputRef}
 					/>
 					<Select
 						sx={{ marginTop: "1rem" }}
@@ -106,6 +127,7 @@ function AddNoteModal({ open, setOpen }: IProps) {
 					variant="contained"
 					loading={loading}
 					disableElevation
+					ref={submitButtonRef}
 				>
 					Submit
 				</LoadingButton>

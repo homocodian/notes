@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useState } from "react";
 
 import {
 	Typography,
@@ -15,11 +15,16 @@ import ConfirmDialog from "../ConfirmDialog";
 import { useDrawer } from "../../context/DrawerContext";
 import useDeleteAllNotes from "../../hooks/useDeleteAllNotes";
 import { NOTES, useCategory } from "../../context/NotesCategoryProvider";
+import { useHotkeys } from "react-hotkeys-hook";
 
 function SideDrawer() {
+	const [open, setOpen] = useState(false);
 	const { handleCategoryChange } = useCategory();
 	const { isDrawerOpen, setDrawerIsOpen } = useDrawer();
-	const [open, setOpen] = useState(false);
+
+	useHotkeys("shift+d", () => {
+		setDrawerIsOpen((prev) => !prev);
+	});
 
 	const handleClose = () => {
 		setDrawerIsOpen(false);
