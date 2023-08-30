@@ -98,26 +98,24 @@ export default function SettingsMenu() {
 			>
 				<MenuItem onClick={() => handleItemClick()}>
 					{!user ? (
-						<React.Fragment>
+						<Box>
 							<Avatar /> Profile
-						</React.Fragment>
+						</Box>
 					) : (
-						<React.Fragment>
-							<Box sx={{ display: "flex", flexDirection: "column" }}>
-								<Typography fontSize={12} color="grey">
-									Profile
-								</Typography>
-								<Typography fontSize={12} color="grey">
-									{user.email}
-								</Typography>
-							</Box>
-						</React.Fragment>
+						<Box sx={{ display: "flex", flexDirection: "column" }}>
+							<Typography fontSize={12} color="grey">
+								Profile
+							</Typography>
+							<Typography fontSize={12} color="grey">
+								{user.email}
+							</Typography>
+						</Box>
 					)}
 				</MenuItem>
 				<Divider />
 				<ThemeMenuItem handleItemClick={handleItemClick} />
 				{user ? (
-					<React.Fragment>
+					<Box>
 						<Divider sx={{ marginTop: "0.5rem", marginBottom: "0.5rem" }} />
 						<MenuItem onClick={() => handleItemClick(logout)}>
 							<ListItemIcon>
@@ -125,7 +123,7 @@ export default function SettingsMenu() {
 							</ListItemIcon>
 							Logout
 						</MenuItem>
-					</React.Fragment>
+					</Box>
 				) : null}
 			</Menu>
 		</React.Fragment>
