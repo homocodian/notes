@@ -5,8 +5,9 @@ import { Routes, Route } from "react-router-dom";
 import { useTernaryDarkMode } from "usehooks-ts";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-import Loading from "@/components/Loading";
 import AppBar from "@/components/AppBar";
+import Loading from "@/components/Loading";
+import NotFound from "@/components/NotFound";
 import PrivateRoute from "@/components/PrivateRoute";
 import DrawerProvider from "@/context/DrawerContext";
 import { getDesignTokens } from "@/utils/getDesignToken";
@@ -37,26 +38,25 @@ function App() {
 				<AccountMenuProvider>
 					<AppBar />
 					<Routes>
-						<Route path="/">
-							<Route
-								index
-								element={
-									<PrivateRoute>
-										<NotesCategoryProvider>
-											<HomePage fallback={<Loading />} />
-										</NotesCategoryProvider>
-									</PrivateRoute>
-								}
-							/>
-							<Route
-								path="signup"
-								element={<SignUpPage fallback={<Loading />} />}
-							/>
-							<Route
-								path="login"
-								element={<SignInPage fallback={<Loading />} />}
-							/>
-						</Route>
+						<Route path="*" element={<NotFound />} />
+						<Route
+							path="/"
+							element={
+								<PrivateRoute>
+									<NotesCategoryProvider>
+										<HomePage fallback={<Loading />} />
+									</NotesCategoryProvider>
+								</PrivateRoute>
+							}
+						/>
+						<Route
+							path="/signup"
+							element={<SignUpPage fallback={<Loading />} />}
+						/>
+						<Route
+							path="/login"
+							element={<SignInPage fallback={<Loading />} />}
+						/>
 					</Routes>
 					<Connectivity />
 				</AccountMenuProvider>
