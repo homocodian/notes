@@ -10,16 +10,3 @@ body {
 #root {
 	height: 100vh;
 }
-
-.container {
-	display: grid;
-	place-items: center;
-	width: 100%;
-	height: 100vh;
-	background: #000000;
-}
-
-.animation-container {
-	background: #000000;
-	max-width: 512px;
-}

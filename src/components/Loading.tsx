@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 
 import lottie from "lottie-web";
+import { Box } from "@mui/material";
 
 function Loading() {
 	const animationContainer = useRef<HTMLDivElement | null>(null);
@@ -21,9 +22,25 @@ function Loading() {
 	}, []);
 
 	return (
-		<div className="container">
-			<div className="animation-container" ref={animationContainer} />
-		</div>
+		<Box
+			sx={{
+				display: "grid",
+				placeItems: "center",
+				width: "100%",
+				height: "100vh",
+				background: "#000000",
+				position: "absolute",
+				inset: 0,
+				paddingTop: "64px",
+			}}
+		>
+			<Box
+				sx={{
+					maxWidth: "512px",
+				}}
+				ref={animationContainer}
+			/>
+		</Box>
 	);
 }
 
