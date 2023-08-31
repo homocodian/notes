@@ -20,6 +20,7 @@ const ImportantPage = loadable(() => import("@/pages/Important"));
 const SignInPage = loadable(() => import("@/pages/SignIn"));
 const SignUpPage = loadable(() => import("@/pages/SignUp"));
 const SharedPage = loadable(() => import("@/pages/Shared"));
+const GeneralPage = loadable(() => import("@/pages/General"));
 
 const routes = [
 	{
@@ -31,6 +32,14 @@ const routes = [
 		element: (
 			<PrivateRoute>
 				<HomePage fallback={<Loading />} />
+			</PrivateRoute>
+		),
+	},
+	{
+		path: "/general",
+		element: (
+			<PrivateRoute>
+				<GeneralPage fallback={<Loading />} />
 			</PrivateRoute>
 		),
 	},

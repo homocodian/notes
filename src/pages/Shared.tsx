@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box } from "@mui/material";
 import {
 	collection,
 	DocumentData,
@@ -20,7 +20,6 @@ import { NoteCard } from "@/components/main";
 import EmptyNote from "@/components/EmptyNote";
 
 function Shared() {
-	const theme = useTheme();
 	const { user } = useAuth();
 	const [sharedNotes, setSharedNotes] = useState<
 		QueryDocumentSnapshot<DocumentData>[]
@@ -38,10 +37,8 @@ function Shared() {
 			orderBy("timestamp", "desc")
 		);
 		const unsubscribe = onSnapshot(q, (snapshot) => {
-			if (!snapshot.metadata.hasPendingWrites) {
-				setSharedNotes(snapshot.docs);
-				setIsLoading(false);
-			}
+			setSharedNotes(snapshot.docs);
+			setIsLoading(false);
 		});
 		return unsubscribe;
 	}, [user]);
@@ -72,6 +69,7 @@ function Shared() {
 									sharedWith,
 									email,
 									name,
+									userId,
 								} = note.data();
 								const labelText = (name || email || "a friend") as string;
 								return (
@@ -91,6 +89,7 @@ function Shared() {
 										}`}
 										email={email}
 										name={name}
+										userId={userId}
 									/>
 								);
 							})}

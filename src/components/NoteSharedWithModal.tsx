@@ -1,7 +1,20 @@
-import { ReactElement, Ref, forwardRef } from "react";
+import { ReactElement, Ref, forwardRef, useEffect } from "react";
 
 import { TransitionProps } from "@mui/material/transitions";
-import { Box, Dialog, Slide, Typography } from "@mui/material";
+import {
+	Box,
+	Chip,
+	Dialog,
+	DialogContent,
+	DialogContentText,
+	DialogTitle,
+	IconButton,
+	Slide,
+	Typography,
+} from "@mui/material";
+import { CloseOutlined } from "@mui/icons-material";
+import { arrayRemove, updateDoc } from "firebase/firestore";
+import { noteDocReference } from "@/firebase";
 
 const Transition = forwardRef(
 	(
@@ -18,16 +31,24 @@ type SharedWithModalProps = {
 	open: boolean;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	sharedWith?: Array<string>;
+	id: string;
 };
 
 export default function SharedWithModal({
 	open,
 	setOpen,
 	sharedWith,
+	id,
 }: SharedWithModalProps) {
 	function handleClose() {
 		setOpen(false);
 	}
+
+	useEffect(() => {
+		if (!sharedWith || sharedWith.length === 0) {
+			handleClose();
+		}
+	}, [sharedWith]);
 
 	return (
 		<Dialog
@@ -36,16 +57,50 @@ export default function SharedWithModal({
 			aria-labelledby="note-shared-with"
 			aria-describedby="users"
 			TransitionComponent={Transition}
-			maxWidth="xs"
+			maxWidth="md"
 			closeAfterTransition
 		>
-			<Box>
-				<Typography id="users" sx={{ mt: 2 }}>
-					{sharedWith && sharedWith.length > 0
-						? sharedWith?.join(", ")
-						: "None"}
-				</Typography>
-			</Box>
+			<DialogTitle>
+				<Box
+					display="flex"
+					justifyItems="center"
+					justifyContent="space-between"
+				>
+					<Typography display="flex" alignItems="center" variant="subtitle1">
+						Note shared with
+					</Typography>
+					<IconButton
+						size="small"
+						id="close-delete-all-notes-modal"
+						aria-label="Close"
+						onClick={handleClose}
+						color="inherit"
+					>
+						<CloseOutlined />
+					</IconButton>
+				</Box>
+			</DialogTitle>
+			<DialogContent sx={{ margin: "1rem 0.4rem", minWidth: "280px" }}>
+				{sharedWith && sharedWith.length > 0 ? (
+					sharedWith.map((item) => {
+						return (
+							<Box key={item} sx={{ marginBottom: "1rem" }}>
+								<Chip
+									label={item}
+									onDelete={async () => {
+										await updateDoc(noteDocReference(id), {
+											sharedWith: arrayRemove(item),
+										});
+									}}
+									sx={{ width: "100%" }}
+								/>
+							</Box>
+						);
+					})
+				) : (
+					<DialogContentText>No data</DialogContentText>
+				)}
+			</DialogContent>
 		</Dialog>
 	);
 }

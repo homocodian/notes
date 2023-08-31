@@ -8,7 +8,7 @@ import {
 	QueryDocumentSnapshot,
 	orderBy,
 	onSnapshot,
-	and,
+	or,
 } from "firebase/firestore";
 
 import { db } from "@/firebase";
@@ -35,20 +35,20 @@ function useNotes(): UseNotes {
 		}
 		const q = query(
 			collection(db, "notes"),
-			where("userId", "==", user.uid),
-			where("category", "==", "general"),
-			orderBy("timestamp", "desc")
+			or(
+				where("userId", "==", user.uid),
+				where("sharedWith", "array-contains", user.uid)
+			),
+			orderBy("updatedAt", "desc")
 		);
 		const unsubscribe = onSnapshot(
 			q,
 			(snapshot) => {
-				if (!snapshot.metadata.hasPendingWrites) {
-					setNotes(snapshot.docs);
-					setLoading(false);
-					setError(null);
-				}
+				setNotes(snapshot.docs);
+				setLoading(false);
+				setError(null);
 			},
-			() => {
+			(error) => {
 				setLoading(false);
 				setError("Failed, please try later");
 			}

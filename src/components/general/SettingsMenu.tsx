@@ -15,9 +15,11 @@ import { useHotkeys } from "react-hotkeys-hook";
 
 import { useAuth } from "@/context/AuthContext";
 import ThemeMenuItem from "@/components/general/ThemeMenuItem";
-import SettingMenuIcon from "@/components/general/SettingMenuIcon";
+import ProfileAvatar from "@/components/general/ProfileAvatar";
 import { writeToClipboard } from "@/utils/clipboard";
 import CustomSnackbar from "../CustomSnackbar";
+import { Settings } from "@mui/icons-material";
+import { grey } from "@mui/material/colors";
 
 export default function SettingsMenu() {
 	const { logout, user } = useAuth();
@@ -62,7 +64,7 @@ export default function SettingsMenu() {
 					aria-expanded={open ? "true" : undefined}
 					ref={buttonRef}
 				>
-					<SettingMenuIcon />
+					<Settings htmlColor="#fff" />
 				</IconButton>
 			</Tooltip>
 			<Menu
@@ -71,31 +73,33 @@ export default function SettingsMenu() {
 				open={open}
 				onClose={() => handleItemClick()}
 				onClick={() => handleItemClick()}
-				PaperProps={{
-					elevation: 0,
-					sx: {
-						overflow: "visible",
-						filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-						mt: 1.5,
-						"& .MuiAvatar-root": {
-							width: 32,
-							height: 32,
-							ml: -0.5,
-							mr: 1,
+				slotProps={{
+					paper: {
+						elevation: 0,
+						sx: {
+							overflow: "visible",
+							filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+							mt: 1.5,
+							"& .MuiAvatar-root": {
+								width: 32,
+								height: 32,
+								ml: -0.5,
+								mr: 1,
+							},
+							"&:before": {
+								content: '""',
+								display: "block",
+								position: "absolute",
+								top: 0,
+								right: 14,
+								width: 10,
+								height: 10,
+								bgcolor: "background.paper",
+								transform: "translateY(-50%) rotate(45deg)",
+								zIndex: 0,
+							},
+							minWidth: 180,
 						},
-						"&:before": {
-							content: '""',
-							display: "block",
-							position: "absolute",
-							top: 0,
-							right: 14,
-							width: 10,
-							height: 10,
-							bgcolor: "background.paper",
-							transform: "translateY(-50%) rotate(45deg)",
-							zIndex: 0,
-						},
-						minWidth: 180,
 					},
 				}}
 				transformOrigin={{ horizontal: "right", vertical: "top" }}
@@ -107,13 +111,16 @@ export default function SettingsMenu() {
 							<Avatar /> Profile
 						</Box>
 					) : (
-						<Box sx={{ display: "flex", flexDirection: "column" }}>
-							<Typography fontSize={12} color="grey">
-								Profile
-							</Typography>
-							<Typography fontSize={12} color="grey">
-								{user.email}
-							</Typography>
+						<Box sx={{ display: "flex" }}>
+							<ProfileAvatar />
+							<Box sx={{ display: "flex", flexDirection: "column" }}>
+								<Typography fontSize={12} color="grey">
+									Profile
+								</Typography>
+								<Typography fontSize={12} color="grey">
+									{user.email}
+								</Typography>
+							</Box>
 						</Box>
 					)}
 				</MenuItem>

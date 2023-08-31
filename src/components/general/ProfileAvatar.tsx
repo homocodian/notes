@@ -4,12 +4,8 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { useAuth } from "@/context/AuthContext";
 import InitialsAvatar from "@/components/InitialsAvatar";
 
-function SettingMenuIcon() {
+function ProfileAvatar() {
 	const { user } = useAuth();
-
-	if (!user) {
-		return <SettingsIcon htmlColor="#fff" />;
-	}
 
 	if (user && user.photoURL) {
 		return (
@@ -26,4 +22,4 @@ function SettingMenuIcon() {
 	);
 }
 
-export default SettingMenuIcon;
+export default ProfileAvatar;

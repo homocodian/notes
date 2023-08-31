@@ -19,7 +19,7 @@ import SideDrawer from "@/components/main/SideDrawer";
 import NoteSkeleton from "@/components/NoteSkeleton";
 import EmptyNote from "@/components/EmptyNote";
 
-function Important() {
+function General() {
 	const { user } = useAuth();
 	const [sharedNotes, setSharedNotes] = useState<
 		QueryDocumentSnapshot<DocumentData>[]
@@ -34,12 +34,14 @@ function Important() {
 		const q = query(
 			collection(db, "notes"),
 			where("userId", "==", user.uid),
-			where("category", "==", "important"),
-			orderBy("timestamp", "desc")
+			where("category", "==", "general"),
+			orderBy("updatedAt", "desc")
 		);
 		const unsubscribe = onSnapshot(q, (snapshot) => {
-			setSharedNotes(snapshot.docs);
-			setIsLoading(false);
+			if (!snapshot.metadata.hasPendingWrites) {
+				setSharedNotes(snapshot.docs);
+				setIsLoading(false);
+			}
 		});
 		return unsubscribe;
 	}, [user]);
@@ -91,4 +93,4 @@ function Important() {
 	);
 }
 
-export default Important;
+export default General;

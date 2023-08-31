@@ -80,6 +80,13 @@ function SideDrawer() {
 						<Button
 							variant="text"
 							fullWidth
+							onClick={() => handleClick("/general")}
+						>
+							General
+						</Button>
+						<Button
+							variant="text"
+							fullWidth
 							onClick={() => handleClick("/important")}
 						>
 							Important
