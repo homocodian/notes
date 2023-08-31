@@ -1,19 +1,25 @@
-import { Fragment, useState } from "react";
+import { ComponentProps, Fragment, useState } from "react";
 
 import MenuItem from "@mui/material/MenuItem";
 import DoneIcon from "@mui/icons-material/Done";
 import EditIcon from "@mui/icons-material/Edit";
+import ShareIcon from "@mui/icons-material/Share";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from "@mui/icons-material/Close";
 import { styled, alpha } from "@mui/material/styles";
 import Menu, { MenuProps } from "@mui/material/Menu";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
-import EditNoteModal from "./EditNoteModal";
-import ConfirmDialog from "../ConfirmDialog";
-import CustomSnackbar from "../CustomSnackbar";
-import { NOTES } from "../../context/NotesCategoryProvider";
-import { writeToClipboard } from "../../utils/clipboard";
-import { useDeleteNote, useUpdateStatus } from "../../hooks";
+import ShareModal from "@/components/ShareModal";
+import { writeToClipboard } from "@/utils/clipboard";
+import { useDeleteNote, useUpdateStatus } from "@/hooks";
+import ConfirmDialog from "@/components/ConfirmDialog";
+import CustomSnackbar from "@/components/CustomSnackbar";
+import EditNoteModal from "@/components/main/EditNoteModal";
+import { networkAware } from "@/utils/network-aware";
+import { arrayRemove, updateDoc } from "firebase/firestore";
+import { noteDocReference } from "@/firebase";
+import { useAuth } from "@/context/AuthContext";
 
 const StyledMenu = styled((props: MenuProps) => (
 	<Menu
@@ -64,7 +70,9 @@ interface ITodoMenu {
 	id: string;
 	complete: boolean;
 	text: string;
-	category: NOTES;
+	category: string;
+	isShared?: boolean;
+	sharedWith?: Array<string>;
 }
 
 function NoteMenu({
@@ -74,14 +82,20 @@ function NoteMenu({
 	complete,
 	text,
 	category,
+	isShared,
+	sharedWith,
 }: ITodoMenu) {
+	const { user } = useAuth();
 	const open = Boolean(anchorEl);
 	const [updateStatus] = useUpdateStatus();
 	const [deleteNote] = useDeleteNote();
 	const [confirm, setConfirm] = useState(false);
 	const [isAlertOpen, setIsAlertOpen] = useState(false);
 	const [editNoteModal, setEditNoteModal] = useState(false);
-	const [copyError, setCopyError] = useState<string | null>(null);
+	const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const [errorType, setErrorType] =
+		useState<ComponentProps<typeof CustomSnackbar>["alertType"]>("success");
 
 	const handleClose = () => {
 		setAnchorEl(null);
@@ -119,12 +133,31 @@ function NoteMenu({
 		handleClose();
 		const copiedText = await writeToClipboard(text);
 		if (Boolean(copiedText)) {
-			setCopyError(null);
+			setErrorMessage(null);
 			setIsAlertOpen(true);
 		} else {
 			setIsAlertOpen(true);
 		}
 	};
+
+	async function removeSharedItem(id: string) {
+		try {
+			await networkAware(async () => {
+				await updateDoc(noteDocReference(id), {
+					sharedWith: arrayRemove(user?.uid),
+				});
+				setErrorMessage("Removed successfully.");
+				setErrorType("success");
+				setIsAlertOpen(true);
+			});
+		} catch (error: any) {
+			setErrorMessage(
+				"message" in error ? error.message : "Failed to remove, try later."
+			);
+			setErrorType("error");
+			setIsAlertOpen(true);
+		}
+	}
 
 	return (
 		<Fragment>
@@ -141,10 +174,17 @@ function NoteMenu({
 					<DoneIcon />
 					{complete ? "Undone" : "Done"}
 				</MenuItem>
-				<MenuItem onClick={handleDelete} disableRipple>
-					<DeleteIcon />
-					Delete
-				</MenuItem>
+				{!isShared ? (
+					<MenuItem onClick={handleDelete} disableRipple>
+						<DeleteIcon />
+						Delete
+					</MenuItem>
+				) : (
+					<MenuItem onClick={() => removeSharedItem(id)} disableRipple>
+						<CloseIcon />
+						Remove
+					</MenuItem>
+				)}
 				<MenuItem onClick={openEditModal} disableRipple>
 					<EditIcon />
 					Edit
@@ -153,27 +193,46 @@ function NoteMenu({
 					<ContentCopyIcon />
 					Copy
 				</MenuItem>
+				{!isShared && (
+					<MenuItem
+						onClick={() => {
+							handleClose(), setIsShareModalOpen(true);
+						}}
+						disableRipple
+					>
+						<ShareIcon />
+						Share
+					</MenuItem>
+				)}
 			</StyledMenu>
-			<ConfirmDialog
-				open={confirm}
-				title="This is a permanent action"
-				message="Delete permanently?"
-				positiveButtonLabel="Delete"
-				handleClose={closeModal}
-				onPositiveButtonPress={onPositivePress}
-			/>
+			{!isShared && (
+				<ConfirmDialog
+					open={confirm}
+					title="This is a permanent action"
+					message="Delete permanently?"
+					positiveButtonLabel="Delete"
+					handleClose={closeModal}
+					onPositiveButtonPress={onPositivePress}
+				/>
+			)}
 			<EditNoteModal
 				open={editNoteModal}
 				closeModal={closeEditNoteModal}
 				category={category}
 				text={text}
 				id={id}
+				isShared={isShared}
+			/>
+			<ShareModal
+				open={isShareModalOpen}
+				setOpen={setIsShareModalOpen}
+				id={id}
 			/>
 			<CustomSnackbar
 				open={isAlertOpen}
 				setOpen={setIsAlertOpen}
-				alertType="success"
-				message={copyError ? copyError : "Text Copied"}
+				alertType={errorType}
+				message={errorMessage ? errorMessage : "Text Copied"}
 				autoHideDuration={6000}
 			/>
 		</Fragment>

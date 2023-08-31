@@ -4,4 +4,3 @@ export { default as useDeleteNote } from "./useDeleteNote";
 export { default as useUpdateNote } from "./useUpdateNote";
 export { default as useUpdateStatus } from "./useUpdateStatus";
 export { default as useOnlineStatus } from "./useOnlineStatus";
-export { default as useCategoryNotes } from "./useCategoryNotes";

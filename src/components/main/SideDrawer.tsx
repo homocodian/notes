@@ -10,16 +10,17 @@ import {
 	Snackbar,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useNavigate } from "react-router";
 
-import ConfirmDialog from "../ConfirmDialog";
-import { useDrawer } from "../../context/DrawerContext";
-import useDeleteAllNotes from "../../hooks/useDeleteAllNotes";
-import { NOTES, useCategory } from "../../context/NotesCategoryProvider";
+import { RouteName } from "@/App";
 import { useHotkeys } from "react-hotkeys-hook";
+import { useDrawer } from "@/context/DrawerContext";
+import ConfirmDialog from "@/components/ConfirmDialog";
+import useDeleteAllNotes from "@/hooks/useDeleteAllNotes";
 
 function SideDrawer() {
+	const navigate = useNavigate();
 	const [open, setOpen] = useState(false);
-	const { handleCategoryChange } = useCategory();
 	const { isDrawerOpen, setDrawerIsOpen } = useDrawer();
 
 	useHotkeys("shift+d", () => {
@@ -30,9 +31,9 @@ function SideDrawer() {
 		setDrawerIsOpen(false);
 	};
 
-	const handleClick = (prop: NOTES) => {
-		handleCategoryChange(prop);
+	const handleClick = (page: RouteName) => {
 		handleClose();
+		navigate(page);
 	};
 
 	const handleDialogOpen = () => {
@@ -73,19 +74,25 @@ function SideDrawer() {
 						marginTop="1rem"
 						flexDirection="column"
 					>
-						<Button
-							variant="text"
-							fullWidth
-							onClick={() => handleClick(NOTES.GENERAL)}
-						>
-							All Notes
+						<Button variant="text" fullWidth onClick={() => handleClick("/")}>
+							Home
 						</Button>
 						<Button
 							variant="text"
 							fullWidth
-							onClick={() => handleClick(NOTES.IMPORTANT)}
+							onClick={() => handleClick("/important")}
 						>
-							Important Notes
+							Important
+						</Button>
+						<Button
+							variant="text"
+							fullWidth
+							onClick={() => {
+								handleClose();
+								navigate("/shared");
+							}}
+						>
+							Shared
 						</Button>
 						<Box display="flex" justifyContent="center" alignContent="center">
 							<Button

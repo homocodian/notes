@@ -10,17 +10,18 @@ import { useAuth } from "@/context/AuthContext";
 import { useDrawer } from "@/context/DrawerContext";
 import SettingsMenu from "@/components/general/SettingsMenu";
 import { useLocation } from "react-router";
+import { routeNames } from "@/App";
 
 function AppBar() {
 	const { user } = useAuth();
 	const { isDrawerOpen, setDrawerIsOpen } = useDrawer();
 	const location = useLocation();
 
-	const shouldHide = location.key === "default";
+	const shouldShow = !!routeNames.find((item) => item === location.pathname);
 
 	return (
 		<Box sx={{ flexGrow: 1 }}>
-			<Slide direction="down" in={shouldHide}>
+			<Slide direction="down" in={shouldShow}>
 				<MuiAppBar position="fixed">
 					<Toolbar>
 						{user && (

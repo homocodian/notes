@@ -15,8 +15,7 @@ import Select from "@mui/material/Select";
 import { useTheme } from "@mui/material/styles";
 import { useHotkeys } from "react-hotkeys-hook";
 
-import { useAddNote } from "../../hooks";
-import { NOTES } from "../../context/NotesCategoryProvider";
+import { useAddNote } from "@/hooks";
 
 interface IProps {
 	open: boolean;
@@ -59,7 +58,7 @@ function AddNoteModal({ open, setOpen }: IProps) {
 		e.preventDefault();
 		const formData = new FormData(e.currentTarget);
 		const note = formData.get("note")?.toString();
-		const category = formData.get("category")?.toString() as NOTES;
+		const category = formData.get("category")?.toString()!;
 		if (note === "" || !note) {
 			setNoteError(true);
 			return;

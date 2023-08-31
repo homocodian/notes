@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { ReactNode, useMemo } from "react";
 
 import loadable from "@loadable/component";
 import { Routes, Route } from "react-router-dom";
@@ -13,12 +13,57 @@ import DrawerProvider from "@/context/DrawerContext";
 import { getDesignTokens } from "@/utils/getDesignToken";
 import Connectivity from "@/components/general/Connectivity";
 import AccountMenuProvider from "@/context/AccountMenuContext";
-import NotesCategoryProvider from "@/context/NotesCategoryProvider";
 import { changeStatusbarColor } from "@/utils/change-statusbar-color";
 
 const HomePage = loadable(() => import("@/pages/Home"));
+const ImportantPage = loadable(() => import("@/pages/Important"));
 const SignInPage = loadable(() => import("@/pages/SignIn"));
 const SignUpPage = loadable(() => import("@/pages/SignUp"));
+const SharedPage = loadable(() => import("@/pages/Shared"));
+
+const routes = [
+	{
+		path: "*",
+		element: <NotFound />,
+	},
+	{
+		path: "/",
+		element: (
+			<PrivateRoute>
+				<HomePage fallback={<Loading />} />
+			</PrivateRoute>
+		),
+	},
+	{
+		path: "/important",
+		element: (
+			<PrivateRoute>
+				<ImportantPage fallback={<Loading />} />
+			</PrivateRoute>
+		),
+	},
+	{
+		path: "/shared",
+		element: (
+			<PrivateRoute>
+				<SharedPage fallback={<Loading />} />
+			</PrivateRoute>
+		),
+	},
+	{
+		path: "/login",
+		element: <SignInPage fallback={<Loading />} />,
+	},
+	{ path: "/signup", element: <SignUpPage fallback={<Loading />} /> },
+] as const;
+
+type ExcludeWildcardPath<T> = T extends "*" ? never : T;
+export type Route = (typeof routes)[number]; // Get the type of a single route object
+export type RouteName = ExcludeWildcardPath<Route["path"]>; // Get the type of the 'path' property
+
+export const routeNames = routes
+	.map((route) => route.path)
+	.filter((path) => path !== "*") as RouteName[];
 
 function App() {
 	// get theme value from local storage
@@ -37,27 +82,17 @@ function App() {
 			<DrawerProvider>
 				<AccountMenuProvider>
 					<AppBar />
-					<Routes>
-						<Route path="*" element={<NotFound />} />
-						<Route
-							path="/"
-							element={
-								<PrivateRoute>
-									<NotesCategoryProvider>
-										<HomePage fallback={<Loading />} />
-									</NotesCategoryProvider>
-								</PrivateRoute>
-							}
-						/>
-						<Route
-							path="/signup"
-							element={<SignUpPage fallback={<Loading />} />}
-						/>
-						<Route
-							path="/login"
-							element={<SignInPage fallback={<Loading />} />}
-						/>
-					</Routes>
+					<div style={{ paddingTop: "64px" }}>
+						<Routes>
+							{routes.map((route) => (
+								<Route
+									key={route.path}
+									path={route.path}
+									element={route.element}
+								/>
+							))}
+						</Routes>
+					</div>
 					<Connectivity />
 				</AccountMenuProvider>
 			</DrawerProvider>

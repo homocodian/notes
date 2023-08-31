@@ -10,16 +10,21 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ListItemIcon from "@mui/material/ListItemIcon";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import { useAuth } from "@/context/AuthContext";
 import ThemeMenuItem from "@/components/general/ThemeMenuItem";
 import SettingMenuIcon from "@/components/general/SettingMenuIcon";
+import { writeToClipboard } from "@/utils/clipboard";
+import CustomSnackbar from "../CustomSnackbar";
 
 export default function SettingsMenu() {
 	const { logout, user } = useAuth();
 	const buttonRef = React.useRef<HTMLButtonElement | null>(null);
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+	const [alert, setAlert] = React.useState(false);
+	const [alertMessage, setAlertMessage] = React.useState<string | null>(null);
 
 	const open = Boolean(anchorEl);
 
@@ -112,6 +117,21 @@ export default function SettingsMenu() {
 						</Box>
 					)}
 				</MenuItem>
+				{user ? (
+					<MenuItem
+						onClick={() =>
+							handleItemClick(async () => {
+								await writeToClipboard(user.uid);
+								setAlert(open);
+							})
+						}
+					>
+						<ListItemIcon>
+							<ContentCopyIcon fontSize="small" />
+						</ListItemIcon>
+						Copy User ID
+					</MenuItem>
+				) : null}
 				<Divider />
 				<ThemeMenuItem handleItemClick={handleItemClick} />
 				{user ? (
@@ -126,6 +146,13 @@ export default function SettingsMenu() {
 					</Box>
 				) : null}
 			</Menu>
+			<CustomSnackbar
+				open={alert}
+				setOpen={setAlert}
+				alertType="success"
+				message={alertMessage || "Text copied"}
+				autoHideDuration={6000}
+			/>
 		</React.Fragment>
 	);
 }
