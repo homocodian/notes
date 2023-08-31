@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import {
 	useMediaQuery,
@@ -15,6 +15,7 @@ import { useTheme } from "@mui/material/styles";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 import { useUpdateNote } from "@/hooks";
+import { useHotkeys } from "react-hotkeys-hook";
 
 interface IProps {
 	id: string;
@@ -39,6 +40,18 @@ function EditNoteModal({
 	const [note, setNote] = useState<string>(text);
 	const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 	const [updateCategory, setUpdateCategory] = useState<string>(category);
+	const submitButtonRef = useRef<HTMLButtonElement>(null);
+
+	useHotkeys(
+		"shift+enter",
+		(e) => {
+			e.preventDefault();
+			submitButtonRef.current?.click();
+		},
+		{
+			enableOnFormTags: ["INPUT", "TEXTAREA"],
+		}
+	);
 
 	const handleChange = (event: SelectChangeEvent) => {
 		setUpdateCategory(event.target.value);
@@ -70,6 +83,11 @@ function EditNoteModal({
 			aria-labelledby="add note"
 			fullScreen={fullScreen}
 			fullWidth
+			onKeyDown={(e) => {
+				if (e.key === "Escape") {
+					handleClose();
+				}
+			}}
 		>
 			<DialogContent>
 				<DialogContentText>Note</DialogContentText>
@@ -115,7 +133,11 @@ function EditNoteModal({
 				<Button variant="text" onClick={handleClose}>
 					Cancel
 				</Button>
-				<Button variant="contained" onClick={handleUpdate}>
+				<Button
+					variant="contained"
+					onClick={handleUpdate}
+					ref={submitButtonRef}
+				>
 					Update
 				</Button>
 			</DialogActions>
