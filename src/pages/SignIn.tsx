@@ -82,8 +82,6 @@ export default function SignIn() {
 		if (email !== "" && password !== "") {
 			try {
 				await signIn(email, password);
-				// setIsLoading(false);
-				// navigate("/");
 			} catch (error: any) {
 				setErrorMessage(VerifyFirebaseErrorCode(error.code));
 				setIsCustomDialogOpen(true);
@@ -144,7 +142,16 @@ export default function SignIn() {
 					>
 						Sign in
 					</Typography>
-					<Box component="form" sx={{ mt: 1 }} noValidate>
+					<Box
+						component="form"
+						sx={{ mt: 1 }}
+						noValidate
+						id="login-form"
+						onSubmit={(e) => {
+							e.preventDefault();
+							handleSubmit();
+						}}
+					>
 						<TextField
 							value={values.email}
 							onChange={handleChange("email")}
@@ -187,7 +194,8 @@ export default function SignIn() {
 							fullWidth
 							variant="contained"
 							sx={{ mt: 2 }}
-							onClick={handleSubmit}
+							type="submit"
+							form="login-form"
 						>
 							Sign In
 						</Button>
@@ -206,19 +214,19 @@ export default function SignIn() {
 						<Grid container sx={{ mt: 2 }}>
 							<Grid item xs>
 								<Link
-									href="#"
 									variant="body2"
 									onClick={(e) => {
 										e.preventDefault();
 										setIsResetFormOpen(true);
 									}}
+									sx={{ cursor: "pointer" }}
 								>
 									Forgot password?
 								</Link>
 							</Grid>
 							<Grid item>
 								<Link href="/signup" variant="body2">
-									{"Don't have an account? Sign Up"}
+									Don't have an account? Sign Up
 								</Link>
 							</Grid>
 						</Grid>

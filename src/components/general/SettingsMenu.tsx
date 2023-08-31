@@ -103,7 +103,7 @@ export default function SettingsMenu() {
 			>
 				<MenuItem onClick={() => handleItemClick()}>
 					{!user ? (
-						<Box>
+						<Box sx={{ display: "flex", alignItems: "center", gap: "0.3rem" }}>
 							<Avatar /> Profile
 						</Box>
 					) : (

@@ -173,9 +173,11 @@ export default function SignUp() {
 					</Typography>
 					<Box
 						component="form"
-						onSubmit={handleSubmit}
-						noValidate
+						onSubmit={(e) => {
+							e.preventDefault(), handleSubmit();
+						}}
 						sx={{ mt: 1 }}
+						id="signup-form"
 					>
 						<TextField
 							value={values.email}
@@ -254,7 +256,8 @@ export default function SignUp() {
 							fullWidth
 							variant="contained"
 							sx={{ mt: 2 }}
-							onClick={handleSubmit}
+							form="signup-form"
+							type="submit"
 						>
 							Sign Up
 						</Button>
@@ -273,7 +276,7 @@ export default function SignUp() {
 						<Grid container>
 							<Grid item sx={{ mt: 2 }}>
 								<Link href="/login" variant="body2">
-									{"Already have an account? Sign In"}
+									Already have an account? Sign In
 								</Link>
 							</Grid>
 						</Grid>
