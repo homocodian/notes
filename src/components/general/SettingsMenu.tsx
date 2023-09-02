@@ -124,21 +124,6 @@ export default function SettingsMenu() {
 						</Box>
 					)}
 				</MenuItem>
-				{user ? (
-					<MenuItem
-						onClick={() =>
-							handleItemClick(async () => {
-								await writeToClipboard(user.uid);
-								setAlert(open);
-							})
-						}
-					>
-						<ListItemIcon>
-							<ContentCopyIcon fontSize="small" />
-						</ListItemIcon>
-						Copy User ID
-					</MenuItem>
-				) : null}
 				<Divider />
 				<ThemeMenuItem handleItemClick={handleItemClick} />
 				{user ? (

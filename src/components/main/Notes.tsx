@@ -39,7 +39,8 @@ function Notes() {
 							const labelText = (name || email || "a friend") as string;
 							const isShared =
 								sharedWith?.findIndex(
-									(item: string) => item.trim() === user?.uid
+									(item: string) =>
+										item.trim() === user?.uid || item.trim() === user?.email
 								) >= 0
 									? true
 									: false;

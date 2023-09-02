@@ -110,7 +110,7 @@ export default function ShareModal({
 			);
 			setAlert({
 				open: true,
-				message: "Note has been shared, if user id is correct.",
+				message: "Note has been shared, if user email is correct.",
 				type: "success",
 			});
 		} catch (error: any) {
@@ -166,10 +166,11 @@ export default function ShareModal({
 								name="share-with"
 								required
 								sx={{ width: "100%" }}
-								label="User Id"
+								label="User email"
+								type="email"
 							/>
 							<FormHelperText>
-								Use comma separated ids for multiple users
+								Use comma separated emails for multiple users
 							</FormHelperText>
 						</Box>
 					</form>
@@ -180,6 +181,7 @@ export default function ShareModal({
 						type="submit"
 						form="share-modal"
 						variant="contained"
+						disableElevation
 					>
 						Submit
 					</LoadingButton>

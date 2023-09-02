@@ -80,7 +80,7 @@ export default function SharedWithModal({
 					</IconButton>
 				</Box>
 			</DialogTitle>
-			<DialogContent sx={{ margin: "1rem 0.4rem", minWidth: "280px" }}>
+			<DialogContent sx={{ margin: "1rem 0", minWidth: "280px" }}>
 				{sharedWith && sharedWith.length > 0 ? (
 					sharedWith.map((item) => {
 						return (
@@ -92,7 +92,6 @@ export default function SharedWithModal({
 											sharedWith: arrayRemove(item),
 										});
 									}}
-									sx={{ width: "100%" }}
 								/>
 							</Box>
 						);

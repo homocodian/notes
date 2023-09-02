@@ -77,7 +77,7 @@ function NoteCard({
 						) : (
 							<Chip
 								label={category}
-								variant="outlined"
+								variant={category === "important" ? "filled" : "outlined"}
 								color={category === "important" ? "error" : "secondary"}
 								size="small"
 								sx={{

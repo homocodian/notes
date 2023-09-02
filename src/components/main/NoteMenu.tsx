@@ -144,7 +144,7 @@ function NoteMenu({
 		try {
 			await networkAware(async () => {
 				await updateDoc(noteDocReference(id), {
-					sharedWith: arrayRemove(user?.uid),
+					sharedWith: arrayRemove(user?.uid, user?.email),
 				});
 				setErrorMessage("Removed successfully.");
 				setErrorType("success");

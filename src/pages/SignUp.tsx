@@ -191,6 +191,7 @@ export default function SignUp() {
 							name="email"
 							autoComplete="email"
 							autoFocus
+							type="email"
 						/>
 						<TextField
 							value={values.password}

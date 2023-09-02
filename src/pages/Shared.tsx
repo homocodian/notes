@@ -5,6 +5,7 @@ import {
 	collection,
 	DocumentData,
 	onSnapshot,
+	or,
 	orderBy,
 	query,
 	QueryDocumentSnapshot,
@@ -33,13 +34,22 @@ function Shared() {
 		}
 		const q = query(
 			collection(db, "notes"),
-			where("sharedWith", "array-contains", user.uid),
+			or(
+				where("sharedWith", "array-contains", user.uid),
+				where("sharedWith", "array-contains", user.email)
+			),
 			orderBy("timestamp", "desc")
 		);
-		const unsubscribe = onSnapshot(q, (snapshot) => {
-			setSharedNotes(snapshot.docs);
-			setIsLoading(false);
-		});
+		const unsubscribe = onSnapshot(
+			q,
+			(snapshot) => {
+				setSharedNotes(snapshot.docs);
+				setIsLoading(false);
+			},
+			(error) => {
+				setIsLoading(false);
+			}
+		);
 		return unsubscribe;
 	}, [user]);
 

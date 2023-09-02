@@ -37,7 +37,8 @@ function useNotes(): UseNotes {
 			collection(db, "notes"),
 			or(
 				where("userId", "==", user.uid),
-				where("sharedWith", "array-contains", user.uid)
+				where("sharedWith", "array-contains", user.uid),
+				where("sharedWith", "array-contains", user.email)
 			),
 			orderBy("updatedAt", "desc")
 		);
