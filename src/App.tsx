@@ -14,6 +14,7 @@ import { getDesignTokens } from "@/utils/getDesignToken";
 import Connectivity from "@/components/general/Connectivity";
 import AccountMenuProvider from "@/context/AccountMenuContext";
 import { changeStatusbarColor } from "@/utils/change-statusbar-color";
+import CheckForUpdates from "./components/general/CheckForUpdates";
 
 const HomePage = loadable(() => import("@/pages/Home"));
 const ImportantPage = loadable(() => import("@/pages/Important"));
@@ -103,6 +104,7 @@ function App() {
 						</Routes>
 					</div>
 					<Connectivity />
+					<CheckForUpdates />
 				</AccountMenuProvider>
 			</DrawerProvider>
 		</ThemeProvider>
