@@ -56,7 +56,7 @@ function Shared() {
 				{isLoading ? (
 					<NoteSkeleton />
 				) : sharedNotes.length <= 0 ? (
-					<EmptyNote message="Shared notes will appear here" />
+					<EmptyNote message="Notes shared to you will appear here" />
 				) : (
 					<Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
 						<Masonry columns={{ xs: 1, sm: 2, md: 3 }} spacing={2}>

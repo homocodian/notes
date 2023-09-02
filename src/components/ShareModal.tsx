@@ -169,7 +169,7 @@ export default function ShareModal({
 								label="User Id"
 							/>
 							<FormHelperText>
-								Use comma separted ids for multiple users
+								Use comma separated ids for multiple users
 							</FormHelperText>
 						</Box>
 					</form>
