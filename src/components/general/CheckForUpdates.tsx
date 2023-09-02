@@ -32,19 +32,20 @@ function CheckForUpdates() {
 					message: `New update available ${data.data.html_url}`,
 					type: "info",
 				});
-			} else {
-				setAlert({
-					open: true,
-					message: `There are currently no new updates available.`,
-					type: "info",
-				});
 			}
+			// else {
+			// 	setAlert({
+			// 		open: true,
+			// 		message: `There are currently no new updates available.`,
+			// 		type: "info",
+			// 	});
+			// }
 		} catch (error) {
-			setAlert({
-				open: true,
-				message: "Failed to check for update.",
-				type: "error",
-			});
+			// setAlert({
+			// 	open: true,
+			// 	message: "Failed to check for update.",
+			// 	type: "error",
+			// });
 		}
 	}, []);
 
