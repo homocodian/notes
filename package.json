@@ -14,6 +14,7 @@
     "@capacitor/core": "^4.3.0",
     "@capacitor/network": "^4.1.0",
     "@capacitor/status-bar": "^4.0.1",
+    "@codetrix-studio/capacitor-google-auth": "^3.3.2",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@loadable/component": "^5.15.2",
