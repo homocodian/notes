@@ -172,7 +172,9 @@ export default function VerifyFirebaseErrorCode(errorCode: any): string {
 			return "The credential used to initialize the Admin SDK has insufficient permission to access the requested Authentication resource.";
 		case "auth/internal-error":
 			return "The Authentication server encountered an unexpected error while trying to process the request.";
+		case "12501":
+			return "Sign-in flow cancelled";
 		default:
-			return errorCode;
+			return "Something went wrong.";
 	}
 }

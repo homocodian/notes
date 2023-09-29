@@ -10,16 +10,13 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import { useAuth } from "@/context/AuthContext";
 import ThemeMenuItem from "@/components/general/ThemeMenuItem";
 import ProfileAvatar from "@/components/general/ProfileAvatar";
-import { writeToClipboard } from "@/utils/clipboard";
 import CustomSnackbar from "../CustomSnackbar";
 import { Settings } from "@mui/icons-material";
-import { grey } from "@mui/material/colors";
 
 export default function SettingsMenu() {
 	const { logout, user } = useAuth();

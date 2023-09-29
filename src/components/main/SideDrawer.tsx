@@ -21,24 +21,18 @@ import { useDrawer } from "@/context/DrawerContext";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import CustomSnackbar from "@/components/CustomSnackbar";
 import useDeleteAllNotes from "@/hooks/useDeleteAllNotes";
-import { getLatestRelease } from "@/utils/get-latest-release";
+import { checkForUpdates } from "@/utils/get-latest-release";
 
-type Alert = {
-	type: ComponentProps<typeof CustomSnackbar>["alertType"];
-	message: ComponentProps<typeof CustomSnackbar>["message"];
-	open: ComponentProps<typeof CustomSnackbar>["open"];
-};
+type Type = ComponentProps<typeof CustomSnackbar>["alertType"];
 
 function SideDrawer() {
 	const navigate = useNavigate();
 	const [open, setOpen] = useState(false);
+	const [message, setMessage] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [type, setType] = useState<Type>("info");
 	const { isDrawerOpen, setDrawerIsOpen } = useDrawer();
-	const [alert, setAlert] = useState<Alert>({
-		type: "error",
-		message: "",
-		open: false,
-	});
+	const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
 
 	useHotkeys("shift+d", () => {
 		setDrawerIsOpen((prev) => !prev);
@@ -61,37 +55,25 @@ function SideDrawer() {
 	const checkForUpdate = useCallback(async () => {
 		setLoading(true);
 		try {
-			const data = await getLatestRelease();
-			if (
-				data.status === 200 &&
-				data.data.target_commitish === "main" &&
-				data.data.draft === false &&
-				Number(data.data?.name?.substring(1)?.split(".")?.join("")) >
-					Number(import.meta.env.VITE_RELEASE_NUMBER)
-			) {
+			const data = await checkForUpdates();
+			if (!data) {
 				setLoading(false);
 				handleClose();
-				setAlert({
-					open: true,
-					message: `New update available ${data.data.html_url}`,
-					type: "info",
-				});
-			} else {
-				setLoading(false);
-				handleClose();
-				setAlert({
-					open: true,
-					message: `There are currently no new updates available.`,
-					type: "info",
-				});
+				setType("info");
+				setIsSnackbarOpen(true);
+				setMessage("There are currently no new updates available.");
+				return;
 			}
+			setLoading(false);
+			handleClose();
+			setType("info");
+			setIsSnackbarOpen(true);
+			setMessage(`New update available ${data.data.html_url}`);
 		} catch (error) {
 			handleClose();
-			setAlert({
-				open: true,
-				message: "Failed to check for update.",
-				type: "error",
-			});
+			setType("error");
+			setIsSnackbarOpen(true);
+			setMessage("Failed to check for update.");
 		}
 	}, []);
 
@@ -147,7 +129,7 @@ function SideDrawer() {
 						gap="0.5rem"
 						padding="1rem 0.5rem"
 					>
-						{Capacitor.getPlatform() === "web" ? null : (
+						{Capacitor.isNativePlatform() ? (
 							<LoadingButton
 								color="secondary"
 								onClick={checkForUpdate}
@@ -157,7 +139,7 @@ function SideDrawer() {
 							>
 								Check update
 							</LoadingButton>
-						)}
+						) : null}
 						<Button
 							onClick={handleDialogOpen}
 							color="error"
@@ -174,12 +156,10 @@ function SideDrawer() {
 				handleClose={handleClose}
 			/>
 			<CustomSnackbar
-				open={alert.open}
-				setOpen={(prop) =>
-					setAlert((prev) => ({ ...prev, open: prop, message: "" }))
-				}
-				alertType={alert.type}
-				message={alert.message}
+				alertType={type}
+				message={message}
+				open={isSnackbarOpen}
+				setOpen={setIsSnackbarOpen}
 			/>
 		</Fragment>
 	);

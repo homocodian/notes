@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 import loadable from "@loadable/component";
 import { Routes, Route } from "react-router-dom";
@@ -10,11 +10,12 @@ import Loading from "@/components/Loading";
 import NotFound from "@/components/NotFound";
 import PrivateRoute from "@/components/PrivateRoute";
 import DrawerProvider from "@/context/DrawerContext";
-import { getDesignTokens } from "@/utils/getDesignToken";
+import { getDesignTokens } from "@/utils/get-design-token";
 import Connectivity from "@/components/general/Connectivity";
 import AccountMenuProvider from "@/context/AccountMenuContext";
 import { changeStatusbarColor } from "@/utils/change-statusbar-color";
-import CheckForUpdates from "./components/general/CheckForUpdates";
+import CheckForUpdates from "@/components/general/CheckForUpdates";
+import ThemedToaster from "@/components/ThemedToaster";
 
 const HomePage = loadable(() => import("@/pages/Home"));
 const ImportantPage = loadable(() => import("@/pages/Important"));
@@ -85,14 +86,16 @@ function App() {
 		return createTheme(getDesignTokens(isDarkMode ? "dark" : "light"));
 	}, [isDarkMode]);
 
-	changeStatusbarColor(isDarkMode);
+	useEffect(() => {
+		changeStatusbarColor(isDarkMode);
+	}, [isDarkMode]);
 
 	return (
 		<ThemeProvider theme={theme}>
 			<DrawerProvider>
 				<AccountMenuProvider>
 					<AppBar />
-					<div style={{ paddingTop: "64px" }}>
+					<div style={{ paddingTop: "64px", overflow: "auto" }}>
 						<Routes>
 							{routes.map((route) => (
 								<Route
@@ -105,6 +108,7 @@ function App() {
 					</div>
 					<Connectivity />
 					<CheckForUpdates />
+					<ThemedToaster />
 				</AccountMenuProvider>
 			</DrawerProvider>
 		</ThemeProvider>

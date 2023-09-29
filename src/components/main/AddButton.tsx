@@ -2,7 +2,7 @@ import { Fab, useMediaQuery } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
 interface IProps {
-	openAddTodoModal: React.Dispatch<React.SetStateAction<boolean>>;
+	openAddTodoModal: (prop: boolean) => void;
 }
 
 function AddButton({ openAddTodoModal }: IProps) {

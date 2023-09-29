@@ -20,10 +20,11 @@ import LockIcon from "@mui/icons-material/LockOutlined";
 import { useNavigate } from "react-router-dom";
 import Container from "@mui/material/Container";
 import { Capacitor } from "@capacitor/core";
+import toast from "react-hot-toast";
 
 import { useAuth } from "@/context/AuthContext";
-import VerifyFirebaseErrorCode from "@/utils/authError";
-import CustomSnackbar from "@/components/CustomSnackbar";
+import VerifyFirebaseErrorCode from "@/utils/firebase-auth-error";
+import { signInWithGoogleNative } from "@/utils/native-google-login";
 
 interface InputFields {
 	email: string;
@@ -104,11 +105,8 @@ export default function SignUp() {
 				password: password === "" ? true : false,
 				confirmPassword: confirm_password === "" ? true : false,
 			});
-			setAlert({
-				message: "Password does not match!",
-				isOpen: true,
-			});
 			setIsLoading(false);
+			toast.error("Password does not match.");
 			return;
 		}
 		if (password !== confirm_password) {
@@ -117,36 +115,33 @@ export default function SignUp() {
 				password: true,
 				confirmPassword: true,
 			});
-			setAlert({
-				message: "Password does not match.",
-				isOpen: true,
-			});
 			setIsLoading(false);
+			toast.error("Password does not match.");
 			return;
 		}
 		try {
 			await signUp(email, password);
 		} catch (error: any) {
-			setAlert({
-				message: VerifyFirebaseErrorCode(error.code),
-				isOpen: true,
-			});
+			const errorMessage = VerifyFirebaseErrorCode(error?.code);
 			setIsLoading(false);
+			toast.error(errorMessage);
 		}
 	};
 
 	const signInWithPopup = async () => {
 		setIsLoading(true);
 		try {
-			await signInWithGooglePopup();
+			if (Capacitor.isNativePlatform()) {
+				await signInWithGoogleNative();
+			} else {
+				await signInWithGooglePopup();
+			}
 			setIsLoading(false);
 			navigate("/", { replace: true });
 		} catch (error: any) {
-			setAlert({
-				message: VerifyFirebaseErrorCode(error.code),
-				isOpen: true,
-			});
+			const errorMessage = VerifyFirebaseErrorCode(error?.code);
 			setIsLoading(false);
+			toast.error(errorMessage);
 		}
 	};
 
@@ -262,18 +257,17 @@ export default function SignUp() {
 						>
 							Sign Up
 						</Button>
-						{Capacitor.getPlatform() === "web" && (
-							<Button
-								type="button"
-								fullWidth
-								variant="contained"
-								sx={{ mt: 2, mb: 1 }}
-								startIcon={<GoogleIcon />}
-								onClick={signInWithPopup}
-							>
-								Continue With Google
-							</Button>
-						)}
+
+						<Button
+							type="button"
+							fullWidth
+							variant="contained"
+							sx={{ mt: 2, mb: 1 }}
+							startIcon={<GoogleIcon />}
+							onClick={signInWithPopup}
+						>
+							Continue With Google
+						</Button>
 						<Grid container>
 							<Grid item sx={{ mt: 2 }}>
 								<Link href="/login" variant="body2">
@@ -284,18 +278,6 @@ export default function SignUp() {
 					</Box>
 				</Box>
 			</Container>
-			<CustomSnackbar
-				alertType="error"
-				message={alert.message}
-				open={alert.isOpen}
-				setOpen={handleSnackbarToggle}
-				autoHideDuration={6000}
-				anchorPosition={{
-					vertical: "top",
-					horizontal: "right",
-				}}
-				margin={"3rem 0 0.5rem 0"}
-			/>
 			<Backdrop
 				sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
 				open={isLoading}

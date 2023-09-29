@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import CardActions from "@mui/material/CardActions";
 
-import formatDate from "@/utils/formatDate";
+import formatDate from "@/utils/format-date";
 import NoteMenu from "@/components/main/NoteMenu";
 import useTheme from "@mui/material/styles/useTheme";
 import { useAuth } from "@/context/AuthContext";

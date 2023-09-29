@@ -20,12 +20,12 @@ import GoogleIcon from "@mui/icons-material/Google";
 import LockIcon from "@mui/icons-material/LockOutlined";
 import InputAdornment from "@mui/material/InputAdornment";
 import CircularProgress from "@mui/material/CircularProgress";
+import toast from "react-hot-toast";
 
 import { useAuth } from "@/context/AuthContext";
 import FormDialog from "@/components/FormDialog";
-import CustomDialog from "@/components/CustomDialog";
-import CustomSnackbar from "@/components/CustomSnackbar";
-import VerifyFirebaseErrorCode from "@/utils/authError";
+import VerifyFirebaseErrorCode from "@/utils/firebase-auth-error";
+import { signInWithGoogleNative } from "@/utils/native-google-login";
 
 interface State {
 	email: string;
@@ -41,10 +41,7 @@ export default function SignIn() {
 	});
 	const navigate = useNavigate();
 	const [isLoading, setIsLoading] = useState(false);
-	const [errorMessage, setErrorMessage] = useState("");
-	const [isAlertOpen, setIsAlertOpen] = useState(false);
 	const [isResetFormOpen, setIsResetFormOpen] = useState(false);
-	const [isCustomDialogOpen, setIsCustomDialogOpen] = useState(false);
 	const { signIn, signInWithGooglePopup, sendPasswordResetLink, user } =
 		useAuth();
 
@@ -83,27 +80,28 @@ export default function SignIn() {
 			try {
 				await signIn(email, password);
 			} catch (error: any) {
-				setErrorMessage(VerifyFirebaseErrorCode(error.code));
-				setIsCustomDialogOpen(true);
+				const message = VerifyFirebaseErrorCode(error.code);
 				setIsLoading(false);
+				toast.error(message);
 			}
 		} else {
-			setErrorMessage("Please fill all required fields");
-			setIsCustomDialogOpen(true);
 			setIsLoading(false);
+			toast.error("Please fill all required fields");
 		}
 	};
 
 	const signInWithPopup = async () => {
 		setIsLoading(true);
 		try {
-			await signInWithGooglePopup();
-			// setIsLoading(false);
-			// navigate("/", { replace: true });
+			if (Capacitor.isNativePlatform()) {
+				await signInWithGoogleNative();
+			} else {
+				await signInWithGooglePopup();
+			}
 		} catch (error: any) {
-			setErrorMessage(VerifyFirebaseErrorCode(error.code));
-			setIsCustomDialogOpen(true);
+			const errorMessage = VerifyFirebaseErrorCode(error.code);
 			setIsLoading(false);
+			toast.error(errorMessage);
 		}
 	};
 
@@ -112,12 +110,14 @@ export default function SignIn() {
 			await sendPasswordResetLink(email);
 			cb();
 			setIsResetFormOpen(false);
-			setIsAlertOpen(true);
+			toast.success(
+				"Email has been sent, please check your spam folder if not found."
+			);
 		} catch (error: any) {
 			cb();
-			setErrorMessage(VerifyFirebaseErrorCode(error.code));
-			setIsCustomDialogOpen(true);
+			const errorMessage = VerifyFirebaseErrorCode(error?.code);
 			setIsResetFormOpen(false);
+			toast.error(errorMessage);
 		}
 	};
 
@@ -200,18 +200,17 @@ export default function SignIn() {
 						>
 							Sign In
 						</Button>
-						{Capacitor.getPlatform() === "web" && (
-							<Button
-								type="button"
-								fullWidth
-								variant="contained"
-								sx={{ mt: 2, mb: 2 }}
-								startIcon={!isLoading ? <GoogleIcon /> : null}
-								onClick={signInWithPopup}
-							>
-								Continue With Google
-							</Button>
-						)}
+
+						<Button
+							type="button"
+							fullWidth
+							variant="contained"
+							sx={{ mt: 2, mb: 2 }}
+							startIcon={!isLoading ? <GoogleIcon /> : null}
+							onClick={signInWithPopup}
+						>
+							Continue With Google
+						</Button>
 						<Grid container sx={{ mt: 2 }}>
 							<Grid item xs>
 								<Link
@@ -244,24 +243,15 @@ export default function SignIn() {
 				textFieldType="email"
 				positiveButtonAction={sendPasswordResetEmail}
 			/>
-			<CustomDialog
-				title={"Login Error"}
-				message={errorMessage}
-				open={isCustomDialogOpen}
-				setOpen={setIsCustomDialogOpen}
-			/>
 			<Backdrop
-				sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+				sx={{
+					color: "#fff",
+					zIndex: (theme) => theme.zIndex.drawer + 1,
+				}}
 				open={isLoading}
 			>
 				<CircularProgress color="inherit" />
 			</Backdrop>
-			<CustomSnackbar
-				alertType="success"
-				message="Email has been sent"
-				open={isAlertOpen}
-				setOpen={setIsAlertOpen}
-			/>
 		</>
 	);
 }

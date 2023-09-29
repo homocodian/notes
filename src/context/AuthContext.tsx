@@ -1,3 +1,5 @@
+import toast from "react-hot-toast";
+
 import {
 	createContext,
 	ReactNode,
@@ -20,6 +22,8 @@ import {
 
 import Loading from "../components/Loading";
 import { auth } from "../firebase";
+import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
+import { Capacitor } from "@capacitor/core";
 
 type AuthContextProps = {
 	children: ReactNode;
@@ -47,7 +51,22 @@ const signInWithGooglePopup = () => {
 	return signInWithPopup(auth, provider);
 };
 
-const logout = () => {
+const logout = async () => {
+	if (Capacitor.isNativePlatform()) {
+		await toast.promise(
+			GoogleAuth.signOut(),
+			{
+				loading: "Logout...",
+				success: "Success",
+				error: "Failed to Logout",
+			},
+			{
+				style: {
+					minWidth: "180px",
+				},
+			}
+		);
+	}
 	return signOut(auth);
 };
 

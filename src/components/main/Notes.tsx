@@ -24,7 +24,7 @@ function Notes() {
 				<EmptyNote />
 			) : (
 				<Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
-					<Masonry columns={{ xs: 1, sm: 2, md: 3 }} spacing={2}>
+					<Masonry columns={{ xs: 1, sm: 2, md: 3 }} spacing={1.5}>
 						{notes.map((note) => {
 							const {
 								text,
