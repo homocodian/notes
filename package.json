@@ -32,7 +32,8 @@
     "react-router": "^6.15.0",
     "react-router-dom": "^6.15.0",
     "usehooks-ts": "^2.5.3",
-    "vite-plugin-require-transform": "^1.0.3"
+    "vite-plugin-require-transform": "^1.0.3",
+    "zustand": "^4.4.4"
   },
   "devDependencies": {
     "@capacitor/cli": "^4.3.0",

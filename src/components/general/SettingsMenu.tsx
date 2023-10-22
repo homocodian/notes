@@ -10,20 +10,19 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ListItemIcon from "@mui/material/ListItemIcon";
+import { Keyboard, Settings } from "@mui/icons-material";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import { useAuth } from "@/context/AuthContext";
 import ThemeMenuItem from "@/components/general/ThemeMenuItem";
 import ProfileAvatar from "@/components/general/ProfileAvatar";
-import CustomSnackbar from "../CustomSnackbar";
-import { Settings } from "@mui/icons-material";
+import { useKeyboardShortcutStore } from "@/store/keyboard-shortcut";
 
 export default function SettingsMenu() {
 	const { logout, user } = useAuth();
 	const buttonRef = React.useRef<HTMLButtonElement | null>(null);
+	const openModal = useKeyboardShortcutStore((state) => state.openModal);
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-	const [alert, setAlert] = React.useState(false);
-	const [alertMessage, setAlertMessage] = React.useState<string | null>(null);
 
 	const open = Boolean(anchorEl);
 
@@ -123,6 +122,18 @@ export default function SettingsMenu() {
 				</MenuItem>
 				<Divider />
 				<ThemeMenuItem handleItemClick={handleItemClick} />
+				<Divider />
+				<MenuItem
+					onClick={() => handleItemClick(openModal)}
+					sx={{
+						marginTop: "0.5rem",
+					}}
+				>
+					<ListItemIcon>
+						<Keyboard />
+					</ListItemIcon>
+					Keyboard shortcuts
+				</MenuItem>
 				{user ? (
 					<Box>
 						<Divider sx={{ marginTop: "0.5rem", marginBottom: "0.5rem" }} />
@@ -135,13 +146,6 @@ export default function SettingsMenu() {
 					</Box>
 				) : null}
 			</Menu>
-			<CustomSnackbar
-				open={alert}
-				setOpen={setAlert}
-				alertType="success"
-				message={alertMessage || "Text copied"}
-				autoHideDuration={6000}
-			/>
 		</React.Fragment>
 	);
 }
