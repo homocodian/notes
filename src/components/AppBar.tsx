@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 import Box from "@mui/material/Box";
 import Slide from "@mui/material/Slide";
@@ -8,8 +8,9 @@ import MuiAppBar from "@mui/material/AppBar";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
+import SearchIcon from "@mui/icons-material/Search";
 
-import { routeNames } from "@/App";
+import { RouteName, routeNames } from "@/App";
 import { useAuth } from "@/context/AuthContext";
 import { useDrawer } from "@/context/DrawerContext";
 import SettingsMenu from "@/components/general/SettingsMenu";
@@ -19,6 +20,9 @@ function AppBar() {
 	const { user } = useAuth();
 	const { isDrawerOpen, setDrawerIsOpen } = useDrawer();
 	const location = useLocation();
+	const navigate = useNavigate();
+
+	const navigateTo = (route: RouteName) => navigate(route);
 
 	const shouldShow = !!routeNames.find((item) => item === location.pathname);
 
@@ -45,6 +49,11 @@ function AppBar() {
 							<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
 								Notes
 							</Typography>
+							{location.pathname !== "/search" ? (
+								<IconButton onClick={() => navigateTo("/search")}>
+									<SearchIcon />
+								</IconButton>
+							) : null}
 							<SettingsMenu />
 						</Toolbar>
 					</MuiAppBar>

@@ -29,6 +29,7 @@ interface ITodoCard {
 	name?: string;
 	email?: string;
 	userId: string;
+	disableActions?: boolean;
 }
 
 function NoteCard({
@@ -42,6 +43,7 @@ function NoteCard({
 	email,
 	sharedWith,
 	userId,
+	disableActions = false,
 }: ITodoCard) {
 	const { user } = useAuth();
 	const theme = useTheme();
@@ -87,9 +89,11 @@ function NoteCard({
 						)
 					}
 					action={
-						<IconButton aria-label="more" onClick={handleClick}>
-							<MoreVertIcon />
-						</IconButton>
+						!disableActions ? (
+							<IconButton aria-label="more" onClick={handleClick}>
+								<MoreVertIcon />
+							</IconButton>
+						) : null
 					}
 					sx={{ fontWeight: 500 }}
 				/>
