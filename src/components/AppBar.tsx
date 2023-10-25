@@ -49,7 +49,7 @@ function AppBar() {
 							<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
 								Notes
 							</Typography>
-							{location.pathname !== "/search" ? (
+							{location.pathname !== "/search" && user?.uid ? (
 								<IconButton onClick={() => navigateTo("/search")}>
 									<SearchIcon />
 								</IconButton>
