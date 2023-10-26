@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 import Box from "@mui/material/Box";
 import Masonry from "@mui/lab/Masonry";
@@ -9,10 +9,35 @@ import AlertMessage from "@/components/AlertMessage";
 import NoteSkeleton from "@/components/NoteSkeleton";
 import EmptyNote from "../EmptyNote";
 import { useAuth } from "@/context/AuthContext";
+import { useSearchParams } from "react-router-dom";
+import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 
 function Notes() {
 	const { user } = useAuth();
+	const [searchParams] = useSearchParams();
 	const [notes, loading, error, setError] = useNotes();
+	const [searchedNotes, setSearchedNotes] = useState<
+		QueryDocumentSnapshot<DocumentData>[]
+	>([]);
+
+	const searchString = searchParams.get("q");
+
+	useEffect(() => {
+		const query = searchParams.get("q");
+
+		if (!query) {
+			return;
+		}
+
+		setSearchedNotes(
+			notes.filter((item) => {
+				const text: string | undefined = item.get("text");
+				if (text?.toLocaleLowerCase()?.includes(query?.toLocaleLowerCase())) {
+					return item;
+				}
+			})
+		);
+	}, [searchParams, notes]);
 
 	if (loading) {
 		return <NoteSkeleton />;
@@ -20,12 +45,15 @@ function Notes() {
 
 	return (
 		<Fragment>
-			{notes.length <= 0 ? (
+			{notes.length <= 0 || (searchedNotes.length <= 0 && searchString) ? (
 				<EmptyNote />
 			) : (
 				<Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
 					<Masonry columns={{ xs: 1, sm: 2, md: 3 }} spacing={1.5}>
-						{notes.map((note) => {
+						{(searchedNotes.length > 0 && searchParams.get("q")
+							? searchedNotes
+							: notes
+						).map((note) => {
 							const {
 								text,
 								isComplete,

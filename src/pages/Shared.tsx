@@ -19,6 +19,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Masonry } from "@mui/lab";
 import { NoteCard } from "@/components/main";
 import EmptyNote from "@/components/EmptyNote";
+import { useSearchParams } from "react-router-dom";
 
 function Shared() {
 	const { user } = useAuth();
@@ -26,6 +27,12 @@ function Shared() {
 		QueryDocumentSnapshot<DocumentData>[]
 	>([]);
 	const [isLoading, setIsLoading] = useState(true);
+	const [searchedNotes, setSearchedNotes] = useState<
+		QueryDocumentSnapshot<DocumentData>[]
+	>([]);
+	const [searchParams] = useSearchParams();
+
+	const searchString = searchParams.get("q");
 
 	useEffect(() => {
 		if (!user) {
@@ -53,6 +60,23 @@ function Shared() {
 		return unsubscribe;
 	}, [user]);
 
+	useEffect(() => {
+		const query = searchParams.get("q");
+
+		if (!query) {
+			return;
+		}
+
+		setSearchedNotes(
+			sharedNotes.filter((item) => {
+				const text: string | undefined = item.get("text");
+				if (text?.toLocaleLowerCase()?.includes(query?.toLocaleLowerCase())) {
+					return item;
+				}
+			})
+		);
+	}, [searchParams, sharedNotes]);
+
 	return (
 		<Box
 			sx={{
@@ -65,12 +89,16 @@ function Shared() {
 			<Box sx={{ width: "100%" }} pt={3}>
 				{isLoading ? (
 					<NoteSkeleton />
-				) : sharedNotes.length <= 0 ? (
+				) : sharedNotes.length <= 0 ||
+				  (searchedNotes.length <= 0 && searchString) ? (
 					<EmptyNote message="Notes shared to you will appear here" />
 				) : (
 					<Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
 						<Masonry columns={{ xs: 1, sm: 2, md: 3 }} spacing={2}>
-							{sharedNotes.map((note) => {
+							{(searchedNotes.length > 0 && searchString
+								? searchedNotes
+								: sharedNotes
+							).map((note) => {
 								const {
 									text,
 									isComplete,

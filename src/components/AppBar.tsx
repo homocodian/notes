@@ -8,13 +8,13 @@ import MuiAppBar from "@mui/material/AppBar";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-import SearchIcon from "@mui/icons-material/Search";
 
 import { RouteName, routeNames } from "@/App";
 import { useAuth } from "@/context/AuthContext";
 import { useDrawer } from "@/context/DrawerContext";
 import SettingsMenu from "@/components/general/SettingsMenu";
 import KeyboardShortcut from "@/components/general/KeyboardShortcut";
+import Searchbar from "./Searchbar";
 
 function AppBar() {
 	const { user } = useAuth();
@@ -46,14 +46,14 @@ function AppBar() {
 									<MenuIcon />
 								</IconButton>
 							)}
-							<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+							<Typography
+								component="div"
+								variant="h6"
+								sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+							>
 								Notes
 							</Typography>
-							{location.pathname !== "/search" && user?.uid ? (
-								<IconButton onClick={() => navigateTo("/search")}>
-									<SearchIcon />
-								</IconButton>
-							) : null}
+							{user?.uid ? <Searchbar /> : null}
 							<SettingsMenu />
 						</Toolbar>
 					</MuiAppBar>

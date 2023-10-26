@@ -1,9 +1,9 @@
 import { useEffect, useMemo } from "react";
 
-import loadable from "@loadable/component";
 import { Routes, Route } from "react-router-dom";
 import { useTernaryDarkMode } from "usehooks-ts";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import loadable, { LoadableComponent } from "@loadable/component";
 
 import AppBar from "@/components/AppBar";
 import Loading from "@/components/Loading";
@@ -14,16 +14,23 @@ import { getDesignTokens } from "@/utils/get-design-token";
 import Connectivity from "@/components/general/Connectivity";
 import AccountMenuProvider from "@/context/AccountMenuContext";
 import { changeStatusbarColor } from "@/utils/change-statusbar-color";
-import CheckForUpdates from "@/components/general/CheckForUpdates";
 import ThemedToaster from "@/components/ThemedToaster";
+import { Capacitor } from "@capacitor/core";
 
 const HomePage = loadable(() => import("@/pages/Home"));
 const ImportantPage = loadable(() => import("@/pages/Important"));
 const SignInPage = loadable(() => import("@/pages/SignIn"));
 const SignUpPage = loadable(() => import("@/pages/SignUp"));
 const SharedPage = loadable(() => import("@/pages/Shared"));
-const SearchPage = loadable(() => import("@/pages/Search"));
 const GeneralPage = loadable(() => import("@/pages/General"));
+
+let CheckForUpdates: LoadableComponent<unknown>;
+
+if (Capacitor.isNativePlatform()) {
+	CheckForUpdates = loadable(
+		() => import("@/components/general/CheckForUpdates")
+	);
+}
 
 const routes = [
 	{
@@ -59,14 +66,6 @@ const routes = [
 		element: (
 			<PrivateRoute>
 				<SharedPage fallback={<Loading />} />
-			</PrivateRoute>
-		),
-	},
-	{
-		path: "/search",
-		element: (
-			<PrivateRoute>
-				<SearchPage fallback={<Loading />} />
 			</PrivateRoute>
 		),
 	},
@@ -116,7 +115,7 @@ function App() {
 						</Routes>
 					</div>
 					<Connectivity />
-					<CheckForUpdates />
+					{CheckForUpdates ? <CheckForUpdates /> : null}
 					<ThemedToaster />
 				</AccountMenuProvider>
 			</DrawerProvider>
