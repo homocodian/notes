@@ -29,7 +29,7 @@ export const getDesignTokens = (mode: PaletteMode) => ({
         }),
   },
   typography: {
-    fontFamily: "'Poppins', 'Roboto', sans-serif",
+    fontFamily: "system-ui",
     fontWeightLight: 300,
     fontWeightRegular: 400,
     fontWeightMedium: 500,
