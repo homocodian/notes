@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation } from "react-router";
 
 import Box from "@mui/material/Box";
 import Slide from "@mui/material/Slide";
@@ -9,20 +9,17 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 
-import { RouteName, routeNames } from "@/App";
+import { routeNames } from "@/App";
 import { useAuth } from "@/context/AuthContext";
+import Searchbar from "@/components/Searchbar";
 import { useDrawer } from "@/context/DrawerContext";
 import SettingsMenu from "@/components/general/SettingsMenu";
 import KeyboardShortcut from "@/components/general/KeyboardShortcut";
-import Searchbar from "./Searchbar";
 
 function AppBar() {
 	const { user } = useAuth();
-	const { isDrawerOpen, setDrawerIsOpen } = useDrawer();
 	const location = useLocation();
-	const navigate = useNavigate();
-
-	const navigateTo = (route: RouteName) => navigate(route);
+	const { isDrawerOpen, setDrawerIsOpen } = useDrawer();
 
 	const shouldShow = !!routeNames.find((item) => item === location.pathname);
 
@@ -31,7 +28,11 @@ function AppBar() {
 			<Box sx={{ flexGrow: 1 }}>
 				<Slide direction="down" in={shouldShow}>
 					<MuiAppBar position="fixed">
-						<Toolbar>
+						<Toolbar
+							sx={{
+								justifyContent: "end",
+							}}
+						>
 							{user && (
 								<IconButton
 									size="large"

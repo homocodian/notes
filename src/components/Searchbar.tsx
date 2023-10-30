@@ -45,12 +45,18 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 	},
 }));
 
+const Form = styled("form")(({ theme }) => ({
+	[theme.breakpoints.down("sm")]: {
+		flexGrow: 1,
+	},
+}));
+
 function Searchbar() {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const query = searchParams.get("q") ?? "";
 
 	return (
-		<form
+		<Form
 			onSubmit={(e) => {
 				e.preventDefault();
 				const form = new FormData(e.currentTarget);
@@ -72,7 +78,7 @@ function Searchbar() {
 					autoComplete="off"
 				/>
 			</Search>
-		</form>
+		</Form>
 	);
 }
 
