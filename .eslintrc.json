@@ -1,3 +1,11 @@
 {
+  "rules": {
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": ["@mui/*/*/*"]
+      }
+    ]
+  },
   "extends": ["prettier"]
 }

@@ -394,7 +394,7 @@
   resolved "https://registry.yarnpkg.com/@emotion/memoize/-/memoize-0.8.1.tgz#c1ddb040429c6d21d38cc945fe75c818cfb68e17"
   integrity sha512-W2P2c/VRW1/1tLox0mVUalvnWXxavmv/Oum2aPsRcoDJuob75FC3Y8FbpfLwUegRcxINtGUMPq0tFCvYNTBXNA==
 
-"@emotion/react@^11.9.0":
+"@emotion/react@^11.11.1":
   version "11.11.1"
   resolved "https://registry.yarnpkg.com/@emotion/react/-/react-11.11.1.tgz#b2c36afac95b184f73b08da8c214fdf861fa4157"
   integrity sha512-5mlW1DquU5HaxjLkfkGN1GA/fvVGdyHURRiX/0FHl2cfIfRxSOfmxEH5YS43edp0OldZrZ+dkBKbngxcNCdZvA==
@@ -424,7 +424,7 @@
   resolved "https://registry.yarnpkg.com/@emotion/sheet/-/sheet-1.2.2.tgz#d58e788ee27267a14342303e1abb3d508b6d0fec"
   integrity sha512-0QBtGvaqtWi+nx6doRwDdBIzhNdZrXUppvTM4dtZZWEGTXL/XE/yJxLMGlDT1Gt+UHH5IX1n+jkXyytE/av7OA==
 
-"@emotion/styled@^11.8.1":
+"@emotion/styled@^11.11.0":
   version "11.11.0"
   resolved "https://registry.yarnpkg.com/@emotion/styled/-/styled-11.11.0.tgz#26b75e1b5a1b7a629d7c0a8b708fbf5a9cdce346"
   integrity sha512-hM5Nnvu9P3midq5aaXj4I+lnSfNi7Pmd4EWk1fOZ3pxookaQTNew6bp4JaCBYM4HVFZF9g7UjJmsUmC2JlxOng==
@@ -1195,7 +1195,7 @@
   dependencies:
     "@babel/runtime" "^7.23.2"
 
-"@mui/lab@^5.0.0-alpha.82":
+"@mui/lab@^5.0.0-alpha.151":
   version "5.0.0-alpha.151"
   resolved "https://registry.yarnpkg.com/@mui/lab/-/lab-5.0.0-alpha.151.tgz#4f0e904f0db8088c5c9a3c3da5bde676cb3ce7ca"
   integrity sha512-EAIzoDZ0WATa31m71juG1LnURjsmdkUOjNqy2j5WUp4y80obdGYKTT1Yh1hdI5SKND6621vaBPiGoKITjCZJ8A==
@@ -1209,7 +1209,7 @@
     clsx "^2.0.0"
     prop-types "^15.8.1"
 
-"@mui/material@^5.14.7":
+"@mui/material@^5.14.16":
   version "5.14.16"
   resolved "https://registry.yarnpkg.com/@mui/material/-/material-5.14.16.tgz#45cd62d312d10399d3813ee6dc43bd1f11179bf4"
   integrity sha512-W4zZ4vnxgGk6/HqBwgsDHKU7x2l2NhX+r8gAwfg58Rhu3ikfY7NkIS6y8Gl3NkATc4GG1FNaGjjpQKfJx3U6Jw==
@@ -1246,7 +1246,7 @@
     csstype "^3.1.2"
     prop-types "^15.8.1"
 
-"@mui/system@^5.14.16", "@mui/system@^5.14.7":
+"@mui/system@^5.14.16":
   version "5.14.16"
   resolved "https://registry.yarnpkg.com/@mui/system/-/system-5.14.16.tgz#5c30c5123767416358c3b73774eb985e189119a4"
   integrity sha512-uKnPfsDqDs8bbN54TviAuoGWOmFiQLwNZ3Wvj+OBkJCzwA6QnLb/sSeCB7Pk3ilH4h4jQ0BHtbR+Xpjy9wlOuA==
