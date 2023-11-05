@@ -9,7 +9,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 
-import { routeNames } from "@/App";
+import { routeNames } from "@/Routes";
 import { useAuth } from "@/context/AuthContext";
 import Searchbar from "@/components/Searchbar";
 import { useDrawer } from "@/context/DrawerContext";
