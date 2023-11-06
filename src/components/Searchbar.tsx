@@ -62,6 +62,7 @@ function Searchbar() {
           key={query}
           name="search"
           autoComplete="off"
+          autoFocus={true}
         />
       </Search>
     </Form>

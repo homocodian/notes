@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router";
 
 import ClearIcon from "@mui/icons-material/Clear";
@@ -17,18 +17,27 @@ import KeyboardShortcut from "@/components/general/KeyboardShortcut";
 import SettingsMenu from "@/components/general/SettingsMenu";
 import { useAuth } from "@/context/AuthContext";
 import { useDrawer } from "@/context/DrawerContext";
+import { useSearchParams } from "react-router-dom";
 
 function AppBar() {
   const nodeRef = useRef();
   const { user } = useAuth();
   const location = useLocation();
   const { isDrawerOpen, setDrawerIsOpen } = useDrawer();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [shouldShowToolbar, setShouldShowToolbar] = useState(true);
   const [shouldShowSearchbar, setShouldShowSearchbar] = useState(false);
 
   const shouldShow = useMemo(() => {
     return !!routeNames.find((item) => item === location.pathname);
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (!!searchParams.get("q") && !shouldShowSearchbar) {
+      setShouldShowToolbar(false);
+      setShouldShowSearchbar(true);
+    }
+  }, [searchParams, shouldShowSearchbar]);
 
   return (
     <Fragment>
@@ -64,16 +73,14 @@ function AppBar() {
                       <MenuIcon />
                     </IconButton>
                   )}
-                  <Typography
-                    component="div"
-                    variant="h6"
-                    sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
-                  >
+                  <Typography component="div" variant="h6" sx={{ flexGrow: 1 }}>
                     Notes
                   </Typography>
-                  <IconButton onClick={() => setShouldShowToolbar(false)}>
-                    <SearchIcon htmlColor="#fff" />
-                  </IconButton>
+                  {user?.uid ? (
+                    <IconButton onClick={() => setShouldShowToolbar(false)}>
+                      <SearchIcon htmlColor="#fff" />
+                    </IconButton>
+                  ) : null}
                   <SettingsMenu />
                 </Box>
               </Slide>
@@ -96,7 +103,16 @@ function AppBar() {
                   gap="1rem"
                 >
                   <Searchbar />
-                  <IconButton onClick={() => setShouldShowSearchbar(false)}>
+                  <IconButton
+                    onClick={() => {
+                      if (!!searchParams.get("q")) {
+                        searchParams.delete("q");
+                        setSearchParams(searchParams);
+                      }
+
+                      setShouldShowSearchbar(false);
+                    }}
+                  >
                     <ClearIcon htmlColor="#fff" />
                   </IconButton>
                 </Box>
