@@ -29,3 +29,6 @@ output-metadata.json
 
 # Local Netlify folder
 .netlify
+
+# rest client
+*.http
