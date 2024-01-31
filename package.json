@@ -2,6 +2,7 @@
   "name": "notes",
   "private": true,
   "version": "2.1.2",
+  "type": "module",
   "scripts": {
     "dev": "vite --port 3000",
     "build": "tsc && vite build",
@@ -23,6 +24,7 @@
     "@mui/lab": "^5.0.0-alpha.162",
     "@mui/material": "^5.15.6",
     "@mui/system": "^5.15.6",
+    "@netlify/functions": "^2.5.1",
     "firebase": "^10.7.2",
     "lottie-web": "^5.9.4",
     "octokit": "^3.1.2",

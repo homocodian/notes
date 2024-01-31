@@ -26,3 +26,6 @@ dist-ssr
 # General
 .env
 output-metadata.json
+
+# Local Netlify folder
+.netlify

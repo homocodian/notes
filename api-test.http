@@ -1,0 +1,11 @@
+@hostname = http://localhost:8888/.netlify/functions/hello
+
+get {{hostname}}
+
+###
+post {{hostname}}
+Content-Type: application/json
+
+{
+  "message": "hi"
+}
