@@ -45,11 +45,14 @@ export const handler: Handler = async (event) => {
     };
   }
 
-  let data = JSON.parse(event.body);
+  const data = JSON.parse(event.body);
 
   return {
     statusCode: 200,
-    body: JSON.stringify({ success: true, data } satisfies ResponseBody),
+    body: JSON.stringify({
+      success: true,
+      data,
+    } satisfies ResponseBody),
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Headers": "Authorization, Content-Type",
