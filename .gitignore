@@ -32,3 +32,6 @@ output-metadata.json
 
 # rest client
 *.http
+
+# creds
+credentials.json
