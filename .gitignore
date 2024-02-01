@@ -35,3 +35,12 @@ output-metadata.json
 
 # creds
 credentials.json
+firestore.indexes.json
+firestore.rules
+.firebaserc
+firestore.json
+storage.rules
+firebase.json
+
+# seed
+seed
