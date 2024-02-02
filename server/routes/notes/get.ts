@@ -1,33 +1,54 @@
 import { HandlerEvent, HandlerResponse } from "@netlify/functions";
 
+import { Filter } from "firebase-admin/firestore";
+import { object, safeParse, string } from "valibot";
 import { admin } from "../../firebase/admin";
 import { getFirebaseErrorMessage } from "../../utils/format-firebase-error";
 import { getHeaders } from "../../utils/get-headers";
 import { isFirebaseError } from "../../utils/is-firebase-error";
-import { verifyFirebaseToken } from "../../utils/validate-user";
+import {
+  AuthorizationError,
+  verifyFirebaseToken,
+} from "../../utils/validate-user";
+
+const queryParamsSchema = object({
+  user: string("User is not specified"),
+});
 
 export default async function GET(
   event: HandlerEvent,
 ): Promise<HandlerResponse> {
-  const query = event.queryStringParameters;
+  const queryParams = safeParse(queryParamsSchema, event.queryStringParameters);
 
-  if (!query || !query["user"]) {
+  if (!queryParams.success) {
     return {
       statusCode: 404,
-      body: "User not specified",
+      body: queryParams.issues[0].message,
       headers: getHeaders(),
     };
   }
 
   const token = event.headers["authorization"]?.split(" ")?.[1];
-  const uid = query["user"];
 
   try {
-    const user = await verifyFirebaseToken({ uid, token });
+    const user = await verifyFirebaseToken({
+      uid: queryParams.output.user,
+      token,
+    });
+
     const data = await admin()
       .firestore()
       .collection("notes")
-      .where("userId", "==", user.uid)
+      .where(
+        Filter.or(
+          Filter.where("userId", "==", user.uid),
+          Filter.where("sharedWith", "array-contains-any", [
+            user.uid,
+            user.email,
+          ]),
+        ),
+      )
+      .orderBy("updatedAt", "desc")
       .get();
 
     const notes = data.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
@@ -38,6 +59,14 @@ export default async function GET(
       headers: getHeaders("application/json"),
     };
   } catch (error: unknown) {
+    if (error instanceof AuthorizationError) {
+      return {
+        statusCode: 401,
+        body: error.message,
+        headers: getHeaders(),
+      };
+    }
+
     if (isFirebaseError(error)) {
       const message = getFirebaseErrorMessage(error.code);
       return {
@@ -45,14 +74,6 @@ export default async function GET(
           ? 500
           : 400,
         body: message,
-        headers: getHeaders(),
-      };
-    }
-
-    if (error instanceof Error) {
-      return {
-        statusCode: 401,
-        body: error.message,
         headers: getHeaders(),
       };
     }
