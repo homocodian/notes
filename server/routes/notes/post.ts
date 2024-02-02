@@ -1,38 +1,40 @@
 import { HandlerEvent, HandlerResponse } from "@netlify/functions";
 import { Timestamp } from "firebase-admin/firestore";
-import { ValiError, object, parse, picklist, string } from "valibot";
+import { ValiError, object, parse, safeParse, string } from "valibot";
 import { admin } from "../../firebase/admin";
 import { getFirebaseErrorMessage } from "../../utils/format-firebase-error";
 import { getHeaders } from "../../utils/get-headers";
 import { isFirebaseError } from "../../utils/is-firebase-error";
-import { verifyFirebaseToken } from "../../utils/validate-user";
+import {
+  AuthorizationError,
+  verifyFirebaseToken,
+} from "../../utils/validate-user";
+import { noteSchema } from "../../validations/notes";
 
-const noteSchema = object({
-  text: string("Text must be string"),
-  category: picklist(
-    ["general", "important"],
-    "Category must be either general or important",
-  ),
+const queryParamsSchema = object({
+  user: string("User is not specified"),
 });
 
 export default async function POST(
   event: HandlerEvent,
 ): Promise<HandlerResponse> {
-  const query = event.queryStringParameters;
+  const queryParams = safeParse(queryParamsSchema, event.queryStringParameters);
 
-  if (!query || !query["user"]) {
+  if (!queryParams.success) {
     return {
       statusCode: 404,
-      body: "User not specified",
+      body: queryParams.issues[0].message,
       headers: getHeaders(),
     };
   }
 
   const token = event.headers["authorization"]?.split(" ")?.[1];
-  const uid = query["user"];
 
   try {
-    const user = await verifyFirebaseToken({ uid, token });
+    const user = await verifyFirebaseToken({
+      uid: queryParams.output.user,
+      token,
+    });
 
     if (!event.body) {
       throw new Error("Invalid fields");
@@ -61,6 +63,14 @@ export default async function POST(
     if (error instanceof ValiError) {
       return {
         statusCode: 422,
+        body: error.message,
+        headers: getHeaders(),
+      };
+    }
+
+    if (error instanceof AuthorizationError) {
+      return {
+        statusCode: 401,
         body: error.message,
         headers: getHeaders(),
       };
