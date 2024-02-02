@@ -50,18 +50,18 @@ export default async function POST(
       updatedAt: Timestamp.now(),
     };
 
-    const docToUpdate = await admin()
+    const noteToUpdate = await admin()
       .firestore()
       .collection("notes")
       .doc(queryParams.output.id)
       .get();
 
-    const data = docToUpdate?.data();
+    const data = noteToUpdate?.data();
 
-    if (!docToUpdate.exists || data?.["userId"] !== user.uid) {
+    if (!noteToUpdate.exists || data?.["userId"] !== user.uid) {
       return {
-        statusCode: 401,
-        body: "Unauthorized",
+        statusCode: !noteToUpdate.exists ? 404 : 401,
+        body: !noteToUpdate.exists ? "Resource not Found" : "Unauthorized",
         headers: getHeaders(),
       };
     }
@@ -69,7 +69,7 @@ export default async function POST(
     await admin()
       .firestore()
       .collection("notes")
-      .doc(docToUpdate.id)
+      .doc(noteToUpdate.id)
       .update(dataToUpdate);
 
     return {
