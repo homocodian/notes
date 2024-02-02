@@ -16,8 +16,11 @@ export class AuthorizationError extends Error {
 export async function verifyFirebaseToken({ uid, token }: VerifyFirebaseToken) {
   if (!token || !uid) throw new Error("Invalid credentials");
 
-  const data = await admin().auth().verifyIdToken(token);
-  if (data.uid !== uid) throw new AuthorizationError("Invalid token");
-
-  return data;
+  try {
+    const data = await admin().auth().verifyIdToken(token);
+    if (data.uid !== uid) throw new AuthorizationError("Unauthorized");
+    return data;
+  } catch (error) {
+    throw new AuthorizationError("Unauthorized");
+  }
 }
