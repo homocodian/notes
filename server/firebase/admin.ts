@@ -25,9 +25,17 @@ function createFirebaseAdminApp(params: FirebaseAdminAppParams) {
     process.env["FIREBASE_AUTH_EMULATOR_HOST"] =
       process.env.VITE_EMULATOR_AUTH_PATH;
 
+    console.log(
+      process.env["FIREBASE_AUTH_EMULATOR_HOST"],
+      process.env["FIRESTORE_EMULATOR_HOST"],
+    );
+
     // NOTE: Currently not using storage service
     // process.env["FIREBASE_STORAGE_EMULATOR_HOST"] =
     //   process.env.VITE_EMULATOR_STORAGE_PATH;
+    return firebase.initializeApp({
+      projectId: params.projectId,
+    });
   }
 
   const cert = firebase.credential.cert({

@@ -5,11 +5,19 @@ type VerifyFirebaseToken = {
   token?: string;
 };
 
+export class AuthorizationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = this.constructor.name;
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+
 export async function verifyFirebaseToken({ uid, token }: VerifyFirebaseToken) {
   if (!token || !uid) throw new Error("Invalid credentials");
 
   const data = await admin().auth().verifyIdToken(token);
-  if (data.uid !== uid) throw new Error("Invalid credentials");
+  if (data.uid !== uid) throw new AuthorizationError("Invalid token");
 
   return data;
 }

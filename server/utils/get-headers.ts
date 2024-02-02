@@ -6,6 +6,10 @@ type ContentType =
   | "application/zip"
   | "application/x-www-form-urlencoded";
 
+/**
+ *
+ * @param contentType [contentType=application/text]
+ */
 export function getHeaders(
   contentType: ContentType = "application/text",
   // allowedOrgin: string = "*",
