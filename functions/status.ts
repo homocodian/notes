@@ -14,7 +14,7 @@ export const handler: Handler = async (event) => {
   }
 
   return {
-    statusCode: 404,
+    statusCode: 405,
     body: "Method not allowed",
     headers: {
       "Access-Control-Allow-Origin": "*",

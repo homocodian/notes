@@ -3,4 +3,4 @@
   functions = "/functions"
   
 [dev]
-  targetPort=3000
+  targetPort = 3000

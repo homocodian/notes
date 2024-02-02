@@ -28,8 +28,6 @@ function createFirebaseAdminApp(params: FirebaseAdminAppParams) {
     // NOTE: Currently not using storage service
     // process.env["FIREBASE_STORAGE_EMULATOR_HOST"] =
     //   process.env.VITE_EMULATOR_STORAGE_PATH;
-
-    return firebase.initializeApp();
   }
 
   const cert = firebase.credential.cert({
