@@ -1,6 +1,15 @@
 import { HandlerEvent, HandlerResponse } from "@netlify/functions";
 import { Timestamp } from "firebase-admin/firestore";
-import { ValiError, object, parse, partial, safeParse, string } from "valibot";
+import {
+  ValiError,
+  boolean,
+  merge,
+  object,
+  parse,
+  partial,
+  safeParse,
+  string,
+} from "valibot";
 import { admin } from "../../firebase/admin";
 import { getFirebaseErrorMessage } from "../../utils/format-firebase-error";
 import { getHeaders } from "../../utils/get-headers";
@@ -42,11 +51,13 @@ export default async function POST(
     }
 
     const json = JSON.parse(event.body);
-    const parsedData = parse(partial(noteSchema), json);
+    const parsedData = parse(
+      partial(merge([noteSchema, object({ isComplete: boolean() })])),
+      json,
+    );
 
     const dataToUpdate = {
-      ...(parsedData.text ? { text: parsedData.text } : {}),
-      ...(parsedData.category ? { category: parsedData.category } : {}),
+      ...parsedData,
       updatedAt: Timestamp.now(),
     };
 

@@ -14,8 +14,8 @@ interface ImportMetaEnv {
   readonly VITE_EMULATOR_STORAGE_PATH: string | undefined;
   readonly VITE_EMULATOR_AUTH_PATH: string | undefined;
   readonly VITE_EMULATOR_FIRESTORE_PATH: string | undefined;
-  readonly VITE_LOCAL_URL: string | undefined;
-  readonly VITE_URL: string | undefined;
+  readonly VITE_BASE_URL: string;
+  readonly VITE_BASE_URL_FOR_CAPACITOR: string;
 }
 
 interface ImportMeta {

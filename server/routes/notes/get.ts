@@ -22,7 +22,7 @@ export default async function GET(
 
   if (!queryParams.success) {
     return {
-      statusCode: 404,
+      statusCode: 400,
       body: queryParams.issues[0].message,
       headers: getHeaders(),
     };
