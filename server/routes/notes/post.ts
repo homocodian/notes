@@ -37,7 +37,11 @@ export default async function POST(
     });
 
     if (!event.body) {
-      throw new Error("Invalid fields");
+      return {
+        statusCode: 400,
+        body: "Required fields not provided",
+        headers: getHeaders(),
+      };
     }
 
     const json = JSON.parse(event.body);
@@ -60,6 +64,7 @@ export default async function POST(
       headers: getHeaders("application/json"),
     };
   } catch (error: unknown) {
+    console.log("🚀 ~ error:", error);
     if (error instanceof ValiError) {
       return {
         statusCode: 422,
