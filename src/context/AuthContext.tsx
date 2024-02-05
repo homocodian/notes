@@ -88,10 +88,13 @@ function AuthProvider({ children }: AuthContextProps) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const token = await getIdToken(user);
+        const token = await getIdToken(user, true);
         setToken(token);
+        setUser(user);
+      } else {
+        setToken(null);
+        setUser(null);
       }
-      setUser(user);
       setIsLoading(false);
     });
     return unsubscribe;
