@@ -7,32 +7,37 @@ import Box from "@mui/material/Box";
 import NoteSkeleton from "@/components/NoteSkeleton";
 import NoteCard from "@/components/main/NoteCard";
 import { useAuth } from "@/context/AuthContext";
-import { getAxiosInstance } from "@/lib/axios";
+import { axiosInstance, destroyInterceptor, getInterceptor } from "@/lib/axios";
 import { type Note } from "@/types/notes";
 import { useQuery } from "@tanstack/react-query";
 import EmptyNote from "../EmptyNote";
+
+async function fetchNotes(
+  uid: string | null | undefined,
+  token: string | null,
+) {
+  if (!uid || !token) {
+    return Promise.reject("Invalid token");
+  }
+  const searchParams = new URLSearchParams();
+  searchParams.set("user", uid);
+
+  getInterceptor(token);
+  const res = await axiosInstance
+    .get(`/notes?${searchParams.toString()}`)
+    .finally(() => {
+      destroyInterceptor();
+    });
+  return res.data;
+}
 
 function Notes() {
   const { user, token } = useAuth();
   const [searchParams] = useSearchParams();
   const { data: notes, isLoading } = useQuery<Note[]>({
     queryKey: ["notes", user?.uid, token],
-    queryFn: async () => {
-      if (!user?.uid || !token) {
-        return Promise.reject("Invalid token");
-      }
-
-      const url = new URL(`${import.meta.env.VITE_BASE_URL}/notes`);
-      const searchParams = new URLSearchParams();
-      searchParams.set("user", user?.uid);
-      url.search = searchParams.toString();
-
-      return getAxiosInstance(token)
-        .get(url.toString())
-        .then((res) => res.data);
-    },
+    queryFn: () => fetchNotes(user?.uid, token),
     enabled: !!user,
-    refetchOnWindowFocus: true,
   });
 
   const [searchedNotes, setSearchedNotes] = useState<Note[]>([]);
