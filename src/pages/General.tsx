@@ -1,124 +1,111 @@
 import { useEffect, useState } from "react";
 
 import { Box } from "@mui/material";
-import {
-	collection,
-	DocumentData,
-	onSnapshot,
-	orderBy,
-	query,
-	QueryDocumentSnapshot,
-	where,
-} from "firebase/firestore";
 
-import { db } from "@/firebase";
-import { Masonry } from "@mui/lab";
-import { NoteCard } from "@/components/main";
-import { useAuth } from "@/context/AuthContext";
-import SideDrawer from "@/components/main/SideDrawer";
-import NoteSkeleton from "@/components/NoteSkeleton";
 import EmptyNote from "@/components/EmptyNote";
+import NoteSkeleton from "@/components/NoteSkeleton";
+import { NoteCard } from "@/components/main";
+import SideDrawer from "@/components/main/SideDrawer";
+import { useAuth } from "@/context/AuthContext";
+import { axiosInstance, destroyInterceptor, getInterceptor } from "@/lib/axios";
+import { Note } from "@/types/notes";
+import { Masonry } from "@mui/lab";
+import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 
+async function fetchGeneralNotes(
+  uid: string | null | undefined,
+  token: string | null,
+) {
+  if (!uid || !token) {
+    return Promise.reject("Invalid token");
+  }
+  const searchParams = new URLSearchParams();
+  searchParams.set("user", uid);
+  searchParams.set("field", "category");
+  searchParams.set("q", "general");
+
+  getInterceptor(token);
+  const res = await axiosInstance
+    .get(`/notes?${searchParams.toString()}`)
+    .finally(() => {
+      destroyInterceptor();
+    });
+  return res.data;
+}
+
 function General() {
-	const { user } = useAuth();
-	const [generalNotes, setGeneralNotes] = useState<
-		QueryDocumentSnapshot<DocumentData>[]
-	>([]);
-	const [isLoading, setIsLoading] = useState(true);
-	const [searchedNotes, setSearchedNotes] = useState<
-		QueryDocumentSnapshot<DocumentData>[]
-	>([]);
-	const [searchParams] = useSearchParams();
+  const { user, token } = useAuth();
+  const { data, isLoading } = useQuery<Note[]>({
+    queryKey: ["notes", "general", user?.uid, token],
+    queryFn: () => fetchGeneralNotes(user?.uid, token),
+    enabled: !!user,
+  });
+  const [searchedNotes, setSearchedNotes] = useState<Note[]>([]);
+  const [searchParams] = useSearchParams();
 
-	const searchString = searchParams.get("q");
+  const searchString = searchParams.get("q");
 
-	useEffect(() => {
-		if (!user) {
-			setIsLoading(false);
-			return;
-		}
-		const q = query(
-			collection(db, "notes"),
-			where("userId", "==", user.uid),
-			where("category", "==", "general"),
-			orderBy("updatedAt", "desc")
-		);
-		const unsubscribe = onSnapshot(q, (snapshot) => {
-			if (!snapshot.metadata.hasPendingWrites) {
-				setGeneralNotes(snapshot.docs);
-				setIsLoading(false);
-			}
-		});
-		return unsubscribe;
-	}, [user]);
+  useEffect(() => {
+    const query = searchParams.get("q");
 
-	useEffect(() => {
-		const query = searchParams.get("q");
+    if (!query || !data) {
+      return;
+    }
 
-		if (!query) {
-			return;
-		}
+    setSearchedNotes(
+      data.filter((item) => {
+        if (item.text.toLocaleLowerCase().includes(query.toLocaleLowerCase())) {
+          return item;
+        }
+      }),
+    );
+  }, [searchParams, data]);
 
-		setSearchedNotes(
-			generalNotes.filter((item) => {
-				const text: string | undefined = item.get("text");
-				if (text?.toLocaleLowerCase()?.includes(query?.toLocaleLowerCase())) {
-					return item;
-				}
-			})
-		);
-	}, [searchParams, generalNotes]);
-
-	return (
-		<Box
-			sx={{
-				width: "100%",
-				overflow: "auto",
-				paddingBottom: "15px",
-			}}
-		>
-			<SideDrawer />
-			<Box sx={{ width: "100%" }} pt={3}>
-				{isLoading ? (
-					<NoteSkeleton />
-				) : generalNotes.length <= 0 ||
-				  (searchedNotes.length <= 0 && searchString) ? (
-					<EmptyNote />
-				) : (
-					<Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
-						<Masonry columns={{ xs: 1, sm: 2, md: 3 }} spacing={2}>
-							{(searchedNotes.length > 0 && searchParams.get("q")
-								? searchedNotes
-								: generalNotes
-							).map((note) => {
-								const {
-									text,
-									isComplete,
-									category,
-									timestamp,
-									sharedWith,
-									userId,
-								} = note.data();
-								return (
-									<NoteCard
-										key={note.id}
-										id={note.id}
-										text={text}
-										isComplete={isComplete}
-										category={category}
-										timestamp={timestamp?.toDate()}
-										sharedWith={sharedWith}
-										userId={userId}
-									/>
-								);
-							})}
-						</Masonry>
-					</Box>
-				)}
-			</Box>
-		</Box>
-	);
+  return (
+    <Box
+      sx={{
+        width: "100%",
+        overflow: "auto",
+        paddingBottom: "15px",
+      }}
+    >
+      <SideDrawer />
+      <Box sx={{ width: "100%" }} pt={3}>
+        {isLoading ? (
+          <NoteSkeleton />
+        ) : !data ||
+          data.length <= 0 ||
+          (searchedNotes.length <= 0 && searchString) ? (
+          <EmptyNote />
+        ) : (
+          <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
+            <Masonry columns={{ xs: 1, sm: 2, md: 3 }} spacing={2}>
+              {(searchedNotes.length > 0 && searchParams.get("q")
+                ? searchedNotes
+                : data
+              ).map((note) => {
+                return (
+                  <NoteCard
+                    key={note.id}
+                    id={note.id}
+                    text={note.text}
+                    isComplete={note.isComplete}
+                    category={note.category}
+                    timestamp={note.timestamp}
+                    sharedWith={note.sharedWith}
+                    userId={note.userId}
+                    isShared={false}
+                    updatedAt={note.updatedAt}
+                  />
+                );
+              })}
+            </Masonry>
+          </Box>
+        )}
+      </Box>
+    </Box>
+  );
 }
 
 export default General;
