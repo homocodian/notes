@@ -23,7 +23,10 @@ const queryParamsSchema = object(
   {
     user: string("User is not specified"),
     field: optional(
-      picklist(["text", "category"], "field can be either text or category"),
+      picklist(
+        ["text", "category", "shared"],
+        "field can be text,category or shared",
+      ),
     ),
     q: optional(string("query text is required")),
   },
@@ -31,6 +34,8 @@ const queryParamsSchema = object(
     custom(({ field, q }) => {
       // if both undefined then PASS
       if (!field && !q) return true;
+
+      if (field === "shared") return true;
 
       // if both defined then a then pass
       if (field && q) return true;
@@ -44,6 +49,8 @@ const queryParamsSchema = object(
 
       if (field === "text") return true;
 
+      if (field === "shared") return true;
+
       if (field === "category" && (q === "general" || q === "important"))
         return true;
 
@@ -54,9 +61,9 @@ const queryParamsSchema = object(
       // if both undefined then PASS
       if (!field && !q) return true;
 
-      if (field === "category") return true;
+      if (field === "text") return false;
 
-      return false;
+      return true;
     }, "text query is not supported at this moment"),
   ],
 );
@@ -87,6 +94,11 @@ export default async function GET(
       filter = Filter.and(
         Filter.where("userId", "==", user.uid),
         Filter.where(queryParams.field, "==", queryParams.q),
+      );
+    } else if (queryParams.field === "shared") {
+      filter = Filter.or(
+        Filter.where("sharedWith", "array-contains", user.uid),
+        Filter.where("sharedWith", "array-contains", user.email),
       );
     }
 
