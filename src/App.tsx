@@ -12,6 +12,7 @@ import DrawerProvider from "@/context/DrawerContext";
 import useHandleBackButtonPress from "@/hooks/useHandleBackButtonPress";
 import { useTheme } from "@/hooks/useTheme";
 import {
+  MutationCache,
   QueryCache,
   QueryClient,
   QueryClientProvider,
@@ -29,11 +30,16 @@ if (Capacitor.isNativePlatform()) {
 }
 
 // Create a client
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (error) => {
-      if (error instanceof AxiosError)
-        toast.error(`Something went wrong: ${error.response?.data}`);
+      if (error instanceof AxiosError) toast.error(`${error.response?.data}`);
+      else toast.error(`Something went wrong: ${error.message}`);
+    },
+  }),
+  mutationCache: new MutationCache({
+    onError: (error) => {
+      if (error instanceof AxiosError) toast.error(`${error.response?.data}`);
       else toast.error(`Something went wrong: ${error.message}`);
     },
   }),
