@@ -23,7 +23,7 @@ function RefreshButton() {
     <IconButton aria-label="refresh" onClick={refresh}>
       <RefreshCw
         className={cn(
-          "h-5 w-5",
+          "h-5 w-5 text-white",
           isFetching > 0 || isMutating > 0 ? "animate-spin" : "",
         )}
       />

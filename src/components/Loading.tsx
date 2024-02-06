@@ -13,7 +13,7 @@ function Loading() {
       <Loader2
         className="animate-spin"
         style={{
-          color: theme.palette.text.primary,
+          color: theme.palette.text.secondary,
         }}
       />
     </div>
