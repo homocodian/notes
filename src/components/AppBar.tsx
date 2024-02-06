@@ -18,10 +18,11 @@ import SettingsMenu from "@/components/general/SettingsMenu";
 import { useAuth } from "@/context/AuthContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { useSearchParams } from "react-router-dom";
+import { SideDrawer } from "./main";
 import RefreshButton from "./refresh";
 
 function AppBar() {
-  const nodeRef = useRef();
+  const nodeRef = useRef<HTMLDivElement | null>(null);
   const { user } = useAuth();
   const location = useLocation();
   const { isDrawerOpen, setDrawerIsOpen } = useDrawer();
@@ -43,8 +44,8 @@ function AppBar() {
   return (
     <Fragment>
       <Slide direction="down" in={shouldShow}>
-        <MuiAppBar position="fixed">
-          <Box ref={nodeRef} overflow="hidden" flexGrow={1}>
+        <MuiAppBar position="static">
+          <div ref={nodeRef} className="overflow-hidden">
             <Toolbar>
               <Slide
                 direction="down"
@@ -124,10 +125,11 @@ function AppBar() {
                 </Box>
               </Slide>
             </Toolbar>
-          </Box>
+          </div>
         </MuiAppBar>
       </Slide>
       <KeyboardShortcut />
+      {user ? <SideDrawer /> : null}
     </Fragment>
   );
 }

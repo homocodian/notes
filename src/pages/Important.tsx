@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { Box } from "@mui/material";
-
 import EmptyNote from "@/components/EmptyNote";
 import { NoteCard } from "@/components/main";
-import SideDrawer from "@/components/main/SideDrawer";
 import NoteSkeleton from "@/components/NoteSkeleton";
 import { useAuth } from "@/context/AuthContext";
 import { axiosInstance, destroyInterceptor, getInterceptor } from "@/lib/axios";
@@ -65,48 +62,39 @@ function Important() {
   }, [searchParams, data]);
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        overflow: "auto",
-        paddingBottom: "15px",
-      }}
-    >
-      <SideDrawer />
-      <Box sx={{ width: "100%" }} pt={3}>
-        {isLoading ? (
-          <NoteSkeleton />
-        ) : !data ||
-          data.length <= 0 ||
-          (searchedNotes.length <= 0 && searchString) ? (
-          <EmptyNote />
-        ) : (
-          <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
-            <Masonry columns={{ xs: 1, sm: 2, md: 3 }} spacing={2}>
-              {(searchedNotes.length > 0 && searchParams.get("q")
-                ? searchedNotes
-                : data
-              ).map((note) => {
-                return (
-                  <NoteCard
-                    key={note.id}
-                    id={note.id}
-                    text={note.text}
-                    isComplete={note.isComplete}
-                    category={note.category}
-                    timestamp={note.timestamp}
-                    sharedWith={note.sharedWith}
-                    userId={note.userId}
-                    updatedAt={note.updatedAt}
-                    isShared={false}
-                  />
-                );
-              })}
-            </Masonry>
-          </Box>
-        )}
-      </Box>
-    </Box>
+    <>
+      {isLoading ? (
+        <NoteSkeleton />
+      ) : !data ||
+        data.length <= 0 ||
+        (searchedNotes.length <= 0 && searchString) ? (
+        <EmptyNote />
+      ) : (
+        <div className="flex justify-center items-center">
+          <Masonry columns={{ xs: 1, sm: 2, md: 3 }} spacing={2}>
+            {(searchedNotes.length > 0 && searchParams.get("q")
+              ? searchedNotes
+              : data
+            ).map((note) => {
+              return (
+                <NoteCard
+                  key={note.id}
+                  id={note.id}
+                  text={note.text}
+                  isComplete={note.isComplete}
+                  category={note.category}
+                  timestamp={note.timestamp}
+                  sharedWith={note.sharedWith}
+                  userId={note.userId}
+                  updatedAt={note.updatedAt}
+                  isShared={false}
+                />
+              );
+            })}
+          </Masonry>
+        </div>
+      )}
+    </>
   );
 }
 

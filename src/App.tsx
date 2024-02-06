@@ -7,7 +7,6 @@ import { RouteComponents } from "@/Routes";
 import AppBar from "@/components/AppBar";
 import ThemedToaster from "@/components/ThemedToaster";
 import Connectivity from "@/components/general/Connectivity";
-import AccountMenuProvider from "@/context/AccountMenuContext";
 import DrawerProvider from "@/context/DrawerContext";
 import useHandleBackButtonPress from "@/hooks/useHandleBackButtonPress";
 import { useTheme } from "@/hooks/useTheme";
@@ -61,23 +60,21 @@ function App() {
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
         <DrawerProvider>
-          <AccountMenuProvider>
-            <AppBar />
-            <div style={{ paddingTop: "64px", overflow: "auto" }}>
-              <Routes>
-                {RouteComponents.map((route) => (
-                  <Route
-                    key={route.path}
-                    path={route.path}
-                    element={route.element}
-                  />
-                ))}
-              </Routes>
-            </div>
-            <Connectivity />
-            {CheckForUpdates ? <CheckForUpdates /> : null}
-            <ThemedToaster />
-          </AccountMenuProvider>
+          <AppBar />
+          <div className="overflow-auto h-full pt-4 pb-10 md:pb-16">
+            <Routes>
+              {RouteComponents.map((route) => (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  element={route.element}
+                />
+              ))}
+            </Routes>
+          </div>
+          <Connectivity />
+          {CheckForUpdates ? <CheckForUpdates /> : null}
+          <ThemedToaster />
         </DrawerProvider>
         <React.Suspense fallback={null}>
           <ReactQueryDevtools initialIsOpen={false} />

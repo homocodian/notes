@@ -2,7 +2,6 @@ import { Fragment, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import Masonry from "@mui/lab/Masonry";
-import Box from "@mui/material/Box";
 
 import NoteSkeleton from "@/components/NoteSkeleton";
 import NoteCard from "@/components/main/NoteCard";
@@ -73,7 +72,7 @@ function Notes() {
       (searchedNotes.length <= 0 && searchString) ? (
         <EmptyNote />
       ) : (
-        <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
+        <div className="flex justify-center items-center">
           <Masonry columns={{ xs: 1, sm: 2, md: 3 }} spacing={1.5}>
             {(searchedNotes.length > 0 && searchParams.get("q")
               ? searchedNotes
@@ -108,7 +107,7 @@ function Notes() {
               );
             })}
           </Masonry>
-        </Box>
+        </div>
       )}
     </Fragment>
   );

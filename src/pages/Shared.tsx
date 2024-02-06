@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { Box } from "@mui/material";
-
 import EmptyNote from "@/components/EmptyNote";
 import { NoteCard } from "@/components/main";
-import SideDrawer from "@/components/main/SideDrawer";
 import NoteSkeleton from "@/components/NoteSkeleton";
 import { useAuth } from "@/context/AuthContext";
 import { axiosInstance, destroyInterceptor, getInterceptor } from "@/lib/axios";
@@ -64,45 +61,31 @@ function Shared() {
   }, [searchParams, data]);
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        overflow: "auto",
-        paddingBottom: "15px",
-      }}
-    >
-      <SideDrawer />
-      <Box sx={{ width: "100%" }} pt={3}>
-        {isLoading ? (
-          <NoteSkeleton />
-        ) : !data ||
-          data.length <= 0 ||
-          (searchedNotes.length <= 0 && searchString) ? (
-          <EmptyNote message="Notes shared to you will appear here" />
-        ) : (
-          <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
-            <Masonry columns={{ xs: 1, sm: 2, md: 3 }} spacing={2}>
-              {(searchedNotes.length > 0 && searchString
-                ? searchedNotes
-                : data
-              ).map((note) => {
-                const labelText = (note.name ||
-                  note.email ||
-                  "a friend") as string;
-                return (
-                  <NoteCard
-                    {...note}
-                    isShared
-                    label={labelText}
-                    key={note.id}
-                  />
-                );
-              })}
-            </Masonry>
-          </Box>
-        )}
-      </Box>
-    </Box>
+    <>
+      {isLoading ? (
+        <NoteSkeleton />
+      ) : !data ||
+        data.length <= 0 ||
+        (searchedNotes.length <= 0 && searchString) ? (
+        <EmptyNote message="Notes shared to you will appear here" />
+      ) : (
+        <div className="flex justify-center items-center">
+          <Masonry columns={{ xs: 1, sm: 2, md: 3 }} spacing={2}>
+            {(searchedNotes.length > 0 && searchString
+              ? searchedNotes
+              : data
+            ).map((note) => {
+              const labelText = (note.name ||
+                note.email ||
+                "a friend") as string;
+              return (
+                <NoteCard {...note} isShared label={labelText} key={note.id} />
+              );
+            })}
+          </Masonry>
+        </div>
+      )}
+    </>
   );
 }
 
