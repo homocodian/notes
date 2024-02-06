@@ -1,36 +1,21 @@
-import { ComponentProps, Fragment, useCallback, useState } from "react";
+import { Fragment, useState } from "react";
 
 import { Capacitor } from "@capacitor/core";
 import { GetApp } from "@mui/icons-material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import {
-  Box,
-  Button,
-  Divider,
-  Drawer,
-  Snackbar,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Divider, Drawer, Typography } from "@mui/material";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useNavigate } from "react-router";
 
 import { RouteName } from "@/Routes";
-import ConfirmDialog from "@/components/ConfirmDialog";
 import CustomSnackbar from "@/components/CustomSnackbar";
 import { useDrawer } from "@/context/DrawerContext";
-import useDeleteAllNotes from "@/hooks/useDeleteAllNotes";
 import { checkForUpdates } from "@/utils/get-latest-release";
 import { LoadingButton } from "@mui/lab";
-
-type Type = ComponentProps<typeof CustomSnackbar>["alertType"];
+import toast from "react-hot-toast";
 
 function SideDrawer() {
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [type, setType] = useState<Type>("info");
   const { isDrawerOpen, setDrawerIsOpen } = useDrawer();
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
 
@@ -47,35 +32,19 @@ function SideDrawer() {
     navigate(page);
   };
 
-  const handleDialogOpen = () => {
+  const checkForUpdate = async () => {
     handleClose();
-    setOpen(true);
+    const data = await toast.promise(checkForUpdates(), {
+      error: "Failed to check for update.",
+      loading: "Checking for updates...",
+      success: (data) => {
+        return data ? "New Update available" : "No updates available";
+      },
+    });
+    if (!data) return;
+    setIsSnackbarOpen(true);
+    setMessage(`New update available ${data.data.html_url}`);
   };
-
-  const checkForUpdate = useCallback(async () => {
-    setLoading(true);
-    try {
-      const data = await checkForUpdates();
-      if (!data) {
-        setLoading(false);
-        handleClose();
-        setType("info");
-        setIsSnackbarOpen(true);
-        setMessage("There are currently no new updates available.");
-        return;
-      }
-      setLoading(false);
-      handleClose();
-      setType("info");
-      setIsSnackbarOpen(true);
-      setMessage(`New update available ${data.data.html_url}`);
-    } catch (error) {
-      handleClose();
-      setType("error");
-      setIsSnackbarOpen(true);
-      setMessage("Failed to check for update.");
-    }
-  }, []);
 
   return (
     <Fragment>
@@ -122,41 +91,28 @@ function SideDrawer() {
               Shared
             </Button>
           </Box>
-          <Divider />
           <Box
             display="flex"
             flexDirection="column"
-            gap="0.5rem"
+            justifyItems="center"
+            alignItems="center"
             padding="1rem 0.5rem"
           >
-            {Capacitor.isNativePlatform() ? (
+            {!Capacitor.isNativePlatform() ? (
               <LoadingButton
                 color="secondary"
                 onClick={checkForUpdate}
                 startIcon={<GetApp />}
                 loadingPosition="start"
-                loading={loading}
               >
                 Check update
               </LoadingButton>
             ) : null}
-            <Button
-              onClick={handleDialogOpen}
-              color="error"
-              startIcon={<DeleteIcon />}
-            >
-              Delete All
-            </Button>
           </Box>
         </Box>
       </Drawer>
-      <DeleteAllNotesConfirmDialog
-        open={open}
-        setOpen={setOpen}
-        handleClose={handleClose}
-      />
       <CustomSnackbar
-        alertType={type}
+        alertType="info"
         message={message}
         open={isSnackbarOpen}
         setOpen={setIsSnackbarOpen}
@@ -166,73 +122,3 @@ function SideDrawer() {
 }
 
 export default SideDrawer;
-
-function DeleteAllNotesConfirmDialog({
-  handleClose,
-  open,
-  setOpen,
-}: {
-  handleClose: () => void;
-  setOpen: (prop: boolean) => void;
-  open: boolean;
-}) {
-  const [deleteAllNote, loading, error, setError] = useDeleteAllNotes();
-  const [input, setInput] = useState("");
-  const [deleteText] = useState("Delete");
-
-  const handleDeleteAll = async () => {
-    handleClose();
-    await deleteAllNote();
-  };
-
-  const OnPositiveButtonPress = () => {
-    handleDialogClose();
-    handleDeleteAll();
-  };
-
-  const handleDialogClose = () => {
-    setOpen(false);
-  };
-
-  return (
-    <Fragment>
-      <ConfirmDialog
-        title="Delete all notes ?"
-        message="This action is permanent, 
-        after deleting all notes you cannot recover it."
-        open={open}
-        handleClose={() => {
-          setInput("");
-          handleDialogClose();
-        }}
-        positiveButtonLabel="Delete"
-        onPositiveButtonPress={OnPositiveButtonPress}
-        positiveButtonProps={{
-          variant: "contained",
-          color: "error",
-          disableElevation: true,
-          startIcon: <DeleteIcon />,
-          disabled: input !== deleteText,
-          loading: loading,
-          loadingPosition: "start",
-        }}
-      >
-        <Typography>
-          Please type <strong>{deleteText}</strong> to confirm.
-        </Typography>
-        <TextField
-          value={input}
-          variant="outlined"
-          onChange={(e) => setInput(e.target.value)}
-        />
-      </ConfirmDialog>
-      <Snackbar
-        open={Boolean(error)}
-        message={error}
-        onClose={() => {
-          setError(null);
-        }}
-      />
-    </Fragment>
-  );
-}

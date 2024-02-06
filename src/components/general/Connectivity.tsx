@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
+import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { Box, Slide, Typography, colors } from "@mui/material";
-
-import { useOnlineStatus } from "@/hooks";
 
 function Connectivity() {
   const isOnline = useOnlineStatus();
@@ -10,8 +9,6 @@ function Connectivity() {
   const prevNetworkStatus = useRef<boolean | undefined>(undefined);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
-
     if (isOnline && prevNetworkStatus.current === undefined) {
       return;
     } else {
@@ -20,7 +17,7 @@ function Connectivity() {
 
     setShowMessage(true);
 
-    timer = setTimeout(() => {
+    const timer = setTimeout(() => {
       setShowMessage(false);
     }, 5000);
 
