@@ -10,16 +10,20 @@ import Menu, { MenuProps } from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { alpha, styled } from "@mui/material/styles";
 
+import { queryClient } from "@/App";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import CustomSnackbar from "@/components/CustomSnackbar";
 import ShareModal from "@/components/ShareModal";
 import EditNoteModal from "@/components/main/EditNoteModal";
 import { useAuth } from "@/context/AuthContext";
 import { noteDocReference } from "@/firebase";
-import { useDeleteNote, useUpdateStatus } from "@/hooks";
+import { useDeleteNote } from "@/hooks";
+import { UpdateNoteProps, updateNote } from "@/lib/update-note";
 import { writeToClipboard } from "@/utils/clipboard";
 import { networkAware } from "@/utils/network-aware";
+import { useMutation } from "@tanstack/react-query";
 import { arrayRemove, updateDoc } from "firebase/firestore";
+import toast from "react-hot-toast";
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -84,9 +88,14 @@ function NoteMenu({
   category,
   isShared,
 }: ITodoMenu) {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const open = Boolean(anchorEl);
-  const [updateStatus] = useUpdateStatus();
+  const { mutateAsync } = useMutation({
+    mutationFn: (params: UpdateNoteProps) => updateNote(params),
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+    },
+  });
   const [deleteNote] = useDeleteNote();
   const [confirm, setConfirm] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
@@ -102,7 +111,17 @@ function NoteMenu({
 
   const handleStatusUpdate = async () => {
     handleClose();
-    updateStatus(id, complete);
+    const toastId = toast.loading("Updating...");
+    mutateAsync({
+      token,
+      uid: user?.uid,
+      id,
+      data: {
+        isComplete: !complete,
+      },
+    }).finally(() => {
+      toast.dismiss(toastId);
+    });
   };
 
   const closeModal = () => {

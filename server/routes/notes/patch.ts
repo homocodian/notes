@@ -32,7 +32,7 @@ export default async function POST(
 
   if (!queryParams.success) {
     return {
-      statusCode: 404,
+      statusCode: 400,
       body: queryParams.issues[0].message,
       headers: getHeaders(),
     };
@@ -89,6 +89,7 @@ export default async function POST(
       headers: getHeaders("application/json"),
     };
   } catch (error: unknown) {
+    console.log("🚀 ~ error:", error);
     if (error instanceof ValiError) {
       return {
         statusCode: 422,
