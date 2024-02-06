@@ -1,49 +1,23 @@
-import { useEffect, useRef } from "react";
-
-import lottie from "lottie-web";
-import { Box } from "@mui/material";
+import { useTheme } from "@/hooks/useTheme";
+import { Loader2 } from "lucide-react";
 
 function Loading() {
-	const animationContainer = useRef<HTMLDivElement | null>(null);
-
-	useEffect(() => {
-		if (animationContainer.current) {
-			lottie
-				.loadAnimation({
-					container: animationContainer.current,
-					// @ts-ignore
-					animationData: require("../animation/loading.json"),
-					autoplay: true,
-					loop: true,
-					renderer: "svg",
-				})
-				.play();
-		}
-	}, []);
-
-	return (
-		<Box
-			sx={{
-				display: "grid",
-				placeItems: "center",
-				width: "100%",
-				background: "#000000",
-				position: "absolute",
-				inset: 0,
-				paddingTop: "64px",
-				overflow: "hidden",
-				height: "calc(100vh - 64px)",
-			}}
-		>
-			<Box
-				sx={{
-					maxWidth: "512px",
-					// overflow: "hidden",
-				}}
-				ref={animationContainer}
-			/>
-		</Box>
-	);
+  const { theme } = useTheme();
+  return (
+    <div
+      className="h-full flex justify-center items-center"
+      style={{
+        backgroundColor: theme.palette.background.default,
+      }}
+    >
+      <Loader2
+        className="animate-spin"
+        style={{
+          color: theme.palette.text.primary,
+        }}
+      />
+    </div>
+  );
 }
 
 export default Loading;

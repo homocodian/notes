@@ -1,5 +1,3 @@
-import toast from "react-hot-toast";
-
 import {
   createContext,
   ReactNode,
@@ -8,23 +6,10 @@ import {
   useState,
 } from "react";
 
-import {
-  createUserWithEmailAndPassword,
-  getIdToken,
-  GoogleAuthProvider,
-  onAuthStateChanged,
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  signOut,
-  User,
-  UserCredential,
-} from "firebase/auth";
+import { getIdToken, onAuthStateChanged, User } from "firebase/auth";
 
-import { Capacitor } from "@capacitor/core";
-import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
-import Loading from "../components/Loading";
-import { auth } from "../firebase";
+import Loading from "@/components/Loading";
+import { auth } from "@/firebase";
 
 type AuthContextProps = {
   children: ReactNode;
@@ -32,48 +17,7 @@ type AuthContextProps = {
 
 type ProviderValues = {
   user: User | null | undefined;
-  signUp: (email: string, password: string) => Promise<UserCredential>;
-  signIn: (email: string, password: string) => Promise<UserCredential>;
-  signInWithGooglePopup: () => Promise<UserCredential>;
-  sendPasswordResetLink: (email: string) => Promise<void>;
-  logout: () => Promise<void>;
   token: string | null;
-};
-
-const signUp = (email: string, password: string) => {
-  return createUserWithEmailAndPassword(auth, email, password);
-};
-
-const signIn = (email: string, password: string) => {
-  return signInWithEmailAndPassword(auth, email, password);
-};
-
-const signInWithGooglePopup = () => {
-  const provider = new GoogleAuthProvider();
-  return signInWithPopup(auth, provider);
-};
-
-const logout = async () => {
-  if (Capacitor.isNativePlatform()) {
-    await toast.promise(
-      GoogleAuth.signOut(),
-      {
-        loading: "Logout...",
-        success: "Success",
-        error: "Failed to Logout",
-      },
-      {
-        style: {
-          minWidth: "180px",
-        },
-      },
-    );
-  }
-  return signOut(auth);
-};
-
-const sendPasswordResetLink = (email: string) => {
-  return sendPasswordResetEmail(auth, email);
 };
 
 const AuthContext = createContext({} as ProviderValues);
@@ -102,11 +46,6 @@ function AuthProvider({ children }: AuthContextProps) {
 
   const value: ProviderValues = {
     user,
-    signUp,
-    signIn,
-    logout,
-    signInWithGooglePopup,
-    sendPasswordResetLink,
     token,
   };
 

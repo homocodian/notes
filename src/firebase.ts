@@ -22,6 +22,7 @@ function whichAuth() {
     connectAuthEmulator(
       emulatedAuth,
       `http://${import.meta.env.VITE_EMULATOR_AUTH_PATH}`,
+      { disableWarnings: true },
     );
 
     return emulatedAuth;
@@ -39,5 +40,4 @@ function whichAuth() {
   return auth;
 }
 
-export default app;
 export const auth = whichAuth();
