@@ -1,21 +1,19 @@
-import { useEffect, useState } from "react";
 import { ConnectionStatus, Network } from "@capacitor/network";
+import { useEffect, useState } from "react";
 
-function useOnlineStatus() {
-	const [isOnline, setIsOnline] = useState(true);
+export function useOnlineStatus() {
+  const [isOnline, setIsOnline] = useState(true);
 
-	useEffect(() => {
-		function onStatusChange(status: ConnectionStatus) {
-			setIsOnline(status.connected);
-		}
+  useEffect(() => {
+    function onStatusChange(status: ConnectionStatus) {
+      setIsOnline(status.connected);
+    }
 
-		Network.addListener("networkStatusChange", onStatusChange);
+    Network.addListener("networkStatusChange", onStatusChange);
 
-		return () => {
-			Network.addListener("networkStatusChange", onStatusChange);
-		};
-	}, []);
-	return isOnline;
+    return () => {
+      Network.addListener("networkStatusChange", onStatusChange);
+    };
+  }, []);
+  return isOnline;
 }
-
-export default useOnlineStatus;

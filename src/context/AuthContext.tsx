@@ -89,7 +89,6 @@ function AuthProvider({ children }: AuthContextProps) {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         const token = await getIdToken(user, true);
-        console.log("🚀 ~ unsubscribe ~ token:", token);
         setToken(token);
         setUser(user);
       } else {
