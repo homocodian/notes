@@ -1,204 +1,161 @@
-import {
-	ComponentProps,
-	ReactElement,
-	Ref,
-	forwardRef,
-	useState,
-	Fragment,
-} from "react";
+import { Fragment, ReactElement, Ref, forwardRef } from "react";
 
+import { queryClient } from "@/App";
+import { useAuth } from "@/context/AuthContext";
+import { updateNote } from "@/lib/update-note";
+import { CloseOutlined } from "@mui/icons-material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import {
-	Box,
-	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogTitle,
-	FormHelperText,
-	IconButton,
-	Slide,
-	TextField,
-	Typography,
+  Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormHelperText,
+  IconButton,
+  Slide,
+  TextField,
+  Typography,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
-import { CloseOutlined } from "@mui/icons-material";
-import CustomSnackbar from "./CustomSnackbar";
-import LoadingButton from "@mui/lab/LoadingButton";
-import { useAuth } from "@/context/AuthContext";
-import { arrayUnion, serverTimestamp, updateDoc } from "firebase/firestore";
-import { noteDocReference } from "@/firebase";
-import { networkAware } from "@/utils/network-aware";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 const Transition = forwardRef(
-	(
-		props: TransitionProps & {
-			children: ReactElement<any, any>;
-		},
-		ref: Ref<unknown>
-	) => {
-		return <Slide direction="up" ref={ref} {...props} />;
-	}
+  (
+    props: TransitionProps & {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      children: ReactElement<any, any>;
+    },
+    ref: Ref<unknown>,
+  ) => {
+    return <Slide direction="up" ref={ref} {...props} />;
+  },
 );
 
-type SharedWithModalProps = {
-	open: boolean;
-	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-	id: string;
-};
+Transition.displayName = "Transition";
 
-type AlertProps = {
-	open: ComponentProps<typeof CustomSnackbar>["open"];
-	message: ComponentProps<typeof CustomSnackbar>["message"];
-	type: ComponentProps<typeof CustomSnackbar>["alertType"];
+type SharedWithModalProps = {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  id: string;
 };
 
 export default function ShareModal({
-	open,
-	setOpen,
-	id,
+  open,
+  setOpen,
+  id,
 }: SharedWithModalProps) {
-	const { user } = useAuth();
-	const [loading, setLoading] = useState(false);
-	const [alert, setAlert] = useState<AlertProps>({
-		open: false,
-		message: "",
-		type: "error",
-	});
+  const { user, token } = useAuth();
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: updateNote,
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+    },
+  });
 
-	function handleClose() {
-		setOpen(false);
-	}
+  function handleClose() {
+    setOpen(false);
+  }
 
-	async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-		e.preventDefault();
-		setLoading(true);
-		const formData = new FormData(e.currentTarget);
-		const shareWith = formData
-			.get("share-with")
-			?.toString()
-			.split(",")
-			.map((item) => item.trim());
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
 
-		if (!shareWith || shareWith.length === 0) {
-			setAlert({
-				open: true,
-				message: "Please provide id or ids",
-				type: "error",
-			});
-			setLoading(false);
-			return;
-		}
+    const formData = new FormData(e.currentTarget);
+    const shareWith = formData
+      .get("share-with")
+      ?.toString()
+      .split(",")
+      .map((item) => item.trim());
 
-		if (shareWith.findIndex((item) => item === user?.uid) !== -1) {
-			setAlert({
-				open: true,
-				message: "You cannot share with yourself",
-				type: "error",
-			});
-			setLoading(false);
-			return;
-		}
+    if (!shareWith || shareWith.length === 0) {
+      toast.error("Please provide id or ids");
+      return;
+    }
 
-		try {
-			await networkAware(
-				async () =>
-					await updateDoc(noteDocReference(id), {
-						sharedWith: arrayUnion(...shareWith),
-						...(user?.displayName ? { name: user.displayName } : {}),
-						...(user?.email ? { email: user.email } : {}),
-						updatedAt: serverTimestamp(),
-					})
-			);
-			setAlert({
-				open: true,
-				message: "Note has been shared, if user email is correct.",
-				type: "success",
-			});
-		} catch (error: any) {
-			setAlert({
-				open: true,
-				message: error?.message
-					? error.message
-					: "Failed to share, please try later.",
-				type: "error",
-			});
-		} finally {
-			setLoading(false);
-			setOpen(false);
-		}
-	}
+    if (shareWith.some((item) => item === user?.uid || item === user?.email)) {
+      toast.error("You cannot share with yourself");
+      return;
+    }
 
-	return (
-		<Fragment>
-			<Dialog
-				fullWidth
-				open={open}
-				maxWidth="sm"
-				closeAfterTransition
-				onClose={handleClose}
-				aria-describedby="users"
-				TransitionComponent={Transition}
-				aria-labelledby="note-shared-with"
-			>
-				<DialogTitle>
-					<Box
-						display="flex"
-						justifyItems="center"
-						justifyContent="space-between"
-					>
-						<Typography display="flex" alignItems="center" variant="subtitle1">
-							Share this note with others
-						</Typography>
-						<IconButton
-							size="large"
-							id="close-delete-all-notes-modal"
-							aria-label="Close"
-							onClick={handleClose}
-							color="inherit"
-						>
-							<CloseOutlined />
-						</IconButton>
-					</Box>
-				</DialogTitle>
-				<DialogContent>
-					<form onSubmit={onSubmit} id="share-modal">
-						<Box sx={{ padding: "0.5rem 0" }}>
-							<TextField
-								name="share-with"
-								required
-								sx={{ width: "100%" }}
-								label="User email"
-								type="email"
-							/>
-							<FormHelperText>
-								Use comma separated emails for multiple users
-							</FormHelperText>
-						</Box>
-					</form>
-				</DialogContent>
-				<DialogActions>
-					<LoadingButton
-						loading={loading}
-						type="submit"
-						form="share-modal"
-						variant="contained"
-						disableElevation
-					>
-						Submit
-					</LoadingButton>
-				</DialogActions>
-			</Dialog>
-			<CustomSnackbar
-				open={alert.open}
-				alertType={alert.type}
-				message={alert.message}
-				setOpen={(prop) => {
-					setAlert((prev) => ({
-						...prev,
-						open: prop,
-					}));
-				}}
-				autoHideDuration={5000}
-			/>
-		</Fragment>
-	);
+    try {
+      await mutateAsync({
+        token,
+        id,
+        uid: user?.uid,
+        data: {
+          sharedWith: shareWith,
+        },
+      });
+      toast.success("Note has been shared, if user email is correct.");
+    } catch (error: unknown) {
+      if (error instanceof Error) toast.error(error.message);
+      else toast.error("Failed to share, please try later");
+    } finally {
+      handleClose();
+    }
+  }
+
+  return (
+    <Fragment>
+      <Dialog
+        fullWidth
+        open={open}
+        maxWidth="sm"
+        closeAfterTransition
+        onClose={handleClose}
+        aria-describedby="users"
+        TransitionComponent={Transition}
+        aria-labelledby="note-shared-with"
+      >
+        <DialogTitle>
+          <Box
+            display="flex"
+            justifyItems="center"
+            justifyContent="space-between"
+          >
+            <Typography display="flex" alignItems="center" variant="subtitle1">
+              Share this note with others
+            </Typography>
+            <IconButton
+              size="large"
+              id="close-delete-all-notes-modal"
+              aria-label="Close"
+              onClick={handleClose}
+              color="inherit"
+            >
+              <CloseOutlined />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          <form onSubmit={onSubmit} id="share-modal">
+            <Box sx={{ padding: "0.5rem 0" }}>
+              <TextField
+                name="share-with"
+                required
+                sx={{ width: "100%" }}
+                label="User email"
+                type="email"
+              />
+              <FormHelperText>
+                Use comma separated emails for multiple users
+              </FormHelperText>
+            </Box>
+          </form>
+        </DialogContent>
+        <DialogActions>
+          <LoadingButton
+            loading={isPending}
+            type="submit"
+            form="share-modal"
+            variant="contained"
+            disableElevation
+          >
+            Submit
+          </LoadingButton>
+        </DialogActions>
+      </Dialog>
+    </Fragment>
+  );
 }

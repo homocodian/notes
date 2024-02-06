@@ -1,24 +1,16 @@
 import { HandlerEvent, HandlerResponse } from "@netlify/functions";
-import { Timestamp } from "firebase-admin/firestore";
-import {
-  ValiError,
-  boolean,
-  merge,
-  object,
-  parse,
-  partial,
-  safeParse,
-  string,
-} from "valibot";
+import { FieldValue, Timestamp } from "firebase-admin/firestore";
+import { ValiError, object, parse, safeParse, string } from "valibot";
 import { admin } from "../../firebase/admin";
 import { getFirebaseErrorMessage } from "../../utils/format-firebase-error";
 import { getHeaders } from "../../utils/get-headers";
+import { getResponseObject } from "../../utils/get-response-object";
 import { isFirebaseError } from "../../utils/is-firebase-error";
 import {
   AuthorizationError,
   verifyFirebaseToken,
 } from "../../utils/validate-user";
-import { noteSchema } from "../../validations/notes";
+import { noteToUpdateSchema } from "../../validations/notes";
 
 const queryParamsSchema = object({
   user: string("User is not specified"),
@@ -50,77 +42,103 @@ export default async function POST(
       throw new Error("Invalid fields");
     }
 
+    // validation
     const json = JSON.parse(event.body);
-    const parsedData = parse(
-      partial(merge([noteSchema, object({ isComplete: boolean() })])),
-      json,
-    );
+    const parsedData = parse(noteToUpdateSchema, json);
 
-    const dataToUpdate = {
+    if (!Object.keys(parsedData).length) {
+      return getResponseObject(
+        400,
+        "Nothing received to update, give some data to update",
+      );
+    }
+
+    // data which must be updated
+    let dataToUpdate = {
       ...parsedData,
       updatedAt: Timestamp.now(),
     };
 
+    // get current data
     const noteToUpdate = await admin()
       .firestore()
       .collection("notes")
       .doc(queryParams.output.id)
       .get();
-
     const data = noteToUpdate?.data();
 
-    if (!noteToUpdate.exists || data?.["userId"] !== user.uid) {
-      return {
-        statusCode: !noteToUpdate.exists ? 404 : 401,
-        body: !noteToUpdate.exists ? "Resource not Found" : "Unauthorized",
-        headers: getHeaders(),
+    if (!noteToUpdate.exists) {
+      return getResponseObject(404, "Resource not Found");
+    } else if (
+      data?.["userId"] !== user.uid &&
+      (!dataToUpdate.removeSharedWith || !dataToUpdate.removeSharedWith.length)
+    ) {
+      throw new AuthorizationError("unathorized");
+    }
+
+    if (dataToUpdate.sharedWith) {
+      dataToUpdate = {
+        ...dataToUpdate,
+
+        // @ts-expect-error can be firestore field value
+        sharedWith: FieldValue.arrayUnion(
+          ...dataToUpdate.sharedWith
+            .filter(Boolean)
+            .filter((item) => item !== user.uid && item !== user.email),
+        ),
       };
     }
 
+    if (dataToUpdate.removeSharedWith) {
+      dataToUpdate = {
+        // @ts-expect-error can be firestore field value
+        sharedWith: FieldValue.arrayRemove(
+          ...dataToUpdate.removeSharedWith.filter(Boolean),
+        ),
+      };
+    }
+
+    if (dataToUpdate.fieldToDelete) {
+      dataToUpdate = {
+        ...dataToUpdate,
+        // @ts-expect-error can be fieldvalue
+        [dataToUpdate.fieldToDelete]: FieldValue.delete(),
+      };
+    }
+
+    delete dataToUpdate["removeSharedWith"];
+    delete dataToUpdate["fieldToDelete"];
+
+    // update data
     await admin()
       .firestore()
       .collection("notes")
       .doc(noteToUpdate.id)
       .update(dataToUpdate);
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ ...data, ...dataToUpdate }),
-      headers: getHeaders("application/json"),
-    };
+    return getResponseObject(
+      200,
+      JSON.stringify({ ...data, ...dataToUpdate }),
+      "application/json",
+    );
   } catch (error: unknown) {
     console.log("🚀 ~ error:", error);
     if (error instanceof ValiError) {
-      return {
-        statusCode: 422,
-        body: error.message,
-        headers: getHeaders(),
-      };
+      return getResponseObject(422, error.message);
     }
 
     if (error instanceof AuthorizationError) {
-      return {
-        statusCode: 401,
-        body: error.message,
-        headers: getHeaders(),
-      };
+      return getResponseObject(401, error.message);
     }
 
     if (isFirebaseError(error)) {
       const message = getFirebaseErrorMessage(error.code);
-      return {
-        statusCode: message.toLocaleLowerCase().startsWith("something")
-          ? 500
-          : 400,
-        body: message,
-        headers: getHeaders(),
-      };
+      const statusCode = message.toLocaleLowerCase().startsWith("something")
+        ? 500
+        : 400;
+      return getResponseObject(statusCode, message);
     }
 
-    return {
-      statusCode: 500,
-      body: "Something went wrong",
-      headers: getHeaders(),
-    };
+    return getResponseObject(500, "Something went wrong");
   }
 }

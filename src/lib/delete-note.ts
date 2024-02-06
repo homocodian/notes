@@ -1,14 +1,12 @@
-import type { NoteToUpdate } from "server/validations/notes";
 import { axiosInstance, destroyInterceptor, getInterceptor } from "./axios";
 
-export type UpdateNoteProps = {
-  uid: string | null | undefined;
+type DeleteNoteProps = {
   token: string | null;
+  uid: string | null | undefined;
   id: string;
-  data: NoteToUpdate;
 };
 
-export async function updateNote({ token, uid, id, data }: UpdateNoteProps) {
+export async function deleteNote({ token, uid, id }: DeleteNoteProps) {
   if (!uid || !token) {
     return Promise.reject("Invalid id token");
   }
@@ -19,7 +17,7 @@ export async function updateNote({ token, uid, id, data }: UpdateNoteProps) {
 
   getInterceptor(token);
   const res = await axiosInstance
-    .patch(`/notes?${queryParams.toString()}`, data)
+    .delete(`/notes?${queryParams.toString()}`)
     .finally(() => {
       destroyInterceptor();
     });

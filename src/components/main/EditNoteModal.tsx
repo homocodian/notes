@@ -1,148 +1,170 @@
 import { useRef, useState } from "react";
 
 import {
-	useMediaQuery,
-	Dialog,
-	DialogContent,
-	DialogContentText,
-	DialogActions,
-	Button,
-	TextField,
-	Chip,
-	MenuItem,
+  Button,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  MenuItem,
+  TextField,
+  useMediaQuery,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { useTheme } from "@mui/material/styles";
 
-import { useUpdateNote } from "@/hooks";
+import { queryClient } from "@/App";
+import { useAuth } from "@/context/AuthContext";
+import { updateNote } from "@/lib/update-note";
+import { LoadingButton } from "@mui/lab";
+import { useMutation } from "@tanstack/react-query";
 import { useHotkeys } from "react-hotkeys-hook";
 
 interface IProps {
-	id: string;
-	text: string;
-	category: string;
-	open: boolean;
-	closeModal: (value: boolean) => void;
-	isShared?: boolean;
+  id: string;
+  text: string;
+  category: string;
+  open: boolean;
+  closeModal: (value: boolean) => void;
+  isShared?: boolean;
 }
 
 function EditNoteModal({
-	open,
-	closeModal,
-	id,
-	text,
-	category,
-	isShared,
+  open,
+  closeModal,
+  id,
+  text,
+  category,
+  isShared,
 }: IProps) {
-	const theme = useTheme();
-	const [updateNote] = useUpdateNote();
-	const [inputError, setInputError] = useState(false);
-	const [note, setNote] = useState<string>(text);
-	const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-	const [updateCategory, setUpdateCategory] = useState<string>(category);
-	const submitButtonRef = useRef<HTMLButtonElement>(null);
+  const theme = useTheme();
+  const { user, token } = useAuth();
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: updateNote,
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+    },
+  });
+  const [inputError, setInputError] = useState(false);
+  const [note, setNote] = useState<string>(text);
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const [updateCategory, setUpdateCategory] = useState<string>(category);
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
 
-	useHotkeys(
-		"shift+enter",
-		(e) => {
-			e.preventDefault();
-			submitButtonRef.current?.click();
-		},
-		{
-			enableOnFormTags: ["INPUT", "TEXTAREA"],
-		}
-	);
+  useHotkeys(
+    "shift+enter",
+    (e) => {
+      e.preventDefault();
+      submitButtonRef.current?.click();
+    },
+    {
+      enableOnFormTags: ["INPUT", "TEXTAREA"],
+    },
+  );
 
-	const handleChange = (event: SelectChangeEvent) => {
-		setUpdateCategory(event.target.value);
-	};
+  const handleChange = (event: SelectChangeEvent) => {
+    setUpdateCategory(event.target.value);
+  };
 
-	const handleInputChange = (
-		event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-	) => {
-		setNote(event.target.value);
-	};
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => {
+    setNote(event.target.value);
+  };
 
-	const handleClose = () => {
-		setInputError(false);
-		closeModal(false);
-	};
+  const handleClose = () => {
+    setInputError(false);
+    closeModal(false);
+  };
 
-	const handleUpdate = () => {
-		if (!note || note === "") {
-			setInputError(true);
-			return;
-		}
-		handleClose();
-		updateNote(note, id, updateCategory);
-	};
+  const handleUpdate = () => {
+    if (!note || note === "") {
+      setInputError(true);
+      return;
+    }
+    mutateAsync({
+      token,
+      uid: user?.uid,
+      id,
+      data: {
+        text: note,
+        // @ts-expect-error category
+        category: updateCategory,
+      },
+    }).finally(() => {
+      handleClose();
+    });
+  };
 
-	return (
-		<Dialog
-			open={open}
-			aria-labelledby="add note"
-			fullScreen={fullScreen}
-			fullWidth
-			onKeyDown={(e) => {
-				if (e.key === "Escape") {
-					handleClose();
-				}
-			}}
-		>
-			<DialogContent>
-				<DialogContentText>Note</DialogContentText>
-			</DialogContent>
+  return (
+    <Dialog
+      open={open}
+      aria-labelledby="add note"
+      fullScreen={fullScreen}
+      fullWidth
+      onKeyDown={(e) => {
+        if (e.key === "Escape") {
+          handleClose();
+        }
+      }}
+    >
+      <DialogContent>
+        <DialogContentText>Note</DialogContentText>
+      </DialogContent>
 
-			<DialogContent>
-				<TextField
-					autoFocus
-					id="todo"
-					error={inputError}
-					value={note}
-					onChange={handleInputChange}
-					multiline
-					fullWidth
-					name="Note"
-					label="Note *"
-					minRows={4}
-					sx={{ marginBottom: "1rem" }}
-				/>
-				{!isShared && (
-					<Select
-						sx={{ marginTop: "1rem" }}
-						id="category"
-						value={updateCategory}
-						onChange={handleChange}
-						fullWidth
-						inputProps={{ "aria-label": "select category" }}
-						renderValue={(value) => (
-							<Chip
-								key={value}
-								label={value}
-								sx={{ textTransform: "capitalize" }}
-							/>
-						)}
-					>
-						<MenuItem value={"general"}>General</MenuItem>
-						<MenuItem value={"important"}>Important</MenuItem>
-					</Select>
-				)}
-			</DialogContent>
+      <DialogContent>
+        <TextField
+          autoFocus
+          id="todo"
+          error={inputError}
+          value={note}
+          onChange={handleInputChange}
+          multiline
+          fullWidth
+          name="Note"
+          label="Note *"
+          minRows={4}
+          sx={{ marginBottom: "1rem" }}
+        />
+        {!isShared && (
+          <Select
+            sx={{ marginTop: "1rem" }}
+            id="category"
+            value={updateCategory}
+            onChange={handleChange}
+            fullWidth
+            inputProps={{ "aria-label": "select category" }}
+            renderValue={(value) => (
+              <Chip
+                key={value}
+                label={value}
+                sx={{ textTransform: "capitalize" }}
+              />
+            )}
+          >
+            <MenuItem value={"general"}>General</MenuItem>
+            <MenuItem value={"important"}>Important</MenuItem>
+          </Select>
+        )}
+      </DialogContent>
 
-			<DialogActions>
-				<Button variant="text" onClick={handleClose}>
-					Cancel
-				</Button>
-				<Button
-					variant="contained"
-					onClick={handleUpdate}
-					ref={submitButtonRef}
-				>
-					Update
-				</Button>
-			</DialogActions>
-		</Dialog>
-	);
+      <DialogActions>
+        <Button variant="text" disabled={isPending} onClick={handleClose}>
+          Cancel
+        </Button>
+        <LoadingButton
+          variant="contained"
+          onClick={handleUpdate}
+          ref={submitButtonRef}
+          loading={isPending}
+          loadingPosition="start"
+        >
+          Update
+        </LoadingButton>
+      </DialogActions>
+    </Dialog>
+  );
 }
 
 export default EditNoteModal;

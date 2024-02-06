@@ -11,13 +11,12 @@ import Typography from "@mui/material/Typography";
 
 import NoteMenu from "@/components/main/NoteMenu";
 import { useAuth } from "@/context/AuthContext";
-import { noteDocReference } from "@/firebase";
 import { INoteCard } from "@/types/notes";
 import formatDate from "@/utils/format-date";
 // eslint-disable-next-line no-restricted-imports
 import useTheme from "@mui/material/styles/useTheme";
-import { deleteField, updateDoc } from "firebase/firestore";
 import SharedWithModal from "../NoteSharedWithModal";
+import SharedButton from "./shared-button";
 
 function NoteCard({
   id,
@@ -125,17 +124,10 @@ function NoteCard({
             Date created {formatDate(new Date(timestamp._seconds * 1000))}
           </Typography>
           {sharedWith && sharedWith.length > 0 && userId === user?.uid ? (
-            <Chip
-              label={"Shared + " + sharedWith.length}
-              variant="outlined"
-              onClick={() => {
-                setOpen(true);
-              }}
-              onDelete={async () => {
-                await updateDoc(noteDocReference(id), {
-                  sharedWith: deleteField(),
-                });
-              }}
+            <SharedButton
+              onClick={() => setOpen(true)}
+              id={id}
+              sharedWith={sharedWith}
             />
           ) : null}
         </CardActions>

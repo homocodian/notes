@@ -9,6 +9,8 @@ import {
   verifyFirebaseToken,
 } from "../../utils/validate-user";
 
+import { getResponseObject } from "../../utils/get-response-object";
+
 const queryParamsSchema = object({
   user: string("User is not specified"),
   id: string("Note id is not specified"),
@@ -43,54 +45,37 @@ export default async function DELETE(
 
     const data = noteToDelete?.data();
 
-    if (!noteToDelete.exists || data?.["userId"] !== user.uid) {
-      return {
-        statusCode: !noteToDelete.exists ? 404 : 401,
-        body: !noteToDelete.exists ? "Resource not Found" : "Unauthorized",
-        headers: getHeaders(),
-      };
+    if (!noteToDelete.exists) {
+      return getResponseObject(404, "Resource not Found");
+    }
+
+    if (data?.["userId"] !== user.uid) {
+      return getResponseObject(401, "Unauthorized");
     }
 
     await admin().firestore().collection("notes").doc(noteToDelete.id).delete();
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ id: noteToDelete.id, ...data }),
-      headers: getHeaders("application/json"),
-    };
+    return getResponseObject(
+      200,
+      JSON.stringify({ id: noteToDelete.id, ...data }),
+      "application/json",
+    );
   } catch (error: unknown) {
     console.log("🚀 ~ error:", error);
-    if (error instanceof ValiError) {
-      return {
-        statusCode: 422,
-        body: error.message,
-        headers: getHeaders(),
-      };
-    }
+    if (error instanceof ValiError)
+      return getResponseObject(422, error.message);
 
-    if (error instanceof AuthorizationError) {
-      return {
-        statusCode: 401,
-        body: error.message,
-        headers: getHeaders(),
-      };
-    }
+    if (error instanceof AuthorizationError)
+      return getResponseObject(401, error.message);
 
     if (isFirebaseError(error)) {
       const message = getFirebaseErrorMessage(error.code);
-      return {
-        statusCode: message.toLocaleLowerCase().startsWith("something")
-          ? 500
-          : 400,
-        body: message,
-        headers: getHeaders(),
-      };
+      const statusCode = message.toLocaleLowerCase().startsWith("something")
+        ? 500
+        : 400;
+      return getResponseObject(statusCode, message);
     }
 
-    return {
-      statusCode: 500,
-      body: "Something went wrong",
-      headers: getHeaders(),
-    };
+    return getResponseObject(500, "Something went wrong");
   }
 }

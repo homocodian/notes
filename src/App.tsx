@@ -33,12 +33,14 @@ if (Capacitor.isNativePlatform()) {
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (error) => {
+      if (import.meta.env.DEV) console.log(error);
       if (error instanceof AxiosError) toast.error(`${error.response?.data}`);
       else toast.error(`Something went wrong: ${error.message}`);
     },
   }),
   mutationCache: new MutationCache({
     onError: (error) => {
+      if (import.meta.env.DEV) console.log(error);
       if (error instanceof AxiosError) toast.error(`${error.response?.data}`);
       else toast.error(`Something went wrong: ${error.message}`);
     },

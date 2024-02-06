@@ -1,4 +1,4 @@
-import { ComponentProps, Fragment, useState } from "react";
+import { Fragment, useState } from "react";
 
 import CloseIcon from "@mui/icons-material/Close";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -12,17 +12,13 @@ import { alpha, styled } from "@mui/material/styles";
 
 import { queryClient } from "@/App";
 import ConfirmDialog from "@/components/ConfirmDialog";
-import CustomSnackbar from "@/components/CustomSnackbar";
 import ShareModal from "@/components/ShareModal";
 import EditNoteModal from "@/components/main/EditNoteModal";
 import { useAuth } from "@/context/AuthContext";
-import { noteDocReference } from "@/firebase";
-import { useDeleteNote } from "@/hooks";
-import { UpdateNoteProps, updateNote } from "@/lib/update-note";
+import { deleteNote } from "@/lib/delete-note";
+import { updateNote } from "@/lib/update-note";
 import { writeToClipboard } from "@/utils/clipboard";
-import { networkAware } from "@/utils/network-aware";
 import { useMutation } from "@tanstack/react-query";
-import { arrayRemove, updateDoc } from "firebase/firestore";
 import toast from "react-hot-toast";
 
 const StyledMenu = styled((props: MenuProps) => (
@@ -90,37 +86,35 @@ function NoteMenu({
 }: ITodoMenu) {
   const { user, token } = useAuth();
   const open = Boolean(anchorEl);
-  const { mutateAsync } = useMutation({
-    mutationFn: (params: UpdateNoteProps) => updateNote(params),
+  const { mutateAsync, mutate } = useMutation({
+    mutationFn: updateNote,
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
     },
   });
-  const [deleteNote] = useDeleteNote();
+  const { mutate: deleteMutation } = useMutation({
+    mutationFn: deleteNote,
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+    },
+  });
   const [confirm, setConfirm] = useState(false);
-  const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [editNoteModal, setEditNoteModal] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [errorType, setErrorType] =
-    useState<ComponentProps<typeof CustomSnackbar>["alertType"]>("success");
 
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  const handleStatusUpdate = async () => {
+  const handleStatusUpdate = () => {
     handleClose();
-    const toastId = toast.loading("Updating...");
-    mutateAsync({
+    mutate({
       token,
       uid: user?.uid,
       id,
       data: {
         isComplete: !complete,
       },
-    }).finally(() => {
-      toast.dismiss(toastId);
     });
   };
 
@@ -130,7 +124,7 @@ function NoteMenu({
 
   const onPositivePress = () => {
     closeModal();
-    deleteNote(id);
+    deleteMutation({ token, uid: user?.uid, id });
   };
 
   const handleDelete = () => {
@@ -149,38 +143,40 @@ function NoteMenu({
 
   const copyText = async () => {
     handleClose();
-    const copiedText = await writeToClipboard(text);
-    if (copiedText) {
-      setErrorMessage(null);
-      setIsAlertOpen(true);
-    } else {
-      setIsAlertOpen(true);
+    try {
+      await writeToClipboard(text);
+      toast.success("Text Copied");
+    } catch (error) {
+      toast.error("Failed to copy");
     }
   };
 
   async function removeSharedItem(id: string) {
+    handleClose();
+    let removeSharedWith: string[] | undefined = undefined;
+
+    if (user?.uid && user.email) {
+      removeSharedWith = [user.uid, user.email];
+    } else if (user?.email) {
+      removeSharedWith = [user.email];
+    } else if (user?.uid) {
+      removeSharedWith = [user.uid];
+    }
+
+    const toastId = toast.loading("Removing...");
     try {
-      await networkAware(async () => {
-        await updateDoc(noteDocReference(id), {
-          sharedWith: arrayRemove(user?.uid, user?.email),
-        });
-        setErrorMessage("Removed successfully.");
-        setErrorType("success");
-        setIsAlertOpen(true);
+      await mutateAsync({
+        token,
+        uid: user?.uid,
+        id,
+        data: {
+          removeSharedWith,
+        },
       });
-    } catch (error: unknown) {
-      if (
-        error &&
-        typeof error === "object" &&
-        "message" in error &&
-        typeof error.message === "string"
-      ) {
-        setErrorMessage(error.message);
-      } else {
-        setErrorMessage("Failed to remove, try later.");
-      }
-      setErrorType("error");
-      setIsAlertOpen(true);
+      toast.dismiss(toastId);
+      toast.success("Removed");
+    } catch (error) {
+      toast.dismiss(toastId);
     }
   }
 
@@ -252,13 +248,6 @@ function NoteMenu({
         open={isShareModalOpen}
         setOpen={setIsShareModalOpen}
         id={id}
-      />
-      <CustomSnackbar
-        open={isAlertOpen}
-        setOpen={setIsAlertOpen}
-        alertType={errorType}
-        message={errorMessage ? errorMessage : "Text Copied"}
-        autoHideDuration={6000}
       />
     </Fragment>
   );

@@ -1,4 +1,4 @@
-type ContentType =
+export type ContentType =
   | "application/pdf"
   | "application/json"
   | "application/text"
