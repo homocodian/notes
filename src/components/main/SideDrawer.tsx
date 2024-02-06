@@ -9,12 +9,19 @@ import { useNavigate } from "react-router";
 import { RouteName } from "@/Routes";
 import CustomSnackbar from "@/components/CustomSnackbar";
 import { useDrawer } from "@/context/DrawerContext";
-import { checkForUpdates } from "@/utils/get-latest-release";
+import { axiosInstance } from "@/lib/axios";
 import { LoadingButton } from "@mui/lab";
+import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 function SideDrawer() {
   const navigate = useNavigate();
+  const { mutateAsync } = useMutation({
+    mutationFn: async () => {
+      const res = await axiosInstance.get("/check-for-updates");
+      return res.data;
+    },
+  });
   const [message, setMessage] = useState("");
   const { isDrawerOpen, setDrawerIsOpen } = useDrawer();
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
@@ -34,16 +41,17 @@ function SideDrawer() {
 
   const checkForUpdate = async () => {
     handleClose();
-    const data = await toast.promise(checkForUpdates(), {
-      error: "Failed to check for update.",
-      loading: "Checking for updates...",
-      success: (data) => {
-        return data ? "New Update available" : "No updates available";
-      },
-    });
-    if (!data) return;
-    setIsSnackbarOpen(true);
-    setMessage(`New update available ${data.data.html_url}`);
+    const toastId = toast.loading("Checking for new updates...");
+    try {
+      const data = await mutateAsync();
+      if (!data?.url) return null;
+      setIsSnackbarOpen(true);
+      setMessage(`New update available ${data?.url}`);
+    } catch (error) {
+      console.warn(error);
+    } finally {
+      toast.dismiss(toastId);
+    }
   };
 
   return (
@@ -98,7 +106,7 @@ function SideDrawer() {
             alignItems="center"
             padding="1rem 0.5rem"
           >
-            {!Capacitor.isNativePlatform() ? (
+            {Capacitor.isNativePlatform() ? (
               <LoadingButton
                 color="secondary"
                 onClick={checkForUpdate}
