@@ -18,6 +18,7 @@ import SettingsMenu from "@/components/general/SettingsMenu";
 import { useAuth } from "@/context/AuthContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { useSearchParams } from "react-router-dom";
+import RefreshButton from "./refresh";
 
 function AppBar() {
   const nodeRef = useRef();
@@ -76,12 +77,17 @@ function AppBar() {
                   <Typography component="div" variant="h6" sx={{ flexGrow: 1 }}>
                     Notes
                   </Typography>
-                  {user?.uid ? (
-                    <IconButton onClick={() => setShouldShowToolbar(false)}>
-                      <SearchIcon htmlColor="#fff" />
-                    </IconButton>
-                  ) : null}
-                  <SettingsMenu />
+                  <div className="space-x-2">
+                    {user?.uid ? (
+                      <>
+                        <IconButton onClick={() => setShouldShowToolbar(false)}>
+                          <SearchIcon htmlColor="#fff" />
+                        </IconButton>
+                        <RefreshButton />
+                      </>
+                    ) : null}
+                    <SettingsMenu />
+                  </div>
                 </Box>
               </Slide>
               <Slide

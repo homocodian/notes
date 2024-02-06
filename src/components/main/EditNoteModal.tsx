@@ -157,7 +157,6 @@ function EditNoteModal({
           onClick={handleUpdate}
           ref={submitButtonRef}
           loading={isPending}
-          loadingPosition="start"
         >
           Update
         </LoadingButton>
