@@ -105,7 +105,7 @@ function AppBar() {
                   <Searchbar />
                   <IconButton
                     onClick={() => {
-                      if (!!searchParams.get("q")) {
+                      if (searchParams.get("q")) {
                         searchParams.delete("q");
                         setSearchParams(searchParams);
                       }

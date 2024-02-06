@@ -1,5 +1,8 @@
 import { useRef, useState } from "react";
 
+import { useAuth } from "@/context/AuthContext";
+import { updateNote } from "@/lib/update-note";
+import { LoadingButton } from "@mui/lab";
 import {
   Button,
   Chip,
@@ -13,12 +16,7 @@ import {
 } from "@mui/material";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { useTheme } from "@mui/material/styles";
-
-import { queryClient } from "@/App";
-import { useAuth } from "@/context/AuthContext";
-import { updateNote } from "@/lib/update-note";
-import { LoadingButton } from "@mui/lab";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useHotkeys } from "react-hotkeys-hook";
 
 interface IProps {
@@ -38,6 +36,7 @@ function EditNoteModal({
   category,
   isShared,
 }: IProps) {
+  const queryClient = useQueryClient();
   const theme = useTheme();
   const { user, token } = useAuth();
   const { mutateAsync, isPending } = useMutation({

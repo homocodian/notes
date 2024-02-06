@@ -1,6 +1,3 @@
-import { ReactElement, Ref, forwardRef } from "react";
-
-import { queryClient } from "@/App";
 import { useAuth } from "@/context/AuthContext";
 import { updateNote } from "@/lib/update-note";
 import { CloseOutlined } from "@mui/icons-material";
@@ -16,7 +13,8 @@ import {
   Typography,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ReactElement, Ref, forwardRef } from "react";
 
 const Transition = forwardRef(
   (
@@ -45,6 +43,7 @@ export default function SharedWithModal({
   sharedWith,
   id,
 }: SharedWithModalProps) {
+  const queryClient = useQueryClient();
   const { user, token } = useAuth();
   const { mutate } = useMutation({
     mutationFn: updateNote,

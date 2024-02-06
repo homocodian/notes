@@ -15,10 +15,9 @@ import { useTheme } from "@mui/material/styles";
 import { useEffect, useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
-import { queryClient } from "@/App";
 import { useAuth } from "@/context/AuthContext";
 import { axiosInstance, destroyInterceptor, getInterceptor } from "@/lib/axios";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface IProps {
   open: boolean;
@@ -50,6 +49,7 @@ async function addNote({ uid, category, text, token }: AddNoteParams) {
 }
 
 function AddNoteModal({ open, setOpen }: IProps) {
+  const queryClient = useQueryClient();
   const { user, token } = useAuth();
   const theme = useTheme();
   const { mutateAsync, isPending, isError } = useMutation({

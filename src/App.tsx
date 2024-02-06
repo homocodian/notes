@@ -30,7 +30,7 @@ if (Capacitor.isNativePlatform()) {
 }
 
 // Create a client
-export const queryClient = new QueryClient({
+const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (error) => {
       if (import.meta.env.DEV) console.log(error);

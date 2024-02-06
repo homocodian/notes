@@ -10,7 +10,6 @@ import Menu, { MenuProps } from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { alpha, styled } from "@mui/material/styles";
 
-import { queryClient } from "@/App";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import ShareModal from "@/components/ShareModal";
 import EditNoteModal from "@/components/main/EditNoteModal";
@@ -18,7 +17,7 @@ import { useAuth } from "@/context/AuthContext";
 import { deleteNote } from "@/lib/delete-note";
 import { updateNote } from "@/lib/update-note";
 import { writeToClipboard } from "@/utils/clipboard";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 const StyledMenu = styled((props: MenuProps) => (
@@ -84,6 +83,7 @@ function NoteMenu({
   category,
   isShared,
 }: ITodoMenu) {
+  const queryClient = useQueryClient();
   const { user, token } = useAuth();
   const open = Boolean(anchorEl);
   const { mutateAsync, mutate } = useMutation({

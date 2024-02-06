@@ -1,8 +1,7 @@
-import { queryClient } from "@/App";
 import { useAuth } from "@/context/AuthContext";
 import { updateNote } from "@/lib/update-note";
 import { Chip } from "@mui/material";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type SharedButtonProps = {
   sharedWith: string[];
@@ -12,6 +11,7 @@ type SharedButtonProps = {
 
 function SharedButton({ onClick, id, sharedWith }: SharedButtonProps) {
   const { token, user } = useAuth();
+  const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
     mutationFn: updateNote,
