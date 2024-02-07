@@ -1,4 +1,5 @@
 import { ThemeProvider } from "@mui/material/styles";
+import React from "react";
 import { Route, Routes } from "react-router-dom";
 
 import { RouteComponents } from "@/Routes";
@@ -8,34 +9,9 @@ import Connectivity from "@/components/general/Connectivity";
 import DrawerProvider from "@/context/DrawerContext";
 import useHandleBackButtonPress from "@/hooks/useHandleBackButtonPress";
 import { useTheme } from "@/hooks/useTheme";
-import {
-  MutationCache,
-  QueryCache,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import React from "react";
-import toast from "react-hot-toast";
-import Auth from "./components/auth";
-
-// Create a client
-const queryClient = new QueryClient({
-  queryCache: new QueryCache({
-    onError: (error) => {
-      if (import.meta.env.DEV) console.log(error);
-      if (error instanceof AxiosError) toast.error(`${error.response?.data}`);
-      else toast.error(`Something went wrong: ${error.message}`);
-    },
-  }),
-  mutationCache: new MutationCache({
-    onError: (error) => {
-      if (import.meta.env.DEV) console.log(error);
-      if (error instanceof AxiosError) toast.error(`${error.response?.data}`);
-      else toast.error(`Something went wrong: ${error.message}`);
-    },
-  }),
-});
+import { QueryClientProvider } from "@tanstack/react-query";
+import { Auth } from "./components/auth";
+import { queryClient } from "./utils/query-client";
 
 const ReactQueryDevtools = React.lazy(() =>
   import("@tanstack/react-query-devtools").then((d) => ({

@@ -6,6 +6,7 @@ type AuthProps = {
   user: User | null;
   setToken: (token: string | null) => void;
   setUser: (user: User | null) => void;
+  resetAuth: () => void;
 };
 
 export const useAuthStore = create<AuthProps>((set) => ({
@@ -19,6 +20,13 @@ export const useAuthStore = create<AuthProps>((set) => ({
   setUser(user) {
     set({
       user,
+    });
+  },
+  resetAuth() {
+    console.log("reset");
+    set({
+      token: null,
+      user: null,
     });
   },
 }));

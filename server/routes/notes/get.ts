@@ -12,7 +12,7 @@ import {
 } from "valibot";
 import { admin } from "../../firebase/admin";
 import { getFirebaseErrorMessage } from "../../utils/format-firebase-error";
-import { getHeaders } from "../../utils/get-headers";
+import { getResponseObject } from "../../utils/get-response-object";
 import { isFirebaseError } from "../../utils/is-firebase-error";
 import {
   AuthorizationError,
@@ -111,44 +111,23 @@ export default async function GET(
 
     const notes = data.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify(notes),
-      headers: getHeaders("application/json"),
-    };
+    return getResponseObject(200, JSON.stringify(notes), "application/json");
   } catch (error: unknown) {
     console.log("🚀 ~ error:", error);
-    if (error instanceof ValiError) {
-      return {
-        statusCode: 400,
-        body: error.issues[0].message,
-        headers: getHeaders(),
-      };
-    }
+    if (error instanceof ValiError)
+      return getResponseObject(400, error.issues[0].message);
 
-    if (error instanceof AuthorizationError) {
-      return {
-        statusCode: 401,
-        body: error.message,
-        headers: getHeaders(),
-      };
-    }
+    if (error instanceof AuthorizationError)
+      return getResponseObject(401, error.message);
 
     if (isFirebaseError(error)) {
       const message = getFirebaseErrorMessage(error.code);
-      return {
-        statusCode: message.toLocaleLowerCase().startsWith("something")
-          ? 500
-          : 400,
-        body: message,
-        headers: getHeaders(),
-      };
+      const statusCode = message.toLocaleLowerCase().startsWith("something")
+        ? 500
+        : 400;
+      return getResponseObject(statusCode, message);
     }
 
-    return {
-      statusCode: 500,
-      body: "Something went wrong",
-      headers: getHeaders(),
-    };
+    return getResponseObject(500, "Something went wrong");
   }
 }

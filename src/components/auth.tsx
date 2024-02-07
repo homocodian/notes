@@ -8,7 +8,7 @@ type AuthProps = {
   children: ReactNode;
 };
 
-function Auth({ children }: AuthProps) {
+export function Auth({ children }: AuthProps) {
   const setUser = useAuthStore((state) => state.setUser);
   const setToken = useAuthStore((state) => state.setToken);
   const [isUserLoading, setIsUserLoading] = useState(true);
@@ -34,5 +34,3 @@ function Auth({ children }: AuthProps) {
 
   return children;
 }
-
-export default Auth;
