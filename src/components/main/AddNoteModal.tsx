@@ -15,8 +15,7 @@ import { useTheme } from "@mui/material/styles";
 import { useEffect, useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
-import { useAuth } from "@/context/AuthContext";
-import { axiosInstance, destroyInterceptor, getInterceptor } from "@/lib/axios";
+import { axiosInstance } from "@/lib/axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface IProps {
@@ -25,32 +24,20 @@ interface IProps {
 }
 
 type AddNoteParams = {
-  uid: string | null | undefined;
-  token: string | null;
   text: string;
   category: string;
 };
 
-async function addNote({ uid, category, text, token }: AddNoteParams) {
-  if (!uid || !token) {
-    return Promise.reject("Invalid token");
-  }
-
-  const searchParams = new URLSearchParams();
-  searchParams.set("user", uid);
-
-  getInterceptor(token);
-  const res = await axiosInstance.post(`/notes?${searchParams.toString()}`, {
+async function addNote({ category, text }: AddNoteParams) {
+  const res = await axiosInstance.post("/notes", {
     category,
     text,
   });
-  destroyInterceptor();
   return res.data;
 }
 
 function AddNoteModal({ open, setOpen }: IProps) {
   const queryClient = useQueryClient();
-  const { user, token } = useAuth();
   const theme = useTheme();
   const { mutateAsync, isPending, isError } = useMutation({
     mutationFn: (params: AddNoteParams) => addNote(params),
@@ -96,7 +83,7 @@ function AddNoteModal({ open, setOpen }: IProps) {
       return;
     }
 
-    await mutateAsync({ uid: user?.uid, token, text: note, category });
+    await mutateAsync({ text: note, category });
     formRef.current?.reset();
     handleClose();
   };

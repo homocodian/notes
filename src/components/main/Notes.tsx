@@ -5,38 +5,21 @@ import Masonry from "@mui/lab/Masonry";
 
 import NoteSkeleton from "@/components/NoteSkeleton";
 import NoteCard from "@/components/main/NoteCard";
-import { useAuth } from "@/context/AuthContext";
-import { axiosInstance, destroyInterceptor, getInterceptor } from "@/lib/axios";
+import { axiosInstance } from "@/lib/axios";
 import { type Note } from "@/types/notes";
 import { useQuery } from "@tanstack/react-query";
 import EmptyNote from "../EmptyNote";
 
-async function fetchNotes(
-  uid: string | null | undefined,
-  token: string | null,
-) {
-  if (!uid || !token) {
-    return Promise.reject("Invalid token");
-  }
-  const searchParams = new URLSearchParams();
-  searchParams.set("user", uid);
-
-  getInterceptor(token);
-  const res = await axiosInstance
-    .get(`/notes?${searchParams.toString()}`)
-    .finally(() => {
-      destroyInterceptor();
-    });
+async function fetchNotes() {
+  const res = await axiosInstance.get("/notes");
   return res.data;
 }
 
 function Notes() {
-  const { user, token } = useAuth();
   const [searchParams] = useSearchParams();
   const { data: notes, isLoading } = useQuery<Note[]>({
-    queryKey: ["notes", user?.uid, token],
-    queryFn: () => fetchNotes(user?.uid, token),
-    enabled: !!user,
+    queryKey: ["notes"],
+    queryFn: fetchNotes,
   });
 
   const [searchedNotes, setSearchedNotes] = useState<Note[]>([]);
@@ -78,33 +61,7 @@ function Notes() {
               ? searchedNotes
               : notes
             ).map((note) => {
-              const labelText = (note.name ||
-                note.email ||
-                "a friend") as string;
-
-              const isShared =
-                note.sharedWith &&
-                note.sharedWith?.findIndex(
-                  (item) =>
-                    item.trim() === user?.uid || item.trim() === user?.email,
-                ) >= 0
-                  ? true
-                  : false;
-
-              return (
-                <NoteCard
-                  key={note.id}
-                  {...{
-                    ...note,
-                    isShared,
-                    label: `Shared by ${
-                      labelText.length > 24
-                        ? labelText.substring(0, 24) + "..."
-                        : labelText
-                    }`,
-                  }}
-                />
-              );
+              return <NoteCard key={note.id} {...note} />;
             })}
           </Masonry>
         </div>

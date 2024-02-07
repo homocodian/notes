@@ -13,9 +13,9 @@ import { alpha, styled } from "@mui/material/styles";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import ShareModal from "@/components/ShareModal";
 import EditNoteModal from "@/components/main/EditNoteModal";
-import { useAuth } from "@/context/AuthContext";
 import { deleteNote } from "@/lib/delete-note";
 import { updateNote } from "@/lib/update-note";
+import { useAuthStore } from "@/store/auth";
 import { writeToClipboard } from "@/utils/clipboard";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -84,7 +84,6 @@ function NoteMenu({
   isShared,
 }: ITodoMenu) {
   const queryClient = useQueryClient();
-  const { user, token } = useAuth();
   const open = Boolean(anchorEl);
   const { mutateAsync, mutate } = useMutation({
     mutationFn: updateNote,
@@ -109,8 +108,6 @@ function NoteMenu({
   const handleStatusUpdate = () => {
     handleClose();
     mutate({
-      token,
-      uid: user?.uid,
       id,
       data: {
         isComplete: !complete,
@@ -124,7 +121,7 @@ function NoteMenu({
 
   const onPositivePress = () => {
     closeModal();
-    deleteMutation({ token, uid: user?.uid, id });
+    deleteMutation({ id });
   };
 
   const handleDelete = () => {
@@ -154,6 +151,7 @@ function NoteMenu({
   async function removeSharedItem(id: string) {
     handleClose();
     let removeSharedWith: string[] | undefined = undefined;
+    const user = useAuthStore((state) => state.user);
 
     if (user?.uid && user.email) {
       removeSharedWith = [user.uid, user.email];
@@ -166,8 +164,6 @@ function NoteMenu({
     const toastId = toast.loading("Removing...");
     try {
       await mutateAsync({
-        token,
-        uid: user?.uid,
         id,
         data: {
           removeSharedWith,

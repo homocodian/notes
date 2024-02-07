@@ -18,7 +18,5 @@ export type Note = {
 
 export interface INoteCard extends Note {
   isComplete: boolean;
-  isShared: boolean;
-  label?: string;
   disableActions?: boolean;
 }

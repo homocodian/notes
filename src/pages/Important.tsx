@@ -3,40 +3,24 @@ import { useEffect, useState } from "react";
 import EmptyNote from "@/components/EmptyNote";
 import { NoteCard } from "@/components/main";
 import NoteSkeleton from "@/components/NoteSkeleton";
-import { useAuth } from "@/context/AuthContext";
-import { axiosInstance, destroyInterceptor, getInterceptor } from "@/lib/axios";
+import { axiosInstance } from "@/lib/axios";
 import { Note } from "@/types/notes";
 import { Masonry } from "@mui/lab";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 
-async function fetchImportantNotes(
-  uid: string | null | undefined,
-  token: string | null,
-) {
-  if (!uid || !token) {
-    return Promise.reject("Invalid token");
-  }
+async function fetchImportantNotes() {
   const searchParams = new URLSearchParams();
-  searchParams.set("user", uid);
   searchParams.set("field", "category");
   searchParams.set("q", "important");
-
-  getInterceptor(token);
-  const res = await axiosInstance
-    .get(`/notes?${searchParams.toString()}`)
-    .finally(() => {
-      destroyInterceptor();
-    });
+  const res = await axiosInstance.get(`/notes?${searchParams.toString()}`);
   return res.data;
 }
 
 function Important() {
-  const { user, token } = useAuth();
   const { data, isLoading } = useQuery<Note[]>({
-    queryKey: ["notes", "important", user?.uid, token],
-    queryFn: () => fetchImportantNotes(user?.uid, token),
-    enabled: !!user,
+    queryKey: ["notes", "important"],
+    queryFn: fetchImportantNotes,
   });
   const [searchedNotes, setSearchedNotes] = useState<Note[]>([]);
   const [searchParams] = useSearchParams();
@@ -78,16 +62,8 @@ function Important() {
             ).map((note) => {
               return (
                 <NoteCard
+                {...note}
                   key={note.id}
-                  id={note.id}
-                  text={note.text}
-                  isComplete={note.isComplete}
-                  category={note.category}
-                  timestamp={note.timestamp}
-                  sharedWith={note.sharedWith}
-                  userId={note.userId}
-                  updatedAt={note.updatedAt}
-                  isShared={false}
                 />
               );
             })}

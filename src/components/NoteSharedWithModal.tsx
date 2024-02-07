@@ -1,4 +1,3 @@
-import { useAuth } from "@/context/AuthContext";
 import { updateNote } from "@/lib/update-note";
 import { CloseOutlined } from "@mui/icons-material";
 import {
@@ -44,7 +43,6 @@ export default function SharedWithModal({
   id,
 }: SharedWithModalProps) {
   const queryClient = useQueryClient();
-  const { user, token } = useAuth();
   const { mutate } = useMutation({
     mutationFn: updateNote,
     onSuccess() {
@@ -95,8 +93,6 @@ export default function SharedWithModal({
                   label={item}
                   onDelete={() => {
                     mutate({
-                      uid: user?.uid,
-                      token,
                       id,
                       data: {
                         removeSharedWith: [item],

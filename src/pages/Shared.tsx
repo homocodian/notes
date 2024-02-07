@@ -3,39 +3,24 @@ import { useEffect, useState } from "react";
 import EmptyNote from "@/components/EmptyNote";
 import { NoteCard } from "@/components/main";
 import NoteSkeleton from "@/components/NoteSkeleton";
-import { useAuth } from "@/context/AuthContext";
-import { axiosInstance, destroyInterceptor, getInterceptor } from "@/lib/axios";
+import { axiosInstance } from "@/lib/axios";
 import { Note } from "@/types/notes";
 import { Masonry } from "@mui/lab";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 
-async function fetchSharedNotes(
-  uid: string | null | undefined,
-  token: string | null,
-) {
-  if (!uid || !token) {
-    return Promise.reject("Invalid token");
-  }
+async function fetchSharedNotes() {
   const searchParams = new URLSearchParams();
-  searchParams.set("user", uid);
   searchParams.set("field", "shared");
 
-  getInterceptor(token);
-  const res = await axiosInstance
-    .get(`/notes?${searchParams.toString()}`)
-    .finally(() => {
-      destroyInterceptor();
-    });
+  const res = await axiosInstance.get(`/notes?${searchParams.toString()}`);
   return res.data;
 }
 
 function Shared() {
-  const { user, token } = useAuth();
   const { data, isLoading } = useQuery<Note[]>({
-    queryKey: ["notes", "shared", user?.uid, token],
-    queryFn: () => fetchSharedNotes(user?.uid, token),
-    enabled: !!user,
+    queryKey: ["notes", "shared"],
+    queryFn: fetchSharedNotes,
   });
   const [searchedNotes, setSearchedNotes] = useState<Note[]>([]);
   const [searchParams] = useSearchParams();
@@ -75,12 +60,7 @@ function Shared() {
               ? searchedNotes
               : data
             ).map((note) => {
-              const labelText = (note.name ||
-                note.email ||
-                "a friend") as string;
-              return (
-                <NoteCard {...note} isShared label={labelText} key={note.id} />
-              );
+              return <NoteCard {...note} key={note.id} />;
             })}
           </Masonry>
         </div>

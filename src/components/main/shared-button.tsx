@@ -1,4 +1,3 @@
-import { useAuth } from "@/context/AuthContext";
 import { updateNote } from "@/lib/update-note";
 import { Chip } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -10,7 +9,6 @@ type SharedButtonProps = {
 };
 
 function SharedButton({ onClick, id, sharedWith }: SharedButtonProps) {
-  const { token, user } = useAuth();
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
@@ -30,8 +28,6 @@ function SharedButton({ onClick, id, sharedWith }: SharedButtonProps) {
       disabled={isPending}
       onDelete={() => {
         mutate({
-          token,
-          uid: user?.uid,
           id,
           data: {
             fieldToDelete: "sharedWith",

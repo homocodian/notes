@@ -15,16 +15,16 @@ import { routeNames } from "@/Routes";
 import Searchbar from "@/components/Searchbar";
 import KeyboardShortcut from "@/components/general/KeyboardShortcut";
 import SettingsMenu from "@/components/general/SettingsMenu";
-import { useAuth } from "@/context/AuthContext";
 import { useDrawer } from "@/context/DrawerContext";
+import { useAuthStore } from "@/store/auth";
 import { useSearchParams } from "react-router-dom";
 import { SideDrawer } from "./main";
 import RefreshButton from "./refresh";
 
 function AppBar() {
-  const nodeRef = useRef<HTMLDivElement | null>(null);
-  const { user } = useAuth();
   const location = useLocation();
+  const user = useAuthStore((state) => state.user);
+  const nodeRef = useRef<HTMLDivElement | null>(null);
   const { isDrawerOpen, setDrawerIsOpen } = useDrawer();
   const [searchParams, setSearchParams] = useSearchParams();
   const [shouldShowToolbar, setShouldShowToolbar] = useState(true);

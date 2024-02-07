@@ -1,7 +1,7 @@
 import { Fragment, ReactElement, Ref, forwardRef } from "react";
 
-import { useAuth } from "@/context/AuthContext";
 import { updateNote } from "@/lib/update-note";
+import { useAuthStore } from "@/store/auth";
 import { CloseOutlined } from "@mui/icons-material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
@@ -46,7 +46,6 @@ export default function ShareModal({
   id,
 }: SharedWithModalProps) {
   const queryClient = useQueryClient();
-  const { user, token } = useAuth();
   const { mutateAsync, isPending } = useMutation({
     mutationFn: updateNote,
     onSuccess() {
@@ -73,6 +72,8 @@ export default function ShareModal({
       return;
     }
 
+    const user = useAuthStore.getState().user;
+
     if (shareWith.some((item) => item === user?.uid || item === user?.email)) {
       toast.error("You cannot share with yourself");
       return;
@@ -80,9 +81,7 @@ export default function ShareModal({
 
     try {
       await mutateAsync({
-        token,
         id,
-        uid: user?.uid,
         data: {
           sharedWith: shareWith,
         },

@@ -1,5 +1,3 @@
-import { Capacitor } from "@capacitor/core";
-import loadable, { LoadableComponent } from "@loadable/component";
 import { ThemeProvider } from "@mui/material/styles";
 import { Route, Routes } from "react-router-dom";
 
@@ -19,14 +17,7 @@ import {
 import { AxiosError } from "axios";
 import React from "react";
 import toast from "react-hot-toast";
-
-let CheckForUpdates: LoadableComponent<unknown>;
-
-if (Capacitor.isNativePlatform()) {
-  CheckForUpdates = loadable(
-    () => import("@/components/general/CheckForUpdates"),
-  );
-}
+import Auth from "./components/auth";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -57,30 +48,31 @@ function App() {
   useHandleBackButtonPress();
 
   return (
-    <ThemeProvider theme={theme}>
-      <QueryClientProvider client={queryClient}>
-        <DrawerProvider>
-          <AppBar />
-          <div className="overflow-auto h-full pt-4 pb-10 md:pb-16">
-            <Routes>
-              {RouteComponents.map((route) => (
-                <Route
-                  key={route.path}
-                  path={route.path}
-                  element={route.element}
-                />
-              ))}
-            </Routes>
-          </div>
-          <Connectivity />
-          {CheckForUpdates ? <CheckForUpdates /> : null}
-          <ThemedToaster />
-        </DrawerProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={theme}>
+        <Auth>
+          <DrawerProvider>
+            <AppBar />
+            <div className="overflow-auto h-full pt-4 pb-10 md:pb-16">
+              <Routes>
+                {RouteComponents.map((route) => (
+                  <Route
+                    key={route.path}
+                    path={route.path}
+                    element={route.element}
+                  />
+                ))}
+              </Routes>
+            </div>
+            <Connectivity />
+            <ThemedToaster />
+          </DrawerProvider>
+        </Auth>
         <React.Suspense fallback={null}>
           <ReactQueryDevtools initialIsOpen={false} />
         </React.Suspense>
-      </QueryClientProvider>
-    </ThemeProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
 

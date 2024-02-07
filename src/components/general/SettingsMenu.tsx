@@ -15,8 +15,8 @@ import { useHotkeys } from "react-hotkeys-hook";
 
 import ProfileAvatar from "@/components/general/ProfileAvatar";
 import ThemeMenuItem from "@/components/general/ThemeMenuItem";
-import { useAuth } from "@/context/AuthContext";
 import { auth } from "@/firebase";
+import { useAuthStore } from "@/store/auth";
 import { useKeyboardShortcutStore } from "@/store/keyboard-shortcut";
 import { Capacitor } from "@capacitor/core";
 import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
@@ -43,7 +43,7 @@ const logout = async () => {
 };
 
 export default function SettingsMenu() {
-  const { user } = useAuth();
+  const { user } = useAuthStore();
   const buttonRef = React.useRef<HTMLButtonElement | null>(null);
   const openModal = useKeyboardShortcutStore((state) => state.openModal);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);

@@ -10,11 +10,10 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 
 import NoteMenu from "@/components/main/NoteMenu";
-import { useAuth } from "@/context/AuthContext";
+import { useAuthStore } from "@/store/auth";
 import { INoteCard } from "@/types/notes";
 import formatDate from "@/utils/format-date";
-// eslint-disable-next-line no-restricted-imports
-import useTheme from "@mui/material/styles/useTheme";
+import { useTheme } from "@mui/material/styles";
 import SharedWithModal from "../NoteSharedWithModal";
 import SharedButton from "./shared-button";
 
@@ -24,21 +23,30 @@ function NoteCard({
   category,
   isComplete,
   timestamp,
-  isShared,
-  label,
   email,
   sharedWith,
   userId,
+  name,
   disableActions = false,
 }: INoteCard) {
-  const { user } = useAuth();
   const theme = useTheme();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const user = useAuthStore((state) => state.user);
   const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
+  const label = (name || email || "a friend") as string;
+
+  const isShared =
+    sharedWith &&
+    sharedWith?.findIndex(
+      (item) => item.trim() === user?.uid || item.trim() === user?.email,
+    ) >= 0
+      ? true
+      : false;
 
   return (
     <Fragment>

@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 
-import { useAuth } from "@/context/AuthContext";
 import { updateNote } from "@/lib/update-note";
 import { LoadingButton } from "@mui/lab";
 import {
@@ -38,7 +37,6 @@ function EditNoteModal({
 }: IProps) {
   const queryClient = useQueryClient();
   const theme = useTheme();
-  const { user, token } = useAuth();
   const { mutateAsync, isPending } = useMutation({
     mutationFn: updateNote,
     onSuccess() {
@@ -83,8 +81,6 @@ function EditNoteModal({
       return;
     }
     mutateAsync({
-      token,
-      uid: user?.uid,
       id,
       data: {
         text: note,

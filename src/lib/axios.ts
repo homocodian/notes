@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/store/auth";
 import { Capacitor } from "@capacitor/core";
 import axios from "axios";
 
@@ -11,22 +12,26 @@ const axiosInstance = axios.create({
   },
 });
 
-function getInterceptor(token: string) {
-  const id = axiosInstance.interceptors.request.use(
-    (config) => {
-      config.headers.Authorization = `Bearer ${token}`;
-      return config;
-    },
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = useAuthStore.getState().token;
+    const uid = useAuthStore.getState().user?.uid;
 
-    (error) => {
-      return Promise.reject(error);
-    },
-  );
-  return id;
-}
+    if (!token || !uid) {
+      throw new Error("Unauthorized");
+    }
 
-function destroyInterceptor() {
-  axiosInstance.interceptors.request.clear();
-}
+    config.params = {
+      user: uid,
+    };
 
-export { axiosInstance, destroyInterceptor, getInterceptor };
+    config.headers.Authorization = `Bearer ${token}`;
+    return config;
+  },
+
+  (error) => {
+    return Promise.reject(error);
+  },
+);
+
+export { axiosInstance };

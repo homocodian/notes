@@ -22,8 +22,8 @@ import Container from "@mui/material/Container";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-import { useAuth } from "@/context/AuthContext";
 import { auth } from "@/firebase";
+import { useAuthStore } from "@/store/auth";
 import VerifyFirebaseErrorCode from "@/utils/firebase-auth-error";
 import { signInWithGoogleNative } from "@/utils/native-google-login";
 import {
@@ -64,7 +64,7 @@ export default function SignUp() {
   });
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { user } = useAuth();
+  const user = useAuthStore((state) => state.user);
 
   // check for user
   useEffect(() => {
