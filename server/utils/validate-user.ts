@@ -21,6 +21,12 @@ export async function verifyFirebaseToken({ uid, token }: VerifyFirebaseToken) {
     if (data.uid !== uid) throw new AuthorizationError("Unauthorized");
     return data;
   } catch (error) {
+    console.log("🚀 ~ verifyFirebaseToken ~ error:", error);
+
+    if (error?.errorInfo?.code === "auth/id-token-expired") {
+      throw new AuthorizationError("token-expired");
+    }
+
     throw new AuthorizationError("Unauthorized");
   }
 }

@@ -23,7 +23,6 @@ export const useAuthStore = create<AuthProps>((set) => ({
     });
   },
   resetAuth() {
-    console.log("reset");
     set({
       token: null,
       user: null,

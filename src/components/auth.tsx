@@ -1,6 +1,6 @@
 import { auth } from "@/firebase";
 import { useAuthStore } from "@/store/auth";
-import { getIdToken, onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { ReactNode, useEffect, useState } from "react";
 import Loading from "./Loading";
 
@@ -16,8 +16,6 @@ export function Auth({ children }: AuthProps) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const token = await getIdToken(user, true);
-        setToken(token);
         setUser(user);
       } else {
         setToken(null);

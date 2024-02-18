@@ -9,12 +9,14 @@ export const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: async (error) => {
       if (import.meta.env.DEV) console.log(error);
+
       if (error instanceof AxiosError) {
         if (error.response?.status === 401) {
           toast.error("Please login again");
           await signOut(auth);
           return;
         }
+
         toast.error(`${error.response?.data}`);
       } else toast.error(`Something went wrong: ${error.message}`);
     },
@@ -22,14 +24,22 @@ export const queryClient = new QueryClient({
   mutationCache: new MutationCache({
     onError: async (error) => {
       if (import.meta.env.DEV) console.log(error);
+
       if (error instanceof AxiosError) {
         if (error.response?.status === 401) {
           toast.error("Please login again");
           await signOut(auth);
           return;
         }
+
         toast.error(`${error.response?.data}`);
       } else toast.error(`Something went wrong: ${error.message}`);
     },
   }),
+  // defaultOptions: {
+  //   queries: {
+  //     // gc time 5 minutes
+  //     staleTime: 5 * 60 * 1000,
+  //   },
+  // },
 });
