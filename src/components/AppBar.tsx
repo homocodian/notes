@@ -17,6 +17,7 @@ import KeyboardShortcut from "@/components/general/KeyboardShortcut";
 import SettingsMenu from "@/components/general/SettingsMenu";
 import { useDrawer } from "@/context/DrawerContext";
 import { useAuthStore } from "@/store/auth";
+import Tooltip from "@mui/material/Tooltip";
 import { useSearchParams } from "react-router-dom";
 import { SideDrawer } from "./main";
 import RefreshButton from "./refresh";
@@ -81,9 +82,13 @@ function AppBar() {
                   <div className="space-x-2">
                     {user?.uid ? (
                       <>
-                        <IconButton onClick={() => setShouldShowToolbar(false)}>
-                          <SearchIcon htmlColor="#fff" />
-                        </IconButton>
+                        <Tooltip title="Search">
+                          <IconButton
+                            onClick={() => setShouldShowToolbar(false)}
+                          >
+                            <SearchIcon htmlColor="#fff" />
+                          </IconButton>
+                        </Tooltip>
                         <RefreshButton />
                       </>
                     ) : null}
@@ -110,18 +115,19 @@ function AppBar() {
                   gap="1rem"
                 >
                   <Searchbar />
-                  <IconButton
-                    onClick={() => {
-                      if (searchParams.get("q")) {
-                        searchParams.delete("q");
-                        setSearchParams(searchParams);
-                      }
-
-                      setShouldShowSearchbar(false);
-                    }}
-                  >
-                    <ClearIcon htmlColor="#fff" />
-                  </IconButton>
+                  <Tooltip title="Close">
+                    <IconButton
+                      onClick={() => {
+                        if (searchParams.get("q")) {
+                          searchParams.delete("q");
+                          setSearchParams(searchParams);
+                        }
+                        setShouldShowSearchbar(false);
+                      }}
+                    >
+                      <ClearIcon htmlColor="#fff" />
+                    </IconButton>
+                  </Tooltip>
                 </Box>
               </Slide>
             </Toolbar>

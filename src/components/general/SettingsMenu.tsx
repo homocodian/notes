@@ -22,6 +22,7 @@ import { Capacitor } from "@capacitor/core";
 import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
 import { signOut } from "firebase/auth";
 import toast from "react-hot-toast";
+import { AutoRefreshMenuItem } from "./AutoRefreshMenuItem";
 
 const logout = async () => {
   if (Capacitor.isNativePlatform()) {
@@ -145,6 +146,12 @@ export default function SettingsMenu() {
         </MenuItem>
         <Divider />
         <ThemeMenuItem handleItemClick={handleItemClick} />
+        <Divider />
+        <AutoRefreshMenuItem
+          sx={{
+            marginTop: "0.5rem",
+          }}
+        />
         <Divider />
         <MenuItem
           onClick={() => handleItemClick(openModal)}

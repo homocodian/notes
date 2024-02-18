@@ -4,6 +4,10 @@ import { AxiosError } from "axios";
 import { signOut } from "firebase/auth";
 import toast from "react-hot-toast";
 
+const isAutoRefresh = JSON.parse(
+  window.localStorage.getItem("auto-refresh") ?? "true",
+);
+
 // Create a client
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({
@@ -36,10 +40,10 @@ export const queryClient = new QueryClient({
       } else toast.error(`Something went wrong: ${error.message}`);
     },
   }),
-  // defaultOptions: {
-  //   queries: {
-  //     // gc time 5 minutes
-  //     staleTime: 5 * 60 * 1000,
-  //   },
-  // },
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchInterval: isAutoRefresh ? 1000 * 30 : undefined,
+    },
+  },
 });
