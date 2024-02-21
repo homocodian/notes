@@ -45,5 +45,8 @@ export const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
       refetchInterval: isAutoRefresh ? 1000 * 30 : undefined,
     },
+    mutations: {
+      retry: 2,
+    },
   },
 });
