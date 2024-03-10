@@ -1,0 +1,21 @@
+{
+  "name": "@notes/server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "server",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.8.2",
+    "hono": "^4.0.10"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.17",
+    "tsx": "^3.12.2"
+  },
+  "keywords": [],
+  "author": "homocodian",
+  "license": "ISC"
+}

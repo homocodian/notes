@@ -1,8 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">Notes</string>
-    <string name="title_activity_main">Notes</string>
-    <string name="package_name">com.notes.homocodians</string>
-    <string name="custom_url_scheme">com.notes.homocodians</string>
-    <string name="server_client_id">754355741739-t7sec02ku3v1k0dt3opc4e2mktphq8m1.apps.googleusercontent.com</string>
-</resources>

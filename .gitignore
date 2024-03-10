@@ -11,6 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
+app/server/dist
+app/client/dist
 
 # Editor directories and files
 .vscode/*
@@ -32,15 +34,3 @@ output-metadata.json
 
 # rest client
 *.http
-
-# creds
-credentials.json
-firestore.indexes.json
-firestore.rules
-.firebaserc
-firestore.json
-storage.rules
-firebase.json
-
-# seed
-seed
