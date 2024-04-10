@@ -1,21 +1,24 @@
 {
   "name": "@notes/server",
-  "version": "1.0.0",
-  "private": true,
-  "description": "server",
+  "version": "0.0.1",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "build": "tsc"
+    "dev": "bun --watch src/index.ts",
+    "build": "bun build src/index.ts",
+    "start": "NODE_ENV=production bun src/index.ts",
+    "test": "bun test",
+    "migrate": "bun run ./src/db/migrate.ts",
+    "generate": "bunx drizzle-kit generate:pg"
   },
   "dependencies": {
-    "@hono/node-server": "^1.8.2",
-    "hono": "^4.0.10"
+    "drizzle-orm": "^0.30.7",
+    "drizzle-typebox": "^0.1.1",
+    "elysia": "latest",
+    "pg": "^8.11.5",
+    "postgres": "^3.4.4"
   },
   "devDependencies": {
-    "@types/node": "^20.11.17",
-    "tsx": "^3.12.2"
+    "bun-types": "latest",
+    "drizzle-kit": "^0.20.14"
   },
-  "keywords": [],
-  "author": "homocodian",
-  "license": "ISC"
+  "module": "src/index.js"
 }

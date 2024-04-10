@@ -7,12 +7,15 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# dependencies
 node_modules
 dist
 dist-ssr
 *.local
 app/server/dist
 app/client/dist
+/.pnp
+.pnp.js
 
 # Editor directories and files
 .vscode/*
@@ -25,8 +28,6 @@ app/client/dist
 *.sln
 *.sw?
 
-# General
-.env
 output-metadata.json
 
 # Local Netlify folder
@@ -34,3 +35,35 @@ output-metadata.json
 
 # rest client
 *.http
+
+# local env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# vercel
+.vercel
+
+**/*.trace
+**/*.zip
+**/*.tar.gz
+**/*.tgz
+**/*.log
+package-lock.json
+**/*.bun

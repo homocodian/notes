@@ -2,17 +2,8 @@
   "name": "notes",
   "private": true,
   "version": "2.1.2",
-  "scripts": {
-    "client": "pnpm --filter @notes/client",
-    "server": "pnpm --filter @notes/server",
-    "dev": "pnpm --recursive --parallel --stream run dev",
-    "build": "pnpm --recursive --parallel --stream run build"
-  },
-  "engines": {
-    "node": ">=18"
-  },
   "author": "homocodian",
-  "devDependencies": {
-    "typescript": "^5.4.2"
-  }
+  "workspaces": [
+    "app/*"
+  ]
 }

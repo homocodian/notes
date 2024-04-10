@@ -1,11 +1,12 @@
-import { serve } from "@hono/node-server";
-import { Hono } from "hono";
+import { Elysia } from "elysia";
+import { db } from "./db";
+const app = new Elysia()
+	.decorate("db", db)
+	.get("/", () => {
+		return "Hello Elysia";
+	})
+	.listen(process.env.PORT || 3000);
 
-const app = new Hono();
-
-app.get("/", (c) => c.text("Hello Node.js!"));
-
-serve({
-	fetch: app.fetch,
-	port: 3001,
-});
+console.log(
+	`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+);
