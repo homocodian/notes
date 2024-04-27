@@ -10,12 +10,7 @@ interface ImportMetaEnv {
   readonly VITE_GITHUB_OWNER: string | undefined;
   readonly VITE_GITHUB_REPO: string | undefined;
   readonly VITE_RELEASE_NUMBER: string | undefined;
-  readonly VITE_APP_ENV: string | undefined;
-  readonly VITE_EMULATOR_STORAGE_PATH: string | undefined;
-  readonly VITE_EMULATOR_AUTH_PATH: string | undefined;
-  readonly VITE_EMULATOR_FIRESTORE_PATH: string | undefined;
   readonly VITE_BASE_URL: string;
-  readonly VITE_BASE_URL_FOR_CAPACITOR: string;
 }
 
 interface ImportMeta {

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 
-import { Capacitor } from "@capacitor/core";
-import GoogleIcon from "@mui/icons-material/Google";
+import { SESSION_TOKEN_KEY, USER_KEY } from "@/constant/auth";
+import { api } from "@/lib/eden";
+import { useAuthStore } from "@/store/auth";
 import LockIcon from "@mui/icons-material/LockOutlined";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -21,25 +22,7 @@ import {
 import Container from "@mui/material/Container";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-
-import { auth } from "@/firebase";
-import { useAuthStore } from "@/store/auth";
-import VerifyFirebaseErrorCode from "@/utils/firebase-auth-error";
-import { signInWithGoogleNative } from "@/utils/native-google-login";
-import {
-  GoogleAuthProvider,
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-} from "firebase/auth";
-
-const signInWithGooglePopup = () => {
-  const provider = new GoogleAuthProvider();
-  return signInWithPopup(auth, provider);
-};
-
-const signUp = (email: string, password: string) => {
-  return createUserWithEmailAndPassword(auth, email, password);
-};
+import { useShallow } from "zustand/react/shallow";
 
 interface InputFields {
   email: string;
@@ -64,7 +47,9 @@ export default function SignUp() {
   });
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const user = useAuthStore((state) => state.user);
+  const { user, setUser } = useAuthStore(
+    useShallow((state) => ({ user: state.user, setUser: state.setUser })),
+  );
 
   // check for user
   useEffect(() => {
@@ -100,23 +85,24 @@ export default function SignUp() {
   const handleSubmit = async () => {
     setIsLoading(true);
 
-    const [email, password, confirm_password] = [
+    const [email, password, confirmPassword] = [
       values.email,
       values.password,
       values.confirmPassword,
     ];
 
-    if (email === "" || password === "" || confirm_password === "") {
+    if (email === "" || password === "" || confirmPassword === "") {
       setIsError({
         email: email === "" ? true : false,
         password: password === "" ? true : false,
-        confirmPassword: confirm_password === "" ? true : false,
+        confirmPassword: confirmPassword === "" ? true : false,
       });
       setIsLoading(false);
-      toast.error("Password does not match.");
+      toast.error("Please fill all required fields");
       return;
     }
-    if (password !== confirm_password) {
+
+    if (password !== confirmPassword) {
       setIsError({
         email: false,
         password: true,
@@ -126,35 +112,43 @@ export default function SignUp() {
       toast.error("Password does not match.");
       return;
     }
-    try {
-      await signUp(email, password);
-    } catch (error: unknown) {
-      let message = "Something went wrong";
-      if (error && typeof error === "object" && "code" in error) {
-        message = VerifyFirebaseErrorCode(error?.code);
-      }
-      setIsLoading(false);
-      toast.error(message);
-    }
-  };
 
-  const signInWithPopup = async () => {
-    setIsLoading(true);
     try {
-      if (Capacitor.isNativePlatform()) {
-        await signInWithGoogleNative();
-      } else {
-        await signInWithGooglePopup();
-      }
-      setIsLoading(false);
-      navigate("/", { replace: true });
+      const { data, error } = await api.v1.auth.register.post(
+        {
+          email,
+          password,
+          confirmPassword,
+        },
+        // auto abort in 2 minutes
+        { fetch: { signal: AbortSignal.timeout(1000 * 60 * 2) } },
+      );
+
+      if (error) return toast.error(error.value);
+
+      localStorage.setItem(SESSION_TOKEN_KEY, data.sessionToken);
+      localStorage.setItem(
+        USER_KEY,
+        JSON.stringify({
+          id: data.id,
+          email: data.email,
+          emailVerified: data.emailVerified,
+        }),
+      );
+
+      setUser({
+        id: data.id,
+        email: data.email,
+        emailVerified: data.emailVerified,
+      });
     } catch (error: unknown) {
-      let message = "Something went wrong";
-      if (error && typeof error === "object" && "code" in error) {
-        message = VerifyFirebaseErrorCode(error?.code);
-      }
+      console.log("🚀 ~ handleSubmit ~ error:", error, typeof error);
+
+      if (error instanceof Error) return toast.error(error.message);
+
+      toast.error("Something went wrong");
+    } finally {
       setIsLoading(false);
-      toast.error(message);
     }
   };
 
@@ -271,16 +265,16 @@ export default function SignUp() {
               Sign Up
             </Button>
 
-            <Button
+            {/* <Button
               type="button"
               fullWidth
               variant="contained"
               sx={{ mt: 2, mb: 1 }}
               startIcon={<GoogleIcon />}
-              onClick={signInWithPopup}
+              // onClick={signInWithPopup}
             >
               Continue With Google
-            </Button>
+            </Button> */}
             <Grid container>
               <Grid item sx={{ mt: 2 }}>
                 <Link href="/login" variant="body2">

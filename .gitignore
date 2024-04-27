@@ -12,8 +12,6 @@ node_modules
 dist
 dist-ssr
 *.local
-app/server/dist
-app/client/dist
 /.pnp
 .pnp.js
 
@@ -44,14 +42,14 @@ output-metadata.json
 .env.production.local
 
 # testing
-/coverage
+coverage
 
 # next.js
 /.next/
-/out/
+out
 
 # production
-/build
+build
 
 # misc
 .DS_Store

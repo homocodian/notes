@@ -1,8 +1,6 @@
-import { Capacitor } from "@capacitor/core";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
-import GoogleIcon from "@mui/icons-material/Google";
 import LockIcon from "@mui/icons-material/LockOutlined";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -23,30 +21,9 @@ import InputAdornment from "@mui/material/InputAdornment";
 import toast from "react-hot-toast";
 
 import FormDialog from "@/components/FormDialog";
-import { auth } from "@/firebase";
+import { SESSION_TOKEN_KEY, USER_KEY } from "@/constant/auth";
+import { api } from "@/lib/eden";
 import { useAuthStore } from "@/store/auth";
-import VerifyFirebaseErrorCode from "@/utils/firebase-auth-error";
-import { signInWithGoogleNative } from "@/utils/native-google-login";
-import {
-  GoogleAuthProvider,
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-} from "firebase/auth";
-
-const signIn = (email: string, password: string) => {
-  return signInWithEmailAndPassword(auth, email, password);
-};
-
-const signInWithGooglePopup = () => {
-  const provider = new GoogleAuthProvider();
-  return signInWithPopup(auth, provider);
-};
-
-const sendPasswordResetLink = (email: string) => {
-  return sendPasswordResetEmail(auth, email);
-};
-
 interface State {
   email: string;
   password: string;
@@ -63,6 +40,7 @@ export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
   const [isResetFormOpen, setIsResetFormOpen] = useState(false);
   const user = useAuthStore((state) => state.user);
+  const setUser = useAuthStore((state) => state.setUser);
 
   // check for user
   useEffect(() => {
@@ -95,59 +73,80 @@ export default function SignIn() {
     const email = values.email;
     const password = values.password;
 
-    if (email !== "" && password !== "") {
-      try {
-        await signIn(email, password);
-      } catch (error: unknown) {
-        let message = "Something went wrong";
-        if (error && typeof error === "object" && "code" in error) {
-          message = VerifyFirebaseErrorCode(error.code);
-        }
-        setIsLoading(false);
-        toast.error(message);
-      }
-    } else {
-      setIsLoading(false);
-      toast.error("Please fill all required fields");
-    }
-  };
-
-  const signInWithPopup = async () => {
-    setIsLoading(true);
     try {
-      if (Capacitor.isNativePlatform()) {
-        await signInWithGoogleNative();
-      } else {
-        await signInWithGooglePopup();
-      }
-    } catch (error: unknown) {
-      let message = "Something went wrong";
-      if (error && typeof error === "object" && "code" in error) {
-        message = VerifyFirebaseErrorCode(error.code);
-      }
-      setIsLoading(false);
-      toast.error(message);
-    }
-  };
-
-  const sendPasswordResetEmail = async (email: string, cb: () => void) => {
-    try {
-      await sendPasswordResetLink(email);
-      cb();
-      setIsResetFormOpen(false);
-      toast.success(
-        "Email has been sent, please check your spam folder if not found.",
+      const { data, error } = await api.v1.auth.login.post(
+        {
+          email,
+          password,
+        },
+        // auto abort in 2 minutes
+        { fetch: { signal: AbortSignal.timeout(1000 * 60 * 2) } },
       );
+
+      if (error) return toast.error(error.value);
+
+      localStorage.setItem(SESSION_TOKEN_KEY, data.sessionToken);
+      localStorage.setItem(
+        USER_KEY,
+        JSON.stringify({
+          id: data.id,
+          email: data.email,
+          emailVerified: data.emailVerified,
+        }),
+      );
+
+      setUser({
+        id: data.id,
+        email: data.email,
+        emailVerified: data.emailVerified,
+      });
     } catch (error: unknown) {
-      cb();
-      let message = "Something went wrong";
-      if (error && typeof error === "object" && "code" in error) {
-        message = VerifyFirebaseErrorCode(error?.code);
-      }
-      setIsResetFormOpen(false);
-      toast.error(message);
+      console.log("🚀 ~ handleSubmit ~ error:", error, typeof error);
+
+      if (error instanceof Error) return toast.error(error.message);
+
+      toast.error("Something went wrong");
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  // const signInWithPopup = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     if (Capacitor.isNativePlatform()) {
+  //       await signInWithGoogleNative();
+  //     } else {
+  //       await signInWithGooglePopup();
+  //     }
+  //   } catch (error: unknown) {
+  //     let message = "Something went wrong";
+  //     if (error && typeof error === "object" && "code" in error) {
+  //       message = VerifyFirebaseErrorCode(error.code);
+  //     }
+  //     setIsLoading(false);
+  //     toast.error(message);
+  //   }
+  // };
+
+  // const sendPasswordResetEmail = async (email: string, cb: () => void) => {
+  //   try {
+  //     await sendPasswordResetLink(email);
+  //     cb();
+  //     setIsResetFormOpen(false);
+  //     toast.success(
+  //       "Email has been sent, please check your spam folder if not found.",
+  //     );
+  //   } catch (error: unknown) {
+  //     cb();
+  //     let message = "Something went wrong";
+  //     if (error && typeof error === "object" && "code" in error) {
+  //       message = VerifyFirebaseErrorCode(error?.code);
+  //     }
+  //     setIsResetFormOpen(false);
+  //     toast.error(message);
+  //   }
+  // };
 
   return (
     <>
@@ -229,7 +228,7 @@ export default function SignIn() {
               Sign In
             </Button>
 
-            <Button
+            {/* <Button
               type="button"
               fullWidth
               variant="contained"
@@ -238,7 +237,7 @@ export default function SignIn() {
               onClick={signInWithPopup}
             >
               Continue With Google
-            </Button>
+            </Button> */}
             <Grid container sx={{ mt: 2 }}>
               <Grid item xs>
                 <Link
@@ -269,7 +268,7 @@ export default function SignIn() {
         positiveButtonLabel="Send"
         textFieldLabel="Email Address"
         textFieldType="email"
-        positiveButtonAction={sendPasswordResetEmail}
+        positiveButtonAction={() => toast.error("Not available right now")}
       />
       <Backdrop
         sx={{

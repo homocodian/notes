@@ -15,36 +15,16 @@ import { useHotkeys } from "react-hotkeys-hook";
 
 import ProfileAvatar from "@/components/general/ProfileAvatar";
 import ThemeMenuItem from "@/components/general/ThemeMenuItem";
-import { auth } from "@/firebase";
+import { SESSION_TOKEN_KEY } from "@/constant/auth";
 import { useAuthStore } from "@/store/auth";
 import { useKeyboardShortcutStore } from "@/store/keyboard-shortcut";
-import { Capacitor } from "@capacitor/core";
-import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
-import { signOut } from "firebase/auth";
-import toast from "react-hot-toast";
+import { useShallow } from "zustand/react/shallow";
 import { AutoRefreshMenuItem } from "./AutoRefreshMenuItem";
 
-const logout = async () => {
-  if (Capacitor.isNativePlatform()) {
-    await toast.promise(
-      GoogleAuth.signOut(),
-      {
-        loading: "Logout...",
-        success: "Success",
-        error: "Failed to Logout",
-      },
-      {
-        style: {
-          minWidth: "180px",
-        },
-      },
-    );
-  }
-  return signOut(auth);
-};
-
 export default function SettingsMenu() {
-  const { user } = useAuthStore();
+  const { user, setUser } = useAuthStore(
+    useShallow((state) => ({ user: state.user, setUser: state.setUser })),
+  );
   const buttonRef = React.useRef<HTMLButtonElement | null>(null);
   const openModal = useKeyboardShortcutStore((state) => state.openModal);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -58,6 +38,11 @@ export default function SettingsMenu() {
   const handleItemClick = (cb?: () => void) => {
     setAnchorEl(null);
     cb?.();
+  };
+
+  const logout = () => {
+    localStorage.removeItem(SESSION_TOKEN_KEY);
+    setUser(null);
   };
 
   useHotkeys(

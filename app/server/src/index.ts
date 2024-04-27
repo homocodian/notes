@@ -1,12 +1,22 @@
-import { Elysia } from "elysia";
-import { db } from "./db";
+import { cors } from "@elysiajs/cors";
+import { Elysia, t } from "elysia";
+
+import { env } from "./env";
+import { v1Routes } from "./v1";
+
 const app = new Elysia()
-	.decorate("db", db)
-	.get("/", () => {
-		return "Hello Elysia";
-	})
-	.listen(process.env.PORT || 3000);
+  .use(cors())
+  .use(v1Routes)
+  .get("/", () => {
+    return {
+      success: true,
+      data: "Server running"
+    };
+  })
+  .listen(env.PORT || 3000);
 
 console.log(
-	`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
 );
+
+export type API = typeof app;
