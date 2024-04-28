@@ -5,5 +5,8 @@
   "author": "homocodian",
   "workspaces": [
     "app/*"
-  ]
+  ],
+  "scripts": {
+    "dev": "bun --filter './app/*' dev"
+  }
 }

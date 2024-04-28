@@ -1,28 +1,20 @@
 import { Context } from "elysia";
 import jwt from "jsonwebtoken";
-import { generateId } from "lucia";
-import { z } from "zod";
 
-import { db } from "@/db";
+import type { DB } from "@/db";
 import { userTable } from "@/db/schema/user";
 import { env } from "@/env";
 import { lucia } from "@/libs/auth";
-import { APIResponse } from "@/shared/types/api-response";
 
 import { isValidEmail } from "./validations/is-valid-email";
-
-type DB = typeof db;
+import { RegisterUser } from "./validations/user";
 
 interface RegisterUserProps extends Context {
-  body: {
-    email: string;
-    password: string;
-    confirmPassword: string;
-  };
+  body: RegisterUser;
   db: DB;
 }
 
-export async function registerUser({ set, body, error }: RegisterUserProps) {
+export async function registerUser({ body, error, db }: RegisterUserProps) {
   if (!isValidEmail(body.email)) {
     return error(400, "Invalid email");
   }
@@ -32,24 +24,26 @@ export async function registerUser({ set, body, error }: RegisterUserProps) {
   }
 
   const hashedPassword = await Bun.password.hash(body.password);
-  const userId = generateId(15);
 
   try {
     const [user] = await db
       .insert(userTable)
       .values({
-        id: userId,
         email: body.email,
         hashedPassword
       })
-      .returning();
+      .returning({
+        id: userTable.id,
+        email: userTable.email,
+        emailVerified: userTable.emailVerified
+      });
 
     if (!user) {
       return error(500, "Failed to create user");
     }
 
     const session = await lucia.createSession(user.id, {});
-    const sessionToken = jwt.sign(session.id, env.REFRESH_TOKEN_SECRET_KEY);
+    const sessionToken = jwt.sign(session.id, env.TOKEN_SECRET);
 
     return {
       id: user.id,

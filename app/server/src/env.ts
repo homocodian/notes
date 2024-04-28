@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { z } from "zod";
 
 const server = z.object({
   PORT: z.string().min(1).optional(),
   DATABASE_URL: z.string().min(1),
-  REFRESH_TOKEN_SECRET_KEY: z.string().min(1)
+  TOKEN_SECRET: z.string().min(1),
+  ALGORITHM: z.string().min(1)
 });
 
 const client = z.object({});
@@ -14,7 +14,8 @@ const merged = server.merge(client);
 const processEnv = {
   PORT: process.env.PORT,
   DATABASE_URL: process.env.DATABASE_URL,
-  REFRESH_TOKEN_SECRET_KEY: process.env.REFRESH_TOKEN_SECRET_KEY
+  TOKEN_SECRET: process.env.TOKEN_SECRET,
+  ALGORITHM: process.env.ALGORITHM
 } satisfies Record<keyof z.infer<typeof merged>, string | undefined>;
 
 // Don't touch the part below

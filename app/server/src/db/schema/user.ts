@@ -1,5 +1,6 @@
 import {
   boolean,
+  integer,
   pgTable,
   serial,
   text,
@@ -8,16 +9,15 @@ import {
 } from "drizzle-orm/pg-core";
 
 export const userTable = pgTable("user", {
-  id: text("id").primaryKey(),
-  email: varchar("email", { length: 256 }).unique(),
+  id: serial("id").notNull().primaryKey(),
+  email: varchar("email", { length: 256 }).notNull().unique(),
   hashedPassword: text("hashed_password"),
-  emailVerified: boolean("email_verified").notNull().default(false),
-  refreshTokens: text("refresh_tokens").array()
+  emailVerified: boolean("email_verified").notNull().default(false)
 });
 
 export const sessionTable = pgTable("session", {
-  id: text("id").primaryKey(),
-  userId: text("user_id")
+  id: text("id").notNull().primaryKey(),
+  userId: integer("user_id")
     .notNull()
     .references(() => userTable.id, { onDelete: "cascade" }),
   expiresAt: timestamp("expires_at", {
@@ -27,9 +27,9 @@ export const sessionTable = pgTable("session", {
 });
 
 export const emailVerificationCodeTable = pgTable("email_verification_code", {
-  id: serial("id").notNull(),
+  id: serial("id").notNull().primaryKey(),
   code: text("code").notNull(),
-  userId: text("user_id").notNull(),
+  userId: integer("user_id").notNull(),
   email: varchar("emai", { length: 256 }).notNull(),
   expiresAt: timestamp("expires_at", {
     mode: "date"

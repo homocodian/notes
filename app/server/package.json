@@ -12,6 +12,7 @@
     "lint": "eslint --fix ."
   },
   "dependencies": {
+    "@elysiajs/bearer": "^1.0.2",
     "@elysiajs/cors": "^1.0.2",
     "@lucia-auth/adapter-drizzle": "^1.0.7",
     "drizzle-orm": "^0.30.7",

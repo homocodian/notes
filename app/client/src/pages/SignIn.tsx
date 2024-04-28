@@ -21,7 +21,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import toast from "react-hot-toast";
 
 import FormDialog from "@/components/FormDialog";
-import { SESSION_TOKEN_KEY, USER_KEY } from "@/constant/auth";
+import { SESSION_TOKEN_KEY } from "@/constant/auth";
 import { api } from "@/lib/eden";
 import { useAuthStore } from "@/store/auth";
 interface State {
@@ -86,14 +86,6 @@ export default function SignIn() {
       if (error) return toast.error(error.value);
 
       localStorage.setItem(SESSION_TOKEN_KEY, data.sessionToken);
-      localStorage.setItem(
-        USER_KEY,
-        JSON.stringify({
-          id: data.id,
-          email: data.email,
-          emailVerified: data.emailVerified,
-        }),
-      );
 
       setUser({
         id: data.id,

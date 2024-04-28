@@ -1,23 +1,19 @@
 import { eq } from "drizzle-orm";
 import { Context } from "elysia";
-import jwt from "jsonwebtoken";
 
-import { db } from "@/db";
+import { DB } from "@/db";
 import { userTable } from "@/db/schema/user";
-import { env } from "@/env";
 import { lucia } from "@/libs/auth";
+import { signJwtAsync } from "@/libs/jwt";
 
-type DB = typeof db;
+import { LoginUser } from "./validations/user";
 
 interface LoginUserProps extends Context {
-  body: {
-    email: string;
-    password: string;
-  };
+  body: LoginUser;
   db: DB;
 }
 
-export async function loginUser({ set, body, error }: LoginUserProps) {
+export async function loginUser({ body, error, db }: LoginUserProps) {
   const [user] = await db
     .select()
     .from(userTable)
@@ -38,12 +34,16 @@ export async function loginUser({ set, body, error }: LoginUserProps) {
 
   await lucia.invalidateUserSessions(user.id);
   const session = await lucia.createSession(user.id, {});
-  const sessionToken = jwt.sign(session.id, env.REFRESH_TOKEN_SECRET_KEY);
 
-  return {
-    id: user.id,
-    email: user.email,
-    emailVerified: user.emailVerified,
-    sessionToken
-  };
+  try {
+    const sessionToken = await signJwtAsync(session.id);
+    return {
+      id: user.id,
+      email: user.email,
+      emailVerified: user.emailVerified,
+      sessionToken
+    };
+  } catch (err) {
+    return error(500, "Internal Server Error");
+  }
 }
