@@ -1,19 +1,17 @@
 import { eq } from "drizzle-orm";
 import { Context } from "elysia";
 
-import { DB } from "@/db";
+import { db } from "@/db";
 import { userTable } from "@/db/schema/user";
 import { lucia } from "@/libs/auth";
 import { signJwtAsync } from "@/libs/jwt";
-
-import { LoginUser } from "./validations/user";
+import { LoginUser } from "@/v1/validations/user";
 
 interface LoginUserProps extends Context {
   body: LoginUser;
-  db: DB;
 }
 
-export async function loginUser({ body, error, db }: LoginUserProps) {
+export async function loginUser({ body, error }: LoginUserProps) {
   const [user] = await db
     .select()
     .from(userTable)

@@ -1,15 +1,13 @@
 import bearer from "@elysiajs/bearer";
-import Elysia, { t } from "elysia";
+import Elysia from "elysia";
 
-import { db } from "@/db";
+import { loginUserSchema, registerUserSchema } from "@/v1/validations/user";
 
-import { loginUser } from "./login";
-import { getProfile } from "./profile";
-import { registerUser } from "./register";
-import { loginUserSchema, registerUserSchema } from "./validations/user";
+import { loginUser } from "../controllers/user/login";
+import { getProfile } from "../controllers/user/profile";
+import { registerUser } from "../controllers/user/register";
 
 export const authRoutes = new Elysia({ prefix: "/auth" })
-  .decorate("db", db)
   .use(bearer())
   .post("/register", registerUser, {
     body: registerUserSchema

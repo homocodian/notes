@@ -1,15 +1,9 @@
 import { Context } from "elysia";
 
-import { DB } from "@/db";
 import { lucia } from "@/libs/auth";
 import { VerifyJwtAsync } from "@/libs/jwt";
 
 interface GetProfileProps extends Context {
-  body: {
-    email: string;
-    password: string;
-  };
-  db: DB;
   bearer: string | undefined;
 }
 

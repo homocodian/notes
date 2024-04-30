@@ -1,20 +1,18 @@
 import { Context } from "elysia";
 import jwt from "jsonwebtoken";
 
-import type { DB } from "@/db";
+import { db } from "@/db";
 import { userTable } from "@/db/schema/user";
 import { env } from "@/env";
 import { lucia } from "@/libs/auth";
-
-import { isValidEmail } from "./validations/is-valid-email";
-import { RegisterUser } from "./validations/user";
+import { isValidEmail } from "@/v1/validations/is-valid-email";
+import { RegisterUser } from "@/v1/validations/user";
 
 interface RegisterUserProps extends Context {
   body: RegisterUser;
-  db: DB;
 }
 
-export async function registerUser({ body, error, db }: RegisterUserProps) {
+export async function registerUser({ body, error }: RegisterUserProps) {
   if (!isValidEmail(body.email)) {
     return error(400, "Invalid email");
   }
