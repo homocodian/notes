@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import {
   boolean,
   integer,
@@ -7,6 +8,8 @@ import {
   timestamp,
   varchar
 } from "drizzle-orm/pg-core";
+
+import { noteTable, notesToUsers } from "./note";
 
 export const userTable = pgTable("user", {
   id: serial("id").notNull().primaryKey(),
@@ -35,3 +38,8 @@ export const emailVerificationCodeTable = pgTable("email_verification_code", {
     mode: "date"
   }).notNull()
 });
+
+export const userRelations = relations(userTable, ({ many }) => ({
+  notes: many(noteTable),
+  sharedNotes: many(notesToUsers)
+}));

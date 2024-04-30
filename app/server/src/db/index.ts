@@ -1,11 +1,8 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 
-import {
-  emailVerificationCodeTable,
-  sessionTable,
-  userTable
-} from "./schema/user";
+import * as noteSchema from "./schema/note";
+import * as userSchema from "./schema/user";
 
 const connectionString = process.env.DATABASE_URL!;
 
@@ -13,7 +10,10 @@ const connectionString = process.env.DATABASE_URL!;
 export const client = postgres(connectionString, { prepare: false });
 
 export const db = drizzle(client, {
-  schema: { ...userTable, ...sessionTable, ...emailVerificationCodeTable }
+  schema: {
+    ...userSchema,
+    ...noteSchema
+  }
 });
 
 export type DB = typeof db;
