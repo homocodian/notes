@@ -1,19 +1,19 @@
-type Timestamp = {
-  _seconds: number;
-  _nanoseconds: number;
-};
-
 export type Note = {
   id: string;
   text: string;
   category: "general" | "important";
-  timestamp: Timestamp;
-  updatedAt: Timestamp;
+  createdAt: string;
+  updatedAt: string;
   name?: string;
   email?: string;
-  userId: string;
-  sharedWith?: Array<string>;
+  userId: number;
+  sharedNotes: Array<SharedNote>;
   isComplete: boolean;
+};
+
+export type SharedNote = {
+  userId: number;
+  noteId: number;
 };
 
 export interface INoteCard extends Note {

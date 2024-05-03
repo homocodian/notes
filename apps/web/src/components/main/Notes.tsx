@@ -1,17 +1,17 @@
+import Masonry from "@mui/lab/Masonry";
+import { useQuery } from "@tanstack/react-query";
 import { Fragment, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import Masonry from "@mui/lab/Masonry";
-
 import NoteSkeleton from "@/components/NoteSkeleton";
 import NoteCard from "@/components/main/NoteCard";
-import { axiosInstance } from "@/lib/axios";
+import { api } from "@/lib/eden";
 import { type Note } from "@/types/notes";
-import { useQuery } from "@tanstack/react-query";
+
 import EmptyNote from "../EmptyNote";
 
 async function fetchNotes() {
-  const res = await axiosInstance.get("/notes");
+  const res = await api.v1.notes.index.get();
   return res.data;
 }
 
@@ -19,7 +19,7 @@ function Notes() {
   const [searchParams] = useSearchParams();
   const { data: notes, isLoading } = useQuery<Note[]>({
     queryKey: ["notes"],
-    queryFn: fetchNotes,
+    queryFn: fetchNotes
   });
 
   const [searchedNotes, setSearchedNotes] = useState<Note[]>([]);
@@ -40,7 +40,7 @@ function Notes() {
         ) {
           return item;
         }
-      }),
+      })
     );
   }, [searchParams, notes]);
 

@@ -1,4 +1,3 @@
-import { updateNote } from "@/lib/update-note";
 import { CloseOutlined } from "@mui/icons-material";
 import {
   Box,
@@ -9,11 +8,14 @@ import {
   DialogTitle,
   IconButton,
   Slide,
-  Typography,
+  Typography
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ReactElement, Ref, forwardRef } from "react";
+
+import { updateNote } from "@/lib/update-note";
+import { SharedNote } from "@/types/notes";
 
 const Transition = forwardRef(
   (
@@ -21,10 +23,10 @@ const Transition = forwardRef(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       children: ReactElement<any, any>;
     },
-    ref: Ref<unknown>,
+    ref: Ref<unknown>
   ) => {
     return <Slide direction="up" ref={ref} {...props} />;
-  },
+  }
 );
 
 Transition.displayName = "Transition";
@@ -32,22 +34,22 @@ Transition.displayName = "Transition";
 type SharedWithModalProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  sharedWith?: Array<string>;
+  sharedNotes?: Array<SharedNote>;
   id: string;
 };
 
 export default function SharedWithModal({
   open,
   setOpen,
-  sharedWith,
-  id,
+  sharedNotes,
+  id
 }: SharedWithModalProps) {
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: updateNote,
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
-    },
+    }
   });
 
   function handleClose() {
@@ -85,18 +87,18 @@ export default function SharedWithModal({
         </Box>
       </DialogTitle>
       <DialogContent sx={{ margin: "1rem 0", minWidth: "280px" }}>
-        {sharedWith && sharedWith.length > 0 ? (
-          sharedWith.map((item) => {
+        {sharedNotes && sharedNotes.length > 0 ? (
+          sharedNotes.map((item) => {
             return (
-              <Box key={item} sx={{ marginBottom: "1rem" }}>
+              <Box key={item.userId} sx={{ marginBottom: "1rem" }}>
                 <Chip
-                  label={item}
+                  label={item.userId}
                   onDelete={() => {
                     mutate({
                       id,
                       data: {
-                        removeSharedWith: [item],
-                      },
+                        removeSharedWith: [item]
+                      }
                     });
                     handleClose();
                   }}

@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 export type User = {
-  id: string;
+  id: number;
   email: string;
   emailVerified: boolean;
 };
@@ -16,12 +16,12 @@ export const useAuthStore = create<AuthProps>((set) => ({
   user: null,
   setUser(user) {
     set({
-      user,
+      user
     });
   },
   resetAuth() {
     set({
-      user: null,
+      user: null
     });
-  },
+  }
 }));

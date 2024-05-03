@@ -1,5 +1,3 @@
-import { Fragment, useState } from "react";
-
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -8,12 +6,14 @@ import CardHeader from "@mui/material/CardHeader";
 import Chip from "@mui/material/Chip";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
+import { useTheme } from "@mui/material/styles";
+import { Fragment, useState } from "react";
 
 import NoteMenu from "@/components/main/NoteMenu";
 import { useAuthStore } from "@/store/auth";
 import { INoteCard } from "@/types/notes";
 import formatDate from "@/utils/format-date";
-import { useTheme } from "@mui/material/styles";
+
 import SharedWithModal from "../NoteSharedWithModal";
 import SharedButton from "./shared-button";
 
@@ -22,12 +22,12 @@ function NoteCard({
   text,
   category,
   isComplete,
-  timestamp,
+  createdAt,
   email,
-  sharedWith,
+  sharedNotes,
   userId,
   name,
-  disableActions = false,
+  disableActions = false
 }: INoteCard) {
   const theme = useTheme();
   const user = useAuthStore((state) => state.user);
@@ -41,10 +41,7 @@ function NoteCard({
   const label = (name || email || "a friend") as string;
 
   const isShared =
-    sharedWith &&
-    sharedWith?.findIndex(
-      (item) => item.trim() === user?.uid || item.trim() === user?.email,
-    ) >= 0
+    sharedNotes.map((i) => i.userId).findIndex((item) => item === user?.id) >= 0
       ? true
       : false;
 
@@ -77,7 +74,7 @@ function NoteCard({
                 color={category === "important" ? "error" : "secondary"}
                 size="small"
                 sx={{
-                  textTransform: "capitalize",
+                  textTransform: "capitalize"
                 }}
               />
             )
@@ -106,7 +103,7 @@ function NoteCard({
             color={isComplete ? "text.secondary" : ""}
             style={{
               textDecoration: `${isComplete ? "line-through" : "none"}`,
-              whiteSpace: "pre-line",
+              whiteSpace: "pre-line"
             }}
           >
             {text}
@@ -116,7 +113,7 @@ function NoteCard({
           sx={{
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "center",
+            alignItems: "center"
           }}
         >
           <Typography
@@ -126,16 +123,16 @@ function NoteCard({
             sx={{
               userSelect: "none",
               WebkitUserSelect: "none",
-              msUserSelect: "none",
+              msUserSelect: "none"
             }}
           >
-            Date created {formatDate(new Date(timestamp._seconds * 1000))}
+            Date created {formatDate(new Date(createdAt))}
           </Typography>
-          {sharedWith && sharedWith.length > 0 && userId === user?.uid ? (
+          {sharedNotes && sharedNotes.length > 0 && userId === user?.id ? (
             <SharedButton
               onClick={() => setOpen(true)}
               id={id}
-              sharedWith={sharedWith}
+              sharedWith={sharedNotes}
             />
           ) : null}
         </CardActions>
@@ -143,7 +140,7 @@ function NoteCard({
       <SharedWithModal
         open={open}
         setOpen={setOpen}
-        sharedWith={sharedWith}
+        sharedNotes={sharedNotes}
         id={id}
       />
     </Fragment>

@@ -1,6 +1,8 @@
 {
-  "name": "@notes/server",
+  "name": "backend",
   "version": "0.0.1",
+  "main": "./src/index.ts",
+  "module": "src/index.js",
   "scripts": {
     "dev": "bun --watch src/index.ts",
     "build": "bun build src/index.ts",
@@ -34,6 +36,5 @@
     "drizzle-kit": "^0.20.17",
     "eslint": "^9.0.0",
     "prettier": "^3.2.5"
-  },
-  "module": "src/index.js"
+  }
 }

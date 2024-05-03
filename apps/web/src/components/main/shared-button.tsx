@@ -1,9 +1,11 @@
-import { updateNote } from "@/lib/update-note";
 import { Chip } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import { updateNote } from "@/lib/update-note";
+import { SharedNote } from "@/types/notes";
+
 type SharedButtonProps = {
-  sharedWith: string[];
+  sharedWith: Array<SharedNote>;
   id: string;
   onClick(): void;
 };
@@ -15,7 +17,7 @@ function SharedButton({ onClick, id, sharedWith }: SharedButtonProps) {
     mutationFn: updateNote,
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
-    },
+    }
   });
 
   const label = "Shared + " + sharedWith.length;
@@ -30,8 +32,8 @@ function SharedButton({ onClick, id, sharedWith }: SharedButtonProps) {
         mutate({
           id,
           data: {
-            fieldToDelete: "sharedWith",
-          },
+            fieldToDelete: "sharedWith"
+          }
         });
       }}
     />
