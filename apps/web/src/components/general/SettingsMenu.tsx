@@ -1,5 +1,3 @@
-import * as React from "react";
-
 import { Keyboard, Settings } from "@mui/icons-material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Avatar from "@mui/material/Avatar";
@@ -11,19 +9,23 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
+import { useQueryClient } from "@tanstack/react-query";
+import * as React from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import { useShallow } from "zustand/react/shallow";
 
 import ProfileAvatar from "@/components/general/ProfileAvatar";
 import ThemeMenuItem from "@/components/general/ThemeMenuItem";
 import { SESSION_TOKEN_KEY } from "@/constant/auth";
 import { useAuthStore } from "@/store/auth";
 import { useKeyboardShortcutStore } from "@/store/keyboard-shortcut";
-import { useShallow } from "zustand/react/shallow";
+
 import { AutoRefreshMenuItem } from "./AutoRefreshMenuItem";
 
 export default function SettingsMenu() {
+  const queryClient = useQueryClient();
   const { user, setUser } = useAuthStore(
-    useShallow((state) => ({ user: state.user, setUser: state.setUser })),
+    useShallow((state) => ({ user: state.user, setUser: state.setUser }))
   );
   const buttonRef = React.useRef<HTMLButtonElement | null>(null);
   const openModal = useKeyboardShortcutStore((state) => state.openModal);
@@ -42,6 +44,7 @@ export default function SettingsMenu() {
 
   const logout = () => {
     localStorage.removeItem(SESSION_TOKEN_KEY);
+    queryClient.clear();
     setUser(null);
   };
 
@@ -55,7 +58,7 @@ export default function SettingsMenu() {
       }
     },
     undefined,
-    [anchorEl],
+    [anchorEl]
   );
 
   return (
@@ -89,7 +92,7 @@ export default function SettingsMenu() {
                 width: 32,
                 height: 32,
                 ml: -0.5,
-                mr: 1,
+                mr: 1
               },
               "&:before": {
                 content: '""',
@@ -101,11 +104,11 @@ export default function SettingsMenu() {
                 height: 10,
                 bgcolor: "background.paper",
                 transform: "translateY(-50%) rotate(45deg)",
-                zIndex: 0,
+                zIndex: 0
               },
-              minWidth: 180,
-            },
-          },
+              minWidth: 180
+            }
+          }
         }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
@@ -134,14 +137,14 @@ export default function SettingsMenu() {
         <Divider />
         <AutoRefreshMenuItem
           sx={{
-            marginTop: "0.5rem",
+            marginTop: "0.5rem"
           }}
         />
         <Divider />
         <MenuItem
           onClick={() => handleItemClick(openModal)}
           sx={{
-            marginTop: "0.5rem",
+            marginTop: "0.5rem"
           }}
         >
           <ListItemIcon>

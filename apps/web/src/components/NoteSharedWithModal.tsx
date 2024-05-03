@@ -90,9 +90,9 @@ export default function SharedWithModal({
         {sharedNotes && sharedNotes.length > 0 ? (
           sharedNotes.map((item) => {
             return (
-              <Box key={item.userId} sx={{ marginBottom: "1rem" }}>
+              <Box key={item.user.email} sx={{ marginBottom: "1rem" }}>
                 <Chip
-                  label={item.userId}
+                  label={item.user.email}
                   onDelete={() => {
                     mutate({
                       id,

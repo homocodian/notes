@@ -1,6 +1,3 @@
-import { useRef, useState } from "react";
-
-import { updateNote } from "@/lib/update-note";
 import { LoadingButton } from "@mui/lab";
 import {
   Button,
@@ -11,12 +8,15 @@ import {
   DialogContentText,
   MenuItem,
   TextField,
-  useMediaQuery,
+  useMediaQuery
 } from "@mui/material";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { useTheme } from "@mui/material/styles";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+
+import { updateNote } from "@/lib/update-note";
 
 interface IProps {
   id: string;
@@ -33,7 +33,7 @@ function EditNoteModal({
   id,
   text,
   category,
-  isShared,
+  isShared
 }: IProps) {
   const queryClient = useQueryClient();
   const theme = useTheme();
@@ -41,7 +41,7 @@ function EditNoteModal({
     mutationFn: updateNote,
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
-    },
+    }
   });
   const [inputError, setInputError] = useState(false);
   const [note, setNote] = useState<string>(text);
@@ -56,8 +56,8 @@ function EditNoteModal({
       submitButtonRef.current?.click();
     },
     {
-      enableOnFormTags: ["INPUT", "TEXTAREA"],
-    },
+      enableOnFormTags: ["INPUT", "TEXTAREA"]
+    }
   );
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -65,7 +65,7 @@ function EditNoteModal({
   };
 
   const handleInputChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
     setNote(event.target.value);
   };
@@ -84,9 +84,8 @@ function EditNoteModal({
       id,
       data: {
         text: note,
-        // @ts-expect-error category
-        category: updateCategory,
-      },
+        category: updateCategory
+      }
     }).finally(() => {
       handleClose();
     });

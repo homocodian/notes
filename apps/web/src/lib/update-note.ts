@@ -1,12 +1,16 @@
-import type { NoteToUpdate } from "server/validations/notes";
-import { axiosInstance } from "./axios";
+import { api } from "./eden";
 
-export type UpdateNoteProps = {
+export type ModifyNoteProps<T = Record<string, unknown>> = {
   id: string;
-  data: NoteToUpdate;
+  data: T;
 };
 
-export async function updateNote({ id, data }: UpdateNoteProps) {
-  const res = await axiosInstance.patch(`/notes?id=${id}`, data);
+export async function updateNote({ id, data }: ModifyNoteProps) {
+  const res = await api.v1.notes({ id }).patch(data);
+  return res.data;
+}
+
+export async function shareNote({ id, data }: ModifyNoteProps<Array<string>>) {
+  const res = await api.v1.notes({ id }).share.post(data);
   return res.data;
 }

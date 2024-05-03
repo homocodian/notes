@@ -16,7 +16,16 @@ export async function getNotes({ user }: GetNotesProps) {
           email: true
         }
       },
-      sharedNotes: true
+      sharedNotes: {
+        with: {
+          user: {
+            columns: {
+              email: true,
+              id: true
+            }
+          }
+        }
+      }
     }
   });
 }

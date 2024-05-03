@@ -1,23 +1,32 @@
 import bearer from "@elysiajs/bearer";
-import Elysia, { t } from "elysia";
+import Elysia from "elysia";
 
-import { lucia } from "@/libs/auth";
-import { VerifyJwtAsync } from "@/libs/jwt";
-
-import { getNotes } from "../controllers/notes/get-notes";
+import { createNote } from "../controllers/notes/create";
+import { getNotes } from "../controllers/notes/get";
+import { shareNote } from "../controllers/notes/share";
+import { updateNote } from "../controllers/notes/update";
+import { deriveUser } from "../utils/note/derive-user";
+import {
+  createNoteSchema,
+  shareNoteParams,
+  shareNoteWithSchema,
+  updateNoteParamsSchema,
+  updateNoteSchema
+} from "../validations/note";
 
 export const noteRoute = new Elysia({ prefix: "/notes" })
   .use(bearer())
-  .derive(async ({ bearer, error }) => {
-    if (!bearer) return error(401, "Unauthorized");
-
-    const sessionId = await VerifyJwtAsync(bearer);
-    if (typeof sessionId !== "string") return error(401, "Unauthorized");
-
-    const { user } = await lucia.validateSession(sessionId);
-    if (!user) return error(401, "Unauthorized");
-
-    return { user };
-  })
+  .derive(deriveUser)
   .get("/", getNotes)
-  .post("/", ({ user }) => ({ note: "new note" }));
+  .post("/", createNote, { body: createNoteSchema })
+  .patch("/:id", updateNote, {
+    body: updateNoteSchema,
+    params: updateNoteParamsSchema
+  })
+  .post("/:id/share", shareNote, {
+    body: shareNoteWithSchema,
+    params: shareNoteParams
+  })
+  .onError(({ error }) => {
+    console.log("🚀 ~ .onError ~ error:", error);
+  });

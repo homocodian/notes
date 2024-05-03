@@ -1,0 +1,24 @@
+import { Context } from "elysia";
+import { User } from "lucia";
+
+import { db } from "@/db";
+import { noteTable } from "@/db/schema/note";
+import type { CreateNote } from "@/v1/validations/note";
+
+interface CreateNoteProps extends Context {
+  user: User;
+  body: CreateNote;
+}
+
+export async function createNote({ user, body, error }: CreateNoteProps) {
+  const [note] = await db
+    .insert(noteTable)
+    .values({ ...body, userId: user.id })
+    .returning();
+
+  if (!note) {
+    return error(500, "Internal Server Error");
+  }
+
+  return note;
+}

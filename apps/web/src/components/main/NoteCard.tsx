@@ -41,6 +41,7 @@ function NoteCard({
   const label = (name || email || "a friend") as string;
 
   const isShared =
+    sharedNotes &&
     sharedNotes.map((i) => i.userId).findIndex((item) => item === user?.id) >= 0
       ? true
       : false;

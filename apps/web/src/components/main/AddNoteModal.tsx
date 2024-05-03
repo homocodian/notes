@@ -8,15 +8,15 @@ import {
   DialogContentText,
   MenuItem,
   TextField,
-  useMediaQuery,
+  useMediaQuery
 } from "@mui/material";
 import Select from "@mui/material/Select";
 import { useTheme } from "@mui/material/styles";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
-import { axiosInstance } from "@/lib/axios";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { api } from "@/lib/eden";
 
 interface IProps {
   open: boolean;
@@ -29,10 +29,12 @@ type AddNoteParams = {
 };
 
 async function addNote({ category, text }: AddNoteParams) {
-  const res = await axiosInstance.post("/notes", {
-    category,
-    text,
-  });
+  const res = await api.v1.notes.index.post({ text, category });
+
+  if (res.error) {
+    throw new Error(res.error.value);
+  }
+
   return res.data;
 }
 
@@ -43,7 +45,7 @@ function AddNoteModal({ open, setOpen }: IProps) {
     mutationFn: (params: AddNoteParams) => addNote(params),
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
-    },
+    }
   });
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const formRef = useRef<HTMLFormElement | null>(null);
@@ -57,8 +59,8 @@ function AddNoteModal({ open, setOpen }: IProps) {
       submitButtonRef.current?.click();
     },
     {
-      enableOnFormTags: ["INPUT", "TEXTAREA"],
-    },
+      enableOnFormTags: ["INPUT", "TEXTAREA"]
+    }
   );
 
   useEffect(() => {

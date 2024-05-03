@@ -1,5 +1,3 @@
-import { Fragment, useState } from "react";
-
 import CloseIcon from "@mui/icons-material/Close";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -9,6 +7,9 @@ import ShareIcon from "@mui/icons-material/Share";
 import Menu, { MenuProps } from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { alpha, styled } from "@mui/material/styles";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Fragment, useState } from "react";
+import toast from "react-hot-toast";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
 import ShareModal from "@/components/ShareModal";
@@ -17,19 +18,17 @@ import { deleteNote } from "@/lib/delete-note";
 import { updateNote } from "@/lib/update-note";
 import { useAuthStore } from "@/store/auth";
 import { writeToClipboard } from "@/utils/clipboard";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import toast from "react-hot-toast";
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
     elevation={0}
     anchorOrigin={{
       vertical: "bottom",
-      horizontal: "right",
+      horizontal: "right"
     }}
     transformOrigin={{
       vertical: "top",
-      horizontal: "right",
+      horizontal: "right"
     }}
     {...props}
   />
@@ -45,22 +44,22 @@ const StyledMenu = styled((props: MenuProps) => (
     boxShadow:
       "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
     "& .MuiMenu-list": {
-      padding: "4px 0",
+      padding: "4px 0"
     },
     "& .MuiMenuItem-root": {
       "& .MuiSvgIcon-root": {
         fontSize: 18,
         color: theme.palette.text.secondary,
-        marginRight: theme.spacing(1.5),
+        marginRight: theme.spacing(1.5)
       },
       "&:active": {
         backgroundColor: alpha(
           theme.palette.primary.main,
-          theme.palette.action.selectedOpacity,
-        ),
-      },
-    },
-  },
+          theme.palette.action.selectedOpacity
+        )
+      }
+    }
+  }
 }));
 
 interface ITodoMenu {
@@ -81,7 +80,7 @@ function NoteMenu({
   complete,
   text,
   category,
-  isShared,
+  isShared
 }: ITodoMenu) {
   const queryClient = useQueryClient();
   const open = Boolean(anchorEl);
@@ -89,13 +88,13 @@ function NoteMenu({
     mutationFn: updateNote,
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
-    },
+    }
   });
   const { mutate: deleteMutation } = useMutation({
     mutationFn: deleteNote,
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
-    },
+    }
   });
   const [confirm, setConfirm] = useState(false);
   const [editNoteModal, setEditNoteModal] = useState(false);
@@ -110,8 +109,8 @@ function NoteMenu({
     mutate({
       id,
       data: {
-        isComplete: !complete,
-      },
+        isComplete: !complete
+      }
     });
   };
 
@@ -153,12 +152,12 @@ function NoteMenu({
     let removeSharedWith: string[] | undefined = undefined;
     const user = useAuthStore((state) => state.user);
 
-    if (user?.uid && user.email) {
-      removeSharedWith = [user.uid, user.email];
+    if (user?.id && user.email) {
+      removeSharedWith = [user.email];
     } else if (user?.email) {
       removeSharedWith = [user.email];
-    } else if (user?.uid) {
-      removeSharedWith = [user.uid];
+    } else if (user?.id) {
+      removeSharedWith = [user.email];
     }
 
     const toastId = toast.loading("Removing...");
@@ -166,8 +165,8 @@ function NoteMenu({
       await mutateAsync({
         id,
         data: {
-          removeSharedWith,
-        },
+          removeSharedWith
+        }
       });
       toast.dismiss(toastId);
       toast.success("Removed");
@@ -181,7 +180,7 @@ function NoteMenu({
       <StyledMenu
         MenuListProps={{
           "aria-labelledby": "Note menu",
-          "aria-label": "Note menu",
+          "aria-label": "Note menu"
         }}
         anchorEl={anchorEl}
         open={open}

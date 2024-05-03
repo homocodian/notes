@@ -1,7 +1,3 @@
-import { Fragment, ReactElement, Ref, forwardRef } from "react";
-
-import { updateNote } from "@/lib/update-note";
-import { useAuthStore } from "@/store/auth";
 import { CloseOutlined } from "@mui/icons-material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
@@ -14,11 +10,15 @@ import {
   IconButton,
   Slide,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Fragment, ReactElement, Ref, forwardRef } from "react";
 import toast from "react-hot-toast";
+
+import { shareNote } from "@/lib/update-note";
+import { useAuthStore } from "@/store/auth";
 
 const Transition = forwardRef(
   (
@@ -26,10 +26,10 @@ const Transition = forwardRef(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       children: ReactElement<any, any>;
     },
-    ref: Ref<unknown>,
+    ref: Ref<unknown>
   ) => {
     return <Slide direction="up" ref={ref} {...props} />;
-  },
+  }
 );
 
 Transition.displayName = "Transition";
@@ -43,14 +43,14 @@ type SharedWithModalProps = {
 export default function ShareModal({
   open,
   setOpen,
-  id,
+  id
 }: SharedWithModalProps) {
   const queryClient = useQueryClient();
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: updateNote,
+    mutationFn: shareNote,
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
-    },
+    }
   });
 
   function handleClose() {
@@ -61,20 +61,20 @@ export default function ShareModal({
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    const shareWith = formData
+    const sharedWith = formData
       .get("share-with")
       ?.toString()
       .split(",")
       .map((item) => item.trim());
 
-    if (!shareWith || shareWith.length === 0) {
+    if (!sharedWith || sharedWith.length === 0) {
       toast.error("Please provide id or ids");
       return;
     }
 
     const user = useAuthStore.getState().user;
 
-    if (shareWith.some((item) => item === user?.uid || item === user?.email)) {
+    if (sharedWith.some((item) => item === user?.email)) {
       toast.error("You cannot share with yourself");
       return;
     }
@@ -82,9 +82,7 @@ export default function ShareModal({
     try {
       await mutateAsync({
         id,
-        data: {
-          sharedWith: shareWith,
-        },
+        data: sharedWith
       });
       toast.success("Note has been shared, if user email is correct.");
     } catch (error: unknown) {
