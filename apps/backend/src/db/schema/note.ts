@@ -56,7 +56,7 @@ export const notesToUsers = pgTable(
     userId: integer("user_id")
       .notNull()
       .references(() => userTable.id),
-    noteId: integer("group_id")
+    noteId: integer("note_id")
       .notNull()
       .references(() => noteTable.id)
   },
