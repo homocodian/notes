@@ -47,10 +47,10 @@ export const noteRelations = relations(noteTable, ({ one, many }) => ({
     fields: [noteTable.userId],
     references: [userTable.id]
   }),
-  sharedNotes: many(notesToUsers)
+  sharedNotes: many(notesToUsersTable)
 }));
 
-export const notesToUsers = pgTable(
+export const notesToUsersTable = pgTable(
   "notes_to_users",
   {
     userId: integer("user_id")
@@ -61,17 +61,21 @@ export const notesToUsers = pgTable(
       .references(() => noteTable.id)
   },
   (t) => ({
-    pk: primaryKey({ columns: [t.userId, t.noteId] })
+    pk: primaryKey({ columns: [t.userId, t.noteId] }),
+    notesToUsersNoteIdIdx: index("notes_to_users_note_id_idx").on(t.noteId)
   })
 );
 
-export const usersToGroupsRelations = relations(notesToUsers, ({ one }) => ({
-  note: one(noteTable, {
-    fields: [notesToUsers.noteId],
-    references: [noteTable.id]
-  }),
-  user: one(userTable, {
-    fields: [notesToUsers.userId],
-    references: [userTable.id]
+export const notesToUsersRelations = relations(
+  notesToUsersTable,
+  ({ one }) => ({
+    note: one(noteTable, {
+      fields: [notesToUsersTable.noteId],
+      references: [noteTable.id]
+    }),
+    user: one(userTable, {
+      fields: [notesToUsersTable.userId],
+      references: [userTable.id]
+    })
   })
-}));
+);

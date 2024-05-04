@@ -9,7 +9,7 @@ import {
   varchar
 } from "drizzle-orm/pg-core";
 
-import { noteTable, notesToUsers } from "./note";
+import { noteTable, notesToUsersTable } from "./note";
 
 export const userTable = pgTable("user", {
   id: serial("id").notNull().primaryKey(),
@@ -41,5 +41,5 @@ export const emailVerificationCodeTable = pgTable("email_verification_code", {
 
 export const userRelations = relations(userTable, ({ many }) => ({
   notes: many(noteTable),
-  sharedNotes: many(notesToUsers)
+  sharedNotes: many(notesToUsersTable)
 }));

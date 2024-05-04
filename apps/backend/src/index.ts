@@ -7,6 +7,9 @@ import { v1Routes } from "./v1";
 const app = new Elysia()
   .use(cors())
   .use(v1Routes)
+  .onError(({ code }) => {
+    console.log(code);
+  })
   .get("/", () => {
     return {
       success: true,

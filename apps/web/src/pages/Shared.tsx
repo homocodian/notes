@@ -1,26 +1,23 @@
-import { useEffect, useState } from "react";
-
-import EmptyNote from "@/components/EmptyNote";
-import { NoteCard } from "@/components/main";
-import NoteSkeleton from "@/components/NoteSkeleton";
-import { axiosInstance } from "@/lib/axios";
-import { Note } from "@/types/notes";
 import { Masonry } from "@mui/lab";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-async function fetchSharedNotes() {
-  const searchParams = new URLSearchParams();
-  searchParams.set("field", "shared");
+import EmptyNote from "@/components/EmptyNote";
+import NoteSkeleton from "@/components/NoteSkeleton";
+import { NoteCard } from "@/components/main";
+import { api } from "@/lib/eden";
+import { Note } from "@/types/notes";
 
-  const res = await axiosInstance.get(`/notes?${searchParams.toString()}`);
+async function fetchSharedNotes() {
+  const res = await api.v1.notes.shared.get();
   return res.data;
 }
 
 function Shared() {
   const { data, isLoading } = useQuery<Note[]>({
     queryKey: ["notes", "shared"],
-    queryFn: fetchSharedNotes,
+    queryFn: fetchSharedNotes
   });
   const [searchedNotes, setSearchedNotes] = useState<Note[]>([]);
   const [searchParams] = useSearchParams();
@@ -41,7 +38,7 @@ function Shared() {
         ) {
           return item;
         }
-      }),
+      })
     );
   }, [searchParams, data]);
 

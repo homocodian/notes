@@ -1,26 +1,27 @@
-import { useEffect, useState } from "react";
-
-import EmptyNote from "@/components/EmptyNote";
-import { NoteCard } from "@/components/main";
-import NoteSkeleton from "@/components/NoteSkeleton";
-import { axiosInstance } from "@/lib/axios";
-import { Note } from "@/types/notes";
 import { Masonry } from "@mui/lab";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
+import EmptyNote from "@/components/EmptyNote";
+import NoteSkeleton from "@/components/NoteSkeleton";
+import { NoteCard } from "@/components/main";
+import { api } from "@/lib/eden";
+import { Note } from "@/types/notes";
+
 async function fetchImportantNotes() {
-  const searchParams = new URLSearchParams();
-  searchParams.set("field", "category");
-  searchParams.set("q", "important");
-  const res = await axiosInstance.get(`/notes?${searchParams.toString()}`);
+  const res = await api.v1.notes.index.get({
+    query: {
+      category: "important"
+    }
+  });
   return res.data;
 }
 
 function Important() {
   const { data, isLoading } = useQuery<Note[]>({
     queryKey: ["notes", "important"],
-    queryFn: fetchImportantNotes,
+    queryFn: fetchImportantNotes
   });
   const [searchedNotes, setSearchedNotes] = useState<Note[]>([]);
   const [searchParams] = useSearchParams();
@@ -41,7 +42,7 @@ function Important() {
         ) {
           return item;
         }
-      }),
+      })
     );
   }, [searchParams, data]);
 
@@ -60,12 +61,7 @@ function Important() {
               ? searchedNotes
               : data
             ).map((note) => {
-              return (
-                <NoteCard
-                {...note}
-                  key={note.id}
-                />
-              );
+              return <NoteCard {...note} key={note.id} />;
             })}
           </Masonry>
         </div>

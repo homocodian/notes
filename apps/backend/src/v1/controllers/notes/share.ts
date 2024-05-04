@@ -3,7 +3,7 @@ import { Context } from "elysia";
 import { User } from "lucia";
 
 import { db } from "@/db";
-import { notesToUsers } from "@/db/schema/note";
+import { notesToUsersTable } from "@/db/schema/note";
 import { userTable } from "@/db/schema/user";
 import type { ShareNoteWith } from "@/v1/validations/note";
 
@@ -29,7 +29,7 @@ export async function shareNote({ body, error, params }: ShareNoteProps) {
   }));
 
   const sharedNotes = await db
-    .insert(notesToUsers)
+    .insert(notesToUsersTable)
     .values(createdSharedNotes)
     .onConflictDoNothing()
     .returning();

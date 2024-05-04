@@ -1,27 +1,27 @@
+import { Masonry } from "@mui/lab";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import EmptyNote from "@/components/EmptyNote";
 import NoteSkeleton from "@/components/NoteSkeleton";
 import { NoteCard } from "@/components/main";
-import { axiosInstance } from "@/lib/axios";
+import { api } from "@/lib/eden";
 import { Note } from "@/types/notes";
-import { Masonry } from "@mui/lab";
-import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "react-router-dom";
 
 async function fetchGeneralNotes() {
-  const searchParams = new URLSearchParams();
-  searchParams.set("field", "category");
-  searchParams.set("q", "general");
-
-  const res = await axiosInstance.get(`/notes?${searchParams.toString()}`);
+  const res = await api.v1.notes.index.get({
+    query: {
+      category: "general"
+    }
+  });
   return res.data;
 }
 
 function General() {
   const { data, isLoading } = useQuery<Note[]>({
     queryKey: ["notes", "general"],
-    queryFn: fetchGeneralNotes,
+    queryFn: fetchGeneralNotes
   });
   const [searchedNotes, setSearchedNotes] = useState<Note[]>([]);
   const [searchParams] = useSearchParams();
@@ -40,7 +40,7 @@ function General() {
         if (item.text.toLocaleLowerCase().includes(query.toLocaleLowerCase())) {
           return item;
         }
-      }),
+      })
     );
   }, [searchParams, data]);
 
