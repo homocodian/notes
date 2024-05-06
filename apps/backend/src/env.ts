@@ -7,16 +7,12 @@ const server = z.object({
   ALGORITHM: z.string().min(1)
 });
 
-const client = z.object({});
-
-const merged = server.merge(client);
-
 const processEnv = {
   PORT: process.env.PORT,
   DATABASE_URL: process.env.DATABASE_URL,
   TOKEN_SECRET: process.env.TOKEN_SECRET,
   ALGORITHM: process.env.ALGORITHM
-} satisfies Record<keyof z.infer<typeof merged>, string | undefined>;
+} satisfies Record<keyof z.infer<typeof server>, string | undefined>;
 
 // Don't touch the part below
 // --------------------------
@@ -26,9 +22,7 @@ let defaultEnv = process.env;
 if (!!process.env.SKIP_ENV_VALIDATION == false) {
   const isServer = typeof window === "undefined";
 
-  const parsed = isServer
-    ? merged.safeParse(processEnv) // on server we can validate all env vars
-    : client.safeParse(processEnv); // on client we can only validate the ones that are exposed
+  const parsed = server.safeParse(processEnv);
 
   if (parsed.success === false) {
     console.error(
@@ -55,4 +49,4 @@ if (!!process.env.SKIP_ENV_VALIDATION == false) {
   });
 }
 
-export const env = defaultEnv as z.infer<typeof merged>;
+export const env = defaultEnv as z.infer<typeof server>;
