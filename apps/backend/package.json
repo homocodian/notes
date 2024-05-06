@@ -5,8 +5,8 @@
   "module": "src/index.js",
   "scripts": {
     "dev": "bun --watch src/index.ts",
-    "build": "bun build src/index.ts",
-    "start": "NODE_ENV=production bun src/index.ts",
+    "build": "bun build --target=bun ./src/index.ts --outdir ./dist",
+    "start": "NODE_ENV=production bun ./dist/index.js",
     "test": "bun test",
     "migrate": "bun run ./src/db/migrate.ts",
     "generate": "bunx drizzle-kit generate:pg",
