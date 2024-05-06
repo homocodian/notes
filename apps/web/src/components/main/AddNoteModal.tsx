@@ -16,6 +16,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
+import { APIError } from "@/lib/api-error";
 import { api } from "@/lib/eden";
 
 interface IProps {
@@ -29,13 +30,13 @@ type AddNoteParams = {
 };
 
 async function addNote({ category, text }: AddNoteParams) {
-  const res = await api.v1.notes.index.post({ text, category });
+  const { error, data } = await api.v1.notes.index.post({ text, category });
 
-  if (res.error) {
-    throw new Error(res.error.value);
+  if (error) {
+    throw new APIError(error.value, error.status);
   }
 
-  return res.data;
+  return data;
 }
 
 function AddNoteModal({ open, setOpen }: IProps) {

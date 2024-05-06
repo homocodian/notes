@@ -1,30 +1,14 @@
-import { Fragment, useState } from "react";
-
-import { Capacitor } from "@capacitor/core";
-import { GetApp } from "@mui/icons-material";
 import { Box, Button, Divider, Drawer, Typography } from "@mui/material";
+import { Fragment } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useNavigate } from "react-router";
 
 import { RouteName } from "@/Routes";
-import CustomSnackbar from "@/components/CustomSnackbar";
 import { useDrawer } from "@/context/DrawerContext";
-import { axiosInstance } from "@/lib/axios";
-import { LoadingButton } from "@mui/lab";
-import { useMutation } from "@tanstack/react-query";
-import toast from "react-hot-toast";
 
 function SideDrawer() {
   const navigate = useNavigate();
-  const { mutateAsync } = useMutation({
-    mutationFn: async () => {
-      const res = await axiosInstance.get("/check-for-updates");
-      return res.data;
-    },
-  });
-  const [message, setMessage] = useState("");
   const { isDrawerOpen, setDrawerIsOpen } = useDrawer();
-  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
 
   useHotkeys("shift+d", () => {
     setDrawerIsOpen((prev) => !prev);
@@ -39,21 +23,6 @@ function SideDrawer() {
     navigate(page);
   };
 
-  const checkForUpdate = async () => {
-    handleClose();
-    const toastId = toast.loading("Checking for new updates...");
-    try {
-      const data = await mutateAsync();
-      if (!data?.url) return null;
-      setIsSnackbarOpen(true);
-      setMessage(`New update available ${data?.url}`);
-    } catch (error) {
-      console.warn(error);
-    } finally {
-      toast.dismiss(toastId);
-    }
-  };
-
   return (
     <Fragment>
       <Drawer
@@ -64,8 +33,8 @@ function SideDrawer() {
           flexShrink: 0,
           [`& .MuiDrawer-paper`]: {
             width: 200,
-            boxSizing: "border-box",
-          },
+            boxSizing: "border-box"
+          }
         }}
       >
         <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -99,32 +68,8 @@ function SideDrawer() {
               Shared
             </Button>
           </Box>
-          <Box
-            display="flex"
-            flexDirection="column"
-            justifyItems="center"
-            alignItems="center"
-            padding="1rem 0.5rem"
-          >
-            {Capacitor.isNativePlatform() ? (
-              <LoadingButton
-                color="secondary"
-                onClick={checkForUpdate}
-                startIcon={<GetApp />}
-                loadingPosition="start"
-              >
-                Check update
-              </LoadingButton>
-            ) : null}
-          </Box>
         </Box>
       </Drawer>
-      <CustomSnackbar
-        alertType="info"
-        message={message}
-        open={isSnackbarOpen}
-        setOpen={setIsSnackbarOpen}
-      />
     </Fragment>
   );
 }

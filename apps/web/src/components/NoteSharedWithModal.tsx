@@ -14,8 +14,8 @@ import { TransitionProps } from "@mui/material/transitions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ReactElement, Ref, forwardRef } from "react";
 
-import { updateNote } from "@/lib/update-note";
-import { SharedNote } from "@/types/notes";
+import { removeUserFromNote } from "@/lib/update-note";
+import { SharedWith } from "@/types/notes";
 
 const Transition = forwardRef(
   (
@@ -34,19 +34,19 @@ Transition.displayName = "Transition";
 type SharedWithModalProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  sharedNotes?: Array<SharedNote>;
-  id: string;
+  sharedWith?: Array<SharedWith> | null;
+  noteId: number;
 };
 
 export default function SharedWithModal({
   open,
   setOpen,
-  sharedNotes,
-  id
+  sharedWith,
+  noteId
 }: SharedWithModalProps) {
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
-    mutationFn: updateNote,
+    mutationFn: removeUserFromNote,
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
     }
@@ -87,18 +87,16 @@ export default function SharedWithModal({
         </Box>
       </DialogTitle>
       <DialogContent sx={{ margin: "1rem 0", minWidth: "280px" }}>
-        {sharedNotes && sharedNotes.length > 0 ? (
-          sharedNotes.map((item) => {
+        {sharedWith && sharedWith.length > 0 ? (
+          sharedWith.map((item) => {
             return (
               <Box key={item.user.email} sx={{ marginBottom: "1rem" }}>
                 <Chip
                   label={item.user.email}
                   onDelete={() => {
                     mutate({
-                      id,
-                      data: {
-                        removeSharedWith: [item]
-                      }
+                      id: noteId,
+                      data: item.user.email
                     });
                     handleClose();
                   }}

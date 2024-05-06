@@ -1,12 +1,8 @@
-import { auth } from "@/firebase";
 import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import { signOut } from "firebase/auth";
 import toast from "react-hot-toast";
 
-const isAutoRefresh = JSON.parse(
-  window.localStorage.getItem("auto-refresh") ?? "true",
-);
+import { APIError } from "@/lib/api-error";
+import { useAuthStore } from "@/store/auth";
 
 // Create a client
 export const queryClient = new QueryClient({
@@ -14,39 +10,35 @@ export const queryClient = new QueryClient({
     onError: async (error) => {
       if (import.meta.env.DEV) console.log(error);
 
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 401) {
+      if (error instanceof APIError) {
+        if (error.status === 401) {
           toast.error("Please login again");
-          await signOut(auth);
+          useAuthStore.getState().logout();
           return;
         }
 
-        toast.error(`${error.response?.data}`);
+        toast.error(`${error.message}`);
       } else toast.error(`Something went wrong: ${error.message}`);
-    },
+    }
   }),
   mutationCache: new MutationCache({
     onError: async (error) => {
       if (import.meta.env.DEV) console.log(error);
 
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 401) {
+      if (error instanceof APIError) {
+        if (error.status === 401) {
           toast.error("Please login again");
-          await signOut(auth);
+          useAuthStore.getState().logout();
           return;
         }
 
-        toast.error(`${error.response?.data}`);
+        toast.error(`${error.message}`);
       } else toast.error(`Something went wrong: ${error.message}`);
-    },
+    }
   }),
   defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      refetchInterval: isAutoRefresh ? 1000 * 30 : undefined,
-    },
     mutations: {
-      retry: 2,
-    },
-  },
+      retry: 2
+    }
+  }
 });

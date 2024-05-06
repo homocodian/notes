@@ -1,5 +1,6 @@
 import React from "react";
 
+import { APIError } from "@/lib/api-error";
 import { api } from "@/lib/eden";
 import { useAuthStore } from "@/store/auth";
 
@@ -25,7 +26,9 @@ export function Auth({ children }: AuthProps) {
         }
       })
       .then(({ data, error }) => {
-        if (error) return;
+        if (error) {
+          throw new APIError(error.value, error.status);
+        }
 
         if (
           typeof data?.id === "number" &&

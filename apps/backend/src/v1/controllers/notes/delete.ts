@@ -4,33 +4,25 @@ import { User } from "lucia";
 
 import { db } from "@/db";
 import { noteTable } from "@/db/schema/note";
-import type { UpdateNote } from "@/v1/validations/note";
 
-interface UpdateNoteProps extends Omit<Context, "params"> {
+interface DeleteNoteProps extends Omit<Context, "params"> {
   user: User;
-  body: UpdateNote;
   params: Readonly<Record<"id", number>>;
 }
 
-export async function updateNote({
-  user,
-  body,
-  error,
-  params
-}: UpdateNoteProps) {
+export async function deleteNote({ user, error, params }: DeleteNoteProps) {
   try {
     const [note] = await db
-      .update(noteTable)
-      .set(body)
+      .delete(noteTable)
       .where(and(eq(noteTable.id, params.id), eq(noteTable.userId, user.id)))
       .returning();
 
     if (!note) {
-      return error(400, "Failed to update note");
+      return error(400, "Failed to delete the note");
     }
 
     return note;
   } catch (err) {
-    return error(500, "Internal Server Error");
+    return error(500, "Server error : Failed to delete the note");
   }
 }

@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { InferSelectModel, relations } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -17,6 +17,8 @@ export const noteCategoryEnum = pgEnum("note_category", [
   "general",
   "important"
 ]);
+
+export type NoteCategory = (typeof noteCategoryEnum.enumValues)[number];
 
 export const noteTable = pgTable(
   "note",
@@ -42,12 +44,14 @@ export const noteTable = pgTable(
   }
 );
 
+export type Note = InferSelectModel<typeof noteTable>;
+
 export const noteRelations = relations(noteTable, ({ one, many }) => ({
   user: one(userTable, {
     fields: [noteTable.userId],
     references: [userTable.id]
   }),
-  sharedNotes: many(notesToUsersTable)
+  sharedWith: many(notesToUsersTable)
 }));
 
 export const notesToUsersTable = pgTable(
@@ -55,16 +59,19 @@ export const notesToUsersTable = pgTable(
   {
     userId: integer("user_id")
       .notNull()
-      .references(() => userTable.id),
+      .references(() => userTable.id, { onDelete: "cascade" }),
     noteId: integer("note_id")
       .notNull()
-      .references(() => noteTable.id)
+      .references(() => noteTable.id, { onDelete: "cascade" })
   },
   (t) => ({
     pk: primaryKey({ columns: [t.userId, t.noteId] }),
-    notesToUsersNoteIdIdx: index("notes_to_users_note_id_idx").on(t.noteId)
+    notesToUsersNoteIdIdx: index("notes_to_users_note_id_idx").on(t.noteId),
+    notesToUsersUserIdIdx: index("notes_to_users_user_id_idx").on(t.userId)
   })
 );
+
+export type NotesToUsers = InferSelectModel<typeof notesToUsersTable>;
 
 export const notesToUsersRelations = relations(
   notesToUsersTable,

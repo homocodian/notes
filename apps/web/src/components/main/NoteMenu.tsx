@@ -15,8 +15,7 @@ import ConfirmDialog from "@/components/ConfirmDialog";
 import ShareModal from "@/components/ShareModal";
 import EditNoteModal from "@/components/main/EditNoteModal";
 import { deleteNote } from "@/lib/delete-note";
-import { updateNote } from "@/lib/update-note";
-import { useAuthStore } from "@/store/auth";
+import { removeSharedNote, updateNote } from "@/lib/update-note";
 import { writeToClipboard } from "@/utils/clipboard";
 
 const StyledMenu = styled((props: MenuProps) => (
@@ -65,12 +64,12 @@ const StyledMenu = styled((props: MenuProps) => (
 interface ITodoMenu {
   anchorEl: HTMLElement | null;
   setAnchorEl: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
-  id: string;
+  id: number;
   complete: boolean;
   text: string;
   category: string;
   isShared?: boolean;
-  sharedWith?: Array<string>;
+  sharedWith?: Array<string> | null;
 }
 
 function NoteMenu({
@@ -84,8 +83,14 @@ function NoteMenu({
 }: ITodoMenu) {
   const queryClient = useQueryClient();
   const open = Boolean(anchorEl);
-  const { mutateAsync, mutate } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: updateNote,
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+    }
+  });
+  const { mutateAsync: removeSharedNoteMutation } = useMutation({
+    mutationFn: removeSharedNote,
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
     }
@@ -147,27 +152,12 @@ function NoteMenu({
     }
   };
 
-  async function removeSharedItem(id: string) {
+  async function removeSharedItem(id: number) {
     handleClose();
-    let removeSharedWith: string[] | undefined = undefined;
-    const user = useAuthStore((state) => state.user);
-
-    if (user?.id && user.email) {
-      removeSharedWith = [user.email];
-    } else if (user?.email) {
-      removeSharedWith = [user.email];
-    } else if (user?.id) {
-      removeSharedWith = [user.email];
-    }
 
     const toastId = toast.loading("Removing...");
     try {
-      await mutateAsync({
-        id,
-        data: {
-          removeSharedWith
-        }
-      });
+      await removeSharedNoteMutation(id);
       toast.dismiss(toastId);
       toast.success("Removed");
     } catch (error) {

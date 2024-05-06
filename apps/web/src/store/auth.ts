@@ -1,5 +1,7 @@
 import { create } from "zustand";
 
+import { queryClient } from "@/utils/query-client";
+
 export type User = {
   id: number;
   email: string;
@@ -10,6 +12,7 @@ type AuthProps = {
   user: User | null;
   setUser: (user: User | null) => void;
   resetAuth: () => void;
+  logout: () => void;
 };
 
 export const useAuthStore = create<AuthProps>((set) => ({
@@ -20,6 +23,12 @@ export const useAuthStore = create<AuthProps>((set) => ({
     });
   },
   resetAuth() {
+    set({
+      user: null
+    });
+  },
+  logout() {
+    queryClient.clear();
     set({
       user: null
     });

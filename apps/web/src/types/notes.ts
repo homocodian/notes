@@ -1,5 +1,5 @@
 export type Note = {
-  id: string;
+  id: number;
   text: string;
   category: "general" | "important";
   createdAt: string;
@@ -7,11 +7,11 @@ export type Note = {
   name?: string;
   email?: string;
   userId: number;
-  sharedNotes?: Array<SharedNote>;
+  sharedWith?: Array<SharedWith> | null;
   isComplete: boolean;
 };
 
-export type SharedNote = {
+export type SharedWith = {
   userId: number;
   noteId: number;
   user: Readonly<{

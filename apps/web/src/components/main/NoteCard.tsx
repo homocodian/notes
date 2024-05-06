@@ -24,7 +24,7 @@ function NoteCard({
   isComplete,
   createdAt,
   email,
-  sharedNotes,
+  sharedWith,
   userId,
   name,
   disableActions = false
@@ -38,11 +38,9 @@ function NoteCard({
     setAnchorEl(event.currentTarget);
   };
 
-  const label = (name || email || "a friend") as string;
-
   const isShared =
-    sharedNotes &&
-    sharedNotes.map((i) => i.userId).findIndex((item) => item === user?.id) >= 0
+    sharedWith &&
+    sharedWith.map((i) => i.userId).findIndex((item) => item === user?.id) >= 0
       ? true
       : false;
 
@@ -51,22 +49,14 @@ function NoteCard({
       <Card sx={{ minWidth: 300 }}>
         <CardHeader
           title={
-            label && isShared ? (
+            isShared ? (
               <div>
                 <Typography
-                  variant="subtitle1"
+                  variant="subtitle2"
                   color={theme.palette.text.secondary}
                 >
-                  {label}
+                  {`From ${name || email || "a friend"}`}
                 </Typography>
-                {email ? (
-                  <Typography
-                    variant="subtitle2"
-                    color={theme.palette.text.secondary}
-                  >
-                    {email}
-                  </Typography>
-                ) : null}
               </div>
             ) : (
               <Chip
@@ -129,11 +119,11 @@ function NoteCard({
           >
             Date created {formatDate(new Date(createdAt))}
           </Typography>
-          {sharedNotes && sharedNotes.length > 0 && userId === user?.id ? (
+          {sharedWith && sharedWith.length > 0 && userId === user?.id ? (
             <SharedButton
               onClick={() => setOpen(true)}
-              id={id}
-              sharedWith={sharedNotes}
+              noteId={id}
+              sharedWith={sharedWith}
             />
           ) : null}
         </CardActions>
@@ -141,8 +131,8 @@ function NoteCard({
       <SharedWithModal
         open={open}
         setOpen={setOpen}
-        sharedNotes={sharedNotes}
-        id={id}
+        sharedWith={sharedWith}
+        noteId={id}
       />
     </Fragment>
   );

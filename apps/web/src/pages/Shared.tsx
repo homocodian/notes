@@ -6,12 +6,18 @@ import { useSearchParams } from "react-router-dom";
 import EmptyNote from "@/components/EmptyNote";
 import NoteSkeleton from "@/components/NoteSkeleton";
 import { NoteCard } from "@/components/main";
+import { APIError } from "@/lib/api-error";
 import { api } from "@/lib/eden";
 import { Note } from "@/types/notes";
 
 async function fetchSharedNotes() {
-  const res = await api.v1.notes.shared.get();
-  return res.data;
+  const { error, data } = await api.v1.notes.shared.get();
+
+  if (error) {
+    throw new APIError(error.value, error.status);
+  }
+
+  return data;
 }
 
 function Shared() {

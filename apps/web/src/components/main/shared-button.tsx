@@ -1,20 +1,24 @@
 import { Chip } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { updateNote } from "@/lib/update-note";
-import { SharedNote } from "@/types/notes";
+import { unShareNote } from "@/lib/update-note";
+import { SharedWith } from "@/types/notes";
 
 type SharedButtonProps = {
-  sharedWith: Array<SharedNote>;
-  id: string;
+  sharedWith: Array<SharedWith>;
+  noteId: number;
   onClick(): void;
 };
 
-function SharedButton({ onClick, id, sharedWith }: SharedButtonProps) {
+function SharedButton({
+  onClick,
+  noteId: noteId,
+  sharedWith
+}: SharedButtonProps) {
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: updateNote,
+    mutationFn: unShareNote,
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
     }
@@ -29,12 +33,7 @@ function SharedButton({ onClick, id, sharedWith }: SharedButtonProps) {
       onClick={onClick}
       disabled={isPending}
       onDelete={() => {
-        mutate({
-          id,
-          data: {
-            fieldToDelete: "sharedWith"
-          }
-        });
+        mutate(noteId);
       }}
     />
   );

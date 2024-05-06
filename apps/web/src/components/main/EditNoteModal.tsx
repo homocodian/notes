@@ -19,7 +19,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { updateNote } from "@/lib/update-note";
 
 interface IProps {
-  id: string;
+  id: number;
   text: string;
   category: string;
   open: boolean;

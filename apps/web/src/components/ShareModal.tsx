@@ -37,7 +37,7 @@ Transition.displayName = "Transition";
 type SharedWithModalProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  id: string;
+  id: number;
 };
 
 export default function ShareModal({

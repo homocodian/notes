@@ -1,6 +1,3 @@
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import { useLocation } from "react-router";
-
 import ClearIcon from "@mui/icons-material/Clear";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
@@ -9,7 +6,11 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import Slide from "@mui/material/Slide";
 import Toolbar from "@mui/material/Toolbar";
+import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { useLocation } from "react-router";
+import { useSearchParams } from "react-router-dom";
 
 import { routeNames } from "@/Routes";
 import Searchbar from "@/components/Searchbar";
@@ -17,8 +18,7 @@ import KeyboardShortcut from "@/components/general/KeyboardShortcut";
 import SettingsMenu from "@/components/general/SettingsMenu";
 import { useDrawer } from "@/context/DrawerContext";
 import { useAuthStore } from "@/store/auth";
-import Tooltip from "@mui/material/Tooltip";
-import { useSearchParams } from "react-router-dom";
+
 import { SideDrawer } from "./main";
 import RefreshButton from "./refresh";
 
@@ -80,7 +80,7 @@ function AppBar() {
                     Notes
                   </Typography>
                   <div className="space-x-2">
-                    {user?.uid ? (
+                    {user?.id ? (
                       <>
                         <Tooltip title="Search">
                           <IconButton

@@ -1,15 +1,18 @@
 import { cors } from "@elysiajs/cors";
-import { Elysia, t } from "elysia";
+import { Elysia } from "elysia";
 
 import { env } from "./env";
 import { v1Routes } from "./v1";
 
 const app = new Elysia()
-  .use(cors())
+  .use(
+    cors({
+      allowedHeaders: "*",
+      origin: "*",
+      methods: ["GET", "POST", "PATCH", "DELETE", "PUT"]
+    })
+  )
   .use(v1Routes)
-  .onError(({ code }) => {
-    console.log(code);
-  })
   .get("/", () => {
     return {
       success: true,

@@ -15,24 +15,24 @@ interface ShareNoteProps extends Omit<Context, "params"> {
 
 export async function shareNote({ body, error, params }: ShareNoteProps) {
   const users = await db
-    .selectDistinct()
+    .selectDistinct({ id: userTable.id })
     .from(userTable)
     .where(inArray(userTable.email, body));
 
   if (!users.length) {
-    return error(304, "Not Modified");
+    return error(404, "User(s) not found to a share note with");
   }
 
-  const createdSharedNotes = users.map((user) => ({
+  const createSharedWith = users.map((user) => ({
     userId: user.id,
     noteId: params.id
   }));
 
-  const sharedNotes = await db
+  const sharedWith = await db
     .insert(notesToUsersTable)
-    .values(createdSharedNotes)
+    .values(createSharedWith)
     .onConflictDoNothing()
     .returning();
 
-  return sharedNotes;
+  return sharedWith;
 }

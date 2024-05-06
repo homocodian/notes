@@ -9,7 +9,6 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import { useQueryClient } from "@tanstack/react-query";
 import * as React from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useShallow } from "zustand/react/shallow";
@@ -20,12 +19,9 @@ import { SESSION_TOKEN_KEY } from "@/constant/auth";
 import { useAuthStore } from "@/store/auth";
 import { useKeyboardShortcutStore } from "@/store/keyboard-shortcut";
 
-import { AutoRefreshMenuItem } from "./AutoRefreshMenuItem";
-
 export default function SettingsMenu() {
-  const queryClient = useQueryClient();
-  const { user, setUser } = useAuthStore(
-    useShallow((state) => ({ user: state.user, setUser: state.setUser }))
+  const { user, logout } = useAuthStore(
+    useShallow((state) => ({ user: state.user, logout: state.logout }))
   );
   const buttonRef = React.useRef<HTMLButtonElement | null>(null);
   const openModal = useKeyboardShortcutStore((state) => state.openModal);
@@ -42,10 +38,9 @@ export default function SettingsMenu() {
     cb?.();
   };
 
-  const logout = () => {
+  const logoutUser = () => {
     localStorage.removeItem(SESSION_TOKEN_KEY);
-    queryClient.clear();
-    setUser(null);
+    logout();
   };
 
   useHotkeys(
@@ -135,11 +130,6 @@ export default function SettingsMenu() {
         <Divider />
         <ThemeMenuItem handleItemClick={handleItemClick} />
         <Divider />
-        <AutoRefreshMenuItem
-          sx={{
-            marginTop: "0.5rem"
-          }}
-        />
         <Divider />
         <MenuItem
           onClick={() => handleItemClick(openModal)}
@@ -155,7 +145,7 @@ export default function SettingsMenu() {
         {user ? (
           <Box>
             <Divider sx={{ marginTop: "0.5rem", marginBottom: "0.5rem" }} />
-            <MenuItem onClick={() => handleItemClick(logout)}>
+            <MenuItem onClick={() => handleItemClick(logoutUser)}>
               <ListItemIcon>
                 <LogoutIcon fontSize="small" />
               </ListItemIcon>

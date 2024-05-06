@@ -11,14 +11,18 @@ interface CreateNoteProps extends Context {
 }
 
 export async function createNote({ user, body, error }: CreateNoteProps) {
-  const [note] = await db
-    .insert(noteTable)
-    .values({ ...body, userId: user.id })
-    .returning();
+  try {
+    const [note] = await db
+      .insert(noteTable)
+      .values({ ...body, userId: user.id })
+      .returning();
 
-  if (!note) {
+    if (!note) {
+      return error(400, "Failed to create note");
+    }
+
+    return note;
+  } catch (err) {
     return error(500, "Internal Server Error");
   }
-
-  return note;
 }

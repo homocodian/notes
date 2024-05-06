@@ -1,6 +1,3 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-
 import LockIcon from "@mui/icons-material/LockOutlined";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -14,16 +11,19 @@ import {
   IconButton,
   Link,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import InputAdornment from "@mui/material/InputAdornment";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router";
 
 import FormDialog from "@/components/FormDialog";
 import { SESSION_TOKEN_KEY } from "@/constant/auth";
 import { api } from "@/lib/eden";
 import { useAuthStore } from "@/store/auth";
+
 interface State {
   email: string;
   password: string;
@@ -34,7 +34,7 @@ export default function SignIn() {
   const [values, setValues] = useState<State>({
     email: "",
     password: "",
-    showPassword: false,
+    showPassword: false
   });
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -57,12 +57,12 @@ export default function SignIn() {
   const handleClickShowPassword = () => {
     setValues({
       ...values,
-      showPassword: !values.showPassword,
+      showPassword: !values.showPassword
     });
   };
 
   const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>,
+    event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
   };
@@ -77,10 +77,10 @@ export default function SignIn() {
       const { data, error } = await api.v1.auth.login.post(
         {
           email,
-          password,
+          password
         },
         // auto abort in 2 minutes
-        { fetch: { signal: AbortSignal.timeout(1000 * 60 * 2) } },
+        { fetch: { signal: AbortSignal.timeout(1000 * 60 * 2) } }
       );
 
       if (error) return toast.error(error.value);
@@ -90,11 +90,9 @@ export default function SignIn() {
       setUser({
         id: data.id,
         email: data.email,
-        emailVerified: data.emailVerified,
+        emailVerified: data.emailVerified
       });
     } catch (error: unknown) {
-      console.log("🚀 ~ handleSubmit ~ error:", error, typeof error);
-
       if (error instanceof Error) return toast.error(error.message);
 
       toast.error("Something went wrong");
@@ -148,7 +146,7 @@ export default function SignIn() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            paddingTop: "16px",
+            paddingTop: "16px"
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
@@ -207,7 +205,7 @@ export default function SignIn() {
                       {values.showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
-                ),
+                )
               }}
             />
             <Button
@@ -265,7 +263,7 @@ export default function SignIn() {
       <Backdrop
         sx={{
           color: "#fff",
-          zIndex: (theme) => theme.zIndex.drawer + 1,
+          zIndex: (theme) => theme.zIndex.drawer + 1
         }}
         open={isLoading}
       >
