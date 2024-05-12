@@ -4,14 +4,8 @@ import { Elysia } from "elysia";
 import { env } from "./env";
 import { v1Routes } from "./v1";
 
-const app = new Elysia()
-  .use(
-    cors({
-      allowedHeaders: "*",
-      origin: "*",
-      methods: ["GET", "POST", "PATCH", "DELETE", "PUT"]
-    })
-  )
+const app = new Elysia({ prefix: "api" })
+  .use(cors())
   .use(v1Routes)
   .get("/", () => {
     return {
@@ -24,5 +18,3 @@ const app = new Elysia()
 console.log(
   `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
 );
-
-export type App = typeof app;

@@ -4,8 +4,7 @@
   "version": "0.0.0",
   "author": "homocodian",
   "workspaces": [
-    "apps/*",
-    "packages/*"
+    "apps/*"
   ],
   "scripts": {
     "dev": "bun --filter './apps/*' dev"

@@ -1,1 +1,0 @@
-export { getEdenTreaty } from "./eden";
