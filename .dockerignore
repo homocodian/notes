@@ -1,0 +1,24 @@
+# Git
+.git
+.gitignore
+
+# Docker
+**/Dockerfile*
+*.dockerignore
+docker-compose*
+
+# Config
+.vscode
+.editorconfig
+.idea
+
+# pakages
+**/node_modules
+**/README.md
+**/LICENSE
+**/*.env
+**/coverage*
+**/dist
+
+# Test
+**/*.http
