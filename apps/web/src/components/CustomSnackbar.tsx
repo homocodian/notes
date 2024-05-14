@@ -1,8 +1,7 @@
-import { Fragment } from "react";
-
 import Alert from "@mui/material/Alert";
 import Slide from "@mui/material/Slide";
 import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
+import { Fragment } from "react";
 
 interface ICustomSnackbarProps {
   alertType: "success" | "info" | "error" | "warning";
@@ -21,11 +20,11 @@ function CustomSnackbar({
   autoHideDuration = null,
   setOpen,
   anchorPosition,
-  margin,
+  margin
 }: ICustomSnackbarProps) {
   const handleClose = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string,
+    _event?: React.SyntheticEvent | Event,
+    reason?: string
   ) => {
     if (reason === "clickaway") {
       return;
@@ -43,7 +42,7 @@ function CustomSnackbar({
       TransitionComponent={Slide}
       anchorOrigin={anchorPosition}
       sx={{
-        margin: { margin },
+        margin: { margin }
       }}
     >
       <Alert onClose={handleClose} severity={alertType} sx={{ width: "100%" }}>

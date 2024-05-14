@@ -8,6 +8,17 @@ import { getProfile } from "../controllers/user/profile";
 import { registerUser } from "../controllers/user/register";
 
 export const authRoutes = new Elysia({ prefix: "/auth" })
+  .onError(({ error, code }) => {
+    if (code === "VALIDATION") {
+      return error.all[0]?.schema?.description ??
+        error.message.includes("supabase")
+        ? "Something went wrong"
+        : error.message;
+    }
+    return error.message.includes("supabase")
+      ? "Something went wrong"
+      : error.message;
+  })
   .use(bearer())
   .post("/register", registerUser, {
     body: registerUserSchema

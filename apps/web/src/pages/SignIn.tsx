@@ -21,7 +21,8 @@ import { useNavigate } from "react-router";
 
 import FormDialog from "@/components/FormDialog";
 import { SESSION_TOKEN_KEY } from "@/constant/auth";
-import { api } from "@/lib/eden";
+import { APIError } from "@/lib/api-error";
+import { fetchAPI } from "@/lib/fetch-wrapper";
 import { useAuthStore } from "@/store/auth";
 
 interface State {
@@ -61,12 +62,6 @@ export default function SignIn() {
     });
   };
 
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.preventDefault();
-  };
-
   const handleSubmit = async () => {
     setIsLoading(true);
 
@@ -74,16 +69,24 @@ export default function SignIn() {
     const password = values.password;
 
     try {
-      const { data, error } = await api.v1.auth.login.post(
-        {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = await fetchAPI.post("/v1/auth/login", {
+        data: {
           email,
           password
         },
         // auto abort in 2 minutes
-        { fetch: { signal: AbortSignal.timeout(1000 * 60 * 2) } }
-      );
+        options: { signal: AbortSignal.timeout(1000 * 60 * 2) }
+      });
 
-      if (error) return toast.error(error.value);
+      if (
+        !data?.sessionToken ||
+        !data.id ||
+        !data.email ||
+        typeof data.emailVerified !== "boolean"
+      ) {
+        throw new Error("Invalid Session");
+      }
 
       localStorage.setItem(SESSION_TOKEN_KEY, data.sessionToken);
 
@@ -93,6 +96,7 @@ export default function SignIn() {
         emailVerified: data.emailVerified
       });
     } catch (error: unknown) {
+      if (error instanceof APIError) return toast.error(error.message);
       if (error instanceof Error) return toast.error(error.message);
 
       toast.error("Something went wrong");
@@ -100,43 +104,6 @@ export default function SignIn() {
       setIsLoading(false);
     }
   };
-
-  // const signInWithPopup = async () => {
-  //   setIsLoading(true);
-  //   try {
-  //     if (Capacitor.isNativePlatform()) {
-  //       await signInWithGoogleNative();
-  //     } else {
-  //       await signInWithGooglePopup();
-  //     }
-  //   } catch (error: unknown) {
-  //     let message = "Something went wrong";
-  //     if (error && typeof error === "object" && "code" in error) {
-  //       message = VerifyFirebaseErrorCode(error.code);
-  //     }
-  //     setIsLoading(false);
-  //     toast.error(message);
-  //   }
-  // };
-
-  // const sendPasswordResetEmail = async (email: string, cb: () => void) => {
-  //   try {
-  //     await sendPasswordResetLink(email);
-  //     cb();
-  //     setIsResetFormOpen(false);
-  //     toast.success(
-  //       "Email has been sent, please check your spam folder if not found.",
-  //     );
-  //   } catch (error: unknown) {
-  //     cb();
-  //     let message = "Something went wrong";
-  //     if (error && typeof error === "object" && "code" in error) {
-  //       message = VerifyFirebaseErrorCode(error?.code);
-  //     }
-  //     setIsResetFormOpen(false);
-  //     toast.error(message);
-  //   }
-  // };
 
   return (
     <>
@@ -199,7 +166,6 @@ export default function SignIn() {
                     <IconButton
                       aria-label="toggle password visibility"
                       onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
                       edge="end"
                     >
                       {values.showPassword ? <VisibilityOff /> : <Visibility />}
@@ -217,17 +183,6 @@ export default function SignIn() {
             >
               Sign In
             </Button>
-
-            {/* <Button
-              type="button"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 2, mb: 2 }}
-              startIcon={!isLoading ? <GoogleIcon /> : null}
-              onClick={signInWithPopup}
-            >
-              Continue With Google
-            </Button> */}
             <Grid container sx={{ mt: 2 }}>
               <Grid item xs>
                 <Link

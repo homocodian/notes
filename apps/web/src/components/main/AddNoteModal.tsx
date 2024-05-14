@@ -16,8 +16,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
-import { APIError } from "@/lib/api-error";
-import { api } from "@/lib/eden";
+import { fetchAPI } from "@/lib/fetch-wrapper";
 
 interface IProps {
   open: boolean;
@@ -29,21 +28,12 @@ type AddNoteParams = {
   category: string;
 };
 
-async function addNote({ category, text }: AddNoteParams) {
-  const { error, data } = await api.v1.notes.index.post({ text, category });
-
-  if (error) {
-    throw new APIError(error.value, error.status);
-  }
-
-  return data;
-}
-
 function AddNoteModal({ open, setOpen }: IProps) {
   const queryClient = useQueryClient();
   const theme = useTheme();
   const { mutateAsync, isPending, isError } = useMutation({
-    mutationFn: (params: AddNoteParams) => addNote(params),
+    mutationFn: (params: AddNoteParams) =>
+      fetchAPI.post("/v1/notes", { data: params }),
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
     }

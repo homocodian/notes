@@ -6,28 +6,18 @@ import { useSearchParams } from "react-router-dom";
 import EmptyNote from "@/components/EmptyNote";
 import NoteSkeleton from "@/components/NoteSkeleton";
 import { NoteCard } from "@/components/main";
-import { APIError } from "@/lib/api-error";
-import { api } from "@/lib/eden";
+import { fetchAPI } from "@/lib/fetch-wrapper";
 import { Note } from "@/types/notes";
-
-async function fetchGeneralNotes() {
-  const { error, data } = await api.v1.notes.index.get({
-    query: {
-      category: "general"
-    }
-  });
-
-  if (error) {
-    throw new APIError(error.value as string, error.status);
-  }
-
-  return data;
-}
 
 function General() {
   const { data, isLoading } = useQuery<Note[]>({
     queryKey: ["notes", "general"],
-    queryFn: fetchGeneralNotes
+    queryFn: () =>
+      fetchAPI.get("/v1/notes", {
+        query: {
+          category: "general"
+        }
+      })
   });
   const [searchedNotes, setSearchedNotes] = useState<Note[]>([]);
   const [searchParams] = useSearchParams();

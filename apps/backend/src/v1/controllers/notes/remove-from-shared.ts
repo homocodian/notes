@@ -47,7 +47,7 @@ export async function removeUserFromSharedNote({
         )
       );
 
-    return body;
+    return { removedEmail: body };
   } catch (err) {
     return error(500, "Failed to remove user from shared note");
   }

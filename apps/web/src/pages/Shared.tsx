@@ -6,24 +6,13 @@ import { useSearchParams } from "react-router-dom";
 import EmptyNote from "@/components/EmptyNote";
 import NoteSkeleton from "@/components/NoteSkeleton";
 import { NoteCard } from "@/components/main";
-import { APIError } from "@/lib/api-error";
-import { api } from "@/lib/eden";
+import { fetchAPI } from "@/lib/fetch-wrapper";
 import { Note } from "@/types/notes";
-
-async function fetchSharedNotes() {
-  const { error, data } = await api.v1.notes.shared.get();
-
-  if (error) {
-    throw new APIError(error.value, error.status);
-  }
-
-  return data;
-}
 
 function Shared() {
   const { data, isLoading } = useQuery<Note[]>({
     queryKey: ["notes", "shared"],
-    queryFn: fetchSharedNotes
+    queryFn: () => fetchAPI.get("/v1/notes/shared")
   });
   const [searchedNotes, setSearchedNotes] = useState<Note[]>([]);
   const [searchParams] = useSearchParams();

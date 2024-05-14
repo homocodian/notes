@@ -4,7 +4,7 @@ import { Elysia } from "elysia";
 import { env } from "./env";
 import { v1Routes } from "./v1";
 
-const app = new Elysia({ prefix: "api" })
+const app = new Elysia({ prefix: "/api" })
   .use(cors())
   .use(v1Routes)
   .get("/", () => {

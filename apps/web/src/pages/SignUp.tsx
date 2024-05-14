@@ -21,7 +21,8 @@ import { useNavigate } from "react-router-dom";
 import { useShallow } from "zustand/react/shallow";
 
 import { SESSION_TOKEN_KEY } from "@/constant/auth";
-import { api } from "@/lib/eden";
+import { APIError } from "@/lib/api-error";
+import { fetchAPI } from "@/lib/fetch-wrapper";
 import { useAuthStore } from "@/store/auth";
 
 interface InputFields {
@@ -76,12 +77,6 @@ export default function SignUp() {
     });
   };
 
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.preventDefault();
-  };
-
   const handleSubmit = async () => {
     setIsLoading(true);
 
@@ -114,17 +109,25 @@ export default function SignUp() {
     }
 
     try {
-      const { data, error } = await api.v1.auth.register.post(
-        {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = await fetchAPI.post("/v1/auth/register", {
+        data: {
           email,
           password,
           confirmPassword
         },
         // auto abort in 2 minutes
-        { fetch: { signal: AbortSignal.timeout(1000 * 60 * 2) } }
-      );
+        options: { signal: AbortSignal.timeout(1000 * 60 * 2) }
+      });
 
-      if (error) return toast.error(error.value);
+      if (
+        !data?.sessionToken ||
+        !data.id ||
+        !data.email ||
+        typeof data.emailVerified !== "boolean"
+      ) {
+        throw new Error("Invalid Session");
+      }
 
       localStorage.setItem(SESSION_TOKEN_KEY, data.sessionToken);
 
@@ -134,6 +137,7 @@ export default function SignUp() {
         emailVerified: data.emailVerified
       });
     } catch (error: unknown) {
+      if (error instanceof APIError) return toast.error(error.message);
       if (error instanceof Error) return toast.error(error.message);
 
       toast.error("Something went wrong");
@@ -203,7 +207,6 @@ export default function SignUp() {
                     <IconButton
                       aria-label="toggle password visibility"
                       onClick={() => handleClickShowPassword("showPassword")}
-                      onMouseDown={handleMouseDownPassword}
                       edge="end"
                     >
                       {values.showPassword ? <VisibilityOff /> : <Visibility />}
@@ -232,7 +235,6 @@ export default function SignUp() {
                       onClick={() =>
                         handleClickShowPassword("showConfirmPassword")
                       }
-                      onMouseDown={handleMouseDownPassword}
                       edge="end"
                     >
                       {values.showConfirmPassword ? (
@@ -254,17 +256,6 @@ export default function SignUp() {
             >
               Sign Up
             </Button>
-
-            {/* <Button
-              type="button"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 2, mb: 1 }}
-              startIcon={<GoogleIcon />}
-              // onClick={signInWithPopup}
-            >
-              Continue With Google
-            </Button> */}
             <Grid container>
               <Grid item sx={{ mt: 2 }}>
                 <Link href="/login" variant="body2">

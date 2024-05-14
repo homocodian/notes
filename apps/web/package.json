@@ -1,11 +1,11 @@
 {
-  "name": "web",
+  "name": "@notes/web",
   "version": "2.1.2",
   "private": true,
   "description": "client",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 4000",
+    "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
@@ -24,7 +24,6 @@
     "@tanstack/react-query-devtools": "^5.18.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "libs": "workspace:../../packages/libs",
     "lucide-react": "^0.323.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -43,8 +42,8 @@
     "@types/loadable__component": "^5.13.8",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
-    "@typescript-eslint/eslint-plugin": "^6.20.0",
-    "@typescript-eslint/parser": "^6.20.0",
+    "@typescript-eslint/eslint-plugin": "^7.8.0",
+    "@typescript-eslint/parser": "^7.8.0",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.17",
     "eslint": "^8.56.0",
@@ -54,7 +53,8 @@
     "prettier": "^3.2.4",
     "tailwindcss": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
-    "vite": "^5.0.12"
+    "typescript": "^5.4.5",
+    "vite": "^5.2.11"
   },
   "keywords": [],
   "author": "homocodian",

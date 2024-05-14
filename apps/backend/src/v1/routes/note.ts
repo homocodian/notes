@@ -20,6 +20,17 @@ import {
 } from "../validations/note";
 
 export const noteRoute = new Elysia({ prefix: "/notes" })
+  .onError(({ error, code }) => {
+    if (code === "VALIDATION") {
+      return error.all[0]?.schema?.description ??
+        error.message.includes("supabase")
+        ? "Something went wrong"
+        : error.message;
+    }
+    return error.message.includes("supabase")
+      ? "Something went wrong"
+      : error.message;
+  })
   .use(bearer())
   .derive(deriveUser)
   .get("/", getNotes)

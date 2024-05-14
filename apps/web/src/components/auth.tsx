@@ -1,8 +1,7 @@
 import React from "react";
 
-import { APIError } from "@/lib/api-error";
-import { api } from "@/lib/eden";
-import { useAuthStore } from "@/store/auth";
+import { fetchAPI } from "@/lib/fetch-wrapper";
+import { User, useAuthStore } from "@/store/auth";
 
 import Loading from "./Loading";
 
@@ -19,17 +18,13 @@ export function Auth({ children }: AuthProps) {
 
     const controller = new AbortController();
 
-    api.v1.auth.profile
-      .get({
-        fetch: {
+    fetchAPI
+      .get<User>("/v1/auth/profile", {
+        options: {
           signal: controller.signal
         }
       })
-      .then(({ data, error }) => {
-        if (error) {
-          throw new APIError(error.value, error.status);
-        }
-
+      .then((data) => {
         if (
           typeof data?.id === "number" &&
           typeof data?.email === "string" &&
