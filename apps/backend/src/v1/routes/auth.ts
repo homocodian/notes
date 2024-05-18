@@ -4,6 +4,7 @@ import Elysia from "elysia";
 import { loginUserSchema, registerUserSchema } from "@/v1/validations/user";
 
 import { loginUser } from "../controllers/user/login";
+import { logout } from "../controllers/user/logout";
 import { getProfile } from "../controllers/user/profile";
 import { registerUser } from "../controllers/user/register";
 
@@ -26,4 +27,5 @@ export const authRoutes = new Elysia({ prefix: "/auth" })
   .post("/login", loginUser, {
     body: loginUserSchema
   })
+  .post("/logout", logout)
   .get("/profile", getProfile);
