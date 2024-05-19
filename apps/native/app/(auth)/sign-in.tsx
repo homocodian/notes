@@ -6,7 +6,6 @@ import { useAuth } from "@/context/auth";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Snackbar } from "@/components/ui/use-snackbar";
-import getAlertMessage from "@/utils/get-firebase-error-message";
 import { useAppTheme } from "@/context/material-3-theme-provider";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { type AuthSchema, authSchema } from "@/lib/validations/auth";
@@ -17,8 +16,7 @@ function SignIn() {
 	const theme = useAppTheme();
 	const [isLoading, setIsLoading] = React.useState(false);
 	const [isSecureEntry, setIsSecureEntry] = React.useState(true);
-	const { signIn, signInWithGoogle, sendPasswordResetEmail } = useAuth();
-	const [loadingGoogleSignIn, setLoadingGoogleSignIn] = React.useState(false);
+	const { signIn, sendPasswordResetEmail } = useAuth();
 
 	const {
 		control,
@@ -36,20 +34,6 @@ function SignIn() {
 		},
 	});
 
-	async function handleGoogleSignIn() {
-		Keyboard.dismiss();
-		setLoadingGoogleSignIn(true);
-		try {
-			await signInWithGoogle();
-		} catch (error) {
-			Snackbar({
-				text: "Something went wrong, please try again",
-			});
-		} finally {
-			setLoadingGoogleSignIn(false);
-		}
-	}
-
 	function handleEyePress() {
 		setIsSecureEntry((prev) => !prev);
 	}
@@ -60,13 +44,16 @@ function SignIn() {
 
 		try {
 			await signIn(data.email, data.password);
-		} catch (error: any) {
+		} catch (error) {
 			resetField("password");
 
-			const message = getAlertMessage(error);
-
+			if (error instanceof Error) {
+				Snackbar({
+					text: error.message,
+				});
+			}
 			Snackbar({
-				text: message,
+				text: "Failed to login",
 			});
 		} finally {
 			setIsLoading(false);
@@ -223,31 +210,6 @@ function SignIn() {
 					SIGN IN
 				</Button>
 			</View>
-
-			<View className="flex-row items-center">
-				<View
-					className="flex-1 h-[0.5px]"
-					style={{ backgroundColor: theme.colors.primary }}
-				/>
-				<View>
-					<Text className="text-center w-10">OR</Text>
-				</View>
-				<View
-					className="flex-1 h-[0.5px]"
-					style={{ backgroundColor: theme.colors.primary }}
-				/>
-			</View>
-
-			<Button
-				mode="contained"
-				icon="google"
-				className="self-stretch mx-5"
-				loading={loadingGoogleSignIn}
-				onPress={handleGoogleSignIn}
-				disabled={loadingGoogleSignIn}
-			>
-				SIGN IN WITH GOOGLE
-			</Button>
 
 			<Text variant="titleSmall">
 				Don't have an account?{" "}

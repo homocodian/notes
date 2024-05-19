@@ -42,3 +42,5 @@ expo-env.d.ts
 
 # firebase
 google-services.json
+
+*.env

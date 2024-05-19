@@ -12,7 +12,6 @@ export default function HomeScreen() {
 				<Text style={styles.title}>Modal</Text>
 				<View style={styles.separator} />
 				<EditScreenInfo path="app/modal.tsx" />
-				{/* @ts-expect-error */}
 				<Link href={{ pathname: "details", params: { name: "Bacon" } }} asChild>
 					<Pressable>
 						<Text>Go to Details</Text>

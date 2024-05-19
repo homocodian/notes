@@ -35,12 +35,11 @@ function Register() {
 	const insets = useSafeAreaInsets();
 	const theme = useAppTheme();
 	const router = useRouter();
-	const { createUser, signInWithGoogle } = useAuth();
+	const { createUser } = useAuth();
 	const [isSecureEntry, setIsSecureEntry] = React.useState(true);
 	const [isSecureEntryForConfirm, setIsSecureEntryForConfirm] =
 		React.useState(true);
 	const [isLoading, setIsLoading] = React.useState(false);
-	const [loadingGoogleSignIn, setLoadingGoogleSignIn] = React.useState(false);
 
 	const {
 		control,
@@ -71,30 +70,20 @@ function Register() {
 		setIsSecureEntryForConfirm((prev) => !prev);
 	}
 
-	async function handleGoogleSignIn() {
-		Keyboard.dismiss();
-		setLoadingGoogleSignIn(true);
-		try {
-			await signInWithGoogle();
-		} catch (error) {
-			Snackbar({
-				text: "Something went wrong, please try again",
-			});
-		} finally {
-			setLoadingGoogleSignIn(false);
-		}
-	}
-
 	async function onSubmit(data: RegisterAuthSchema) {
 		Keyboard.dismiss();
 		setIsLoading(true);
 
 		try {
-			await createUser(data.email, data.password);
-		} catch (error: any) {
-			const message = getAlertMessage(error);
+			await createUser(data.email, data.password, data.confirmPassword);
+		} catch (error) {
+			if (error instanceof Error) {
+				Snackbar({
+					text: error.message,
+				});
+			}
 			Snackbar({
-				text: message,
+				text: "Failed to register a user",
 			});
 		} finally {
 			setIsLoading(false);
@@ -260,30 +249,6 @@ function Register() {
 						SIGN UP
 					</Button>
 				</View>
-				<View className="flex-row items-center">
-					<View
-						className="flex-1 h-[0.5px]"
-						style={{ backgroundColor: theme.colors.primary }}
-					/>
-					<View>
-						<Text className="text-center w-10">OR</Text>
-					</View>
-					<View
-						className="flex-1 h-[0.5px]"
-						style={{ backgroundColor: theme.colors.primary }}
-					/>
-				</View>
-
-				<Button
-					mode="contained"
-					icon="google"
-					className="self-stretch mx-5"
-					onPress={handleGoogleSignIn}
-					loading={loadingGoogleSignIn}
-					disabled={loadingGoogleSignIn}
-				>
-					SIGN IN WITH GOOGLE
-				</Button>
 
 				{/* terms */}
 				<Text className="text-center px-5">

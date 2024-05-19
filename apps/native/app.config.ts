@@ -34,7 +34,6 @@ const config: ExpoConfig = {
 		},
 		softwareKeyboardLayoutMode: "pan",
 		package: "com.homocodian.cinememo",
-		googleServicesFile: "./google-services.json",
 		splash: {
 			image: "./assets/images/splash_light.png",
 			resizeMode: "contain",
@@ -53,16 +52,14 @@ const config: ExpoConfig = {
 	},
 	plugins: [
 		"expo-router",
-		"@react-native-firebase/app",
-		"@react-native-firebase/perf",
-		"@react-native-firebase/crashlytics",
-		"@react-native-google-signin/google-signin",
-		"@react-native-firebase/auth",
 		[
 			"expo-build-properties",
 			{
 				ios: {
-					useFrameworks: "static",
+					newArchEnabled: true,
+				},
+				android: {
+					newArchEnabled: true,
 				},
 			},
 		],

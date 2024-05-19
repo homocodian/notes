@@ -1,15 +1,19 @@
 import React from "react";
 import { useFonts } from "expo-font";
 import { Slot, SplashScreen } from "expo-router";
-
-import { AuthProvider } from "@/context/auth";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Material3ThemeProvider } from "@/context/material-3-theme-provider";
 // Catch any errors thrown by the Layout component.
 export { ErrorBoundary } from "expo-router";
+
+import NetInfo from "@react-native-community/netinfo";
+import { onlineManager } from "@tanstack/react-query";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+
+import { AuthProvider } from "@/context/auth";
+import { Material3ThemeProvider } from "@/context/material-3-theme-provider";
 import { SnackbarContainer } from "@/components/ui/snackbar-container";
 
 import "@/styles/global.css";
+import { Alerter } from "@/components/ui/alerter";
 
 export const unstable_settings = {
 	initialRouteName: "index",
@@ -31,6 +35,12 @@ export default function RootLayout() {
 	}, [error]);
 
 	React.useEffect(() => {
+		onlineManager.setEventListener((setOnline) => {
+			return NetInfo.addEventListener((state) => {
+				setOnline(!!state.isConnected);
+			});
+		});
+
 		if (loaded) {
 			splashScreenTimout = setTimeout(() => {
 				SplashScreen.hideAsync();
@@ -59,6 +69,7 @@ function RootLayoutNav() {
 					<Slot />
 					<SnackbarContainer />
 				</AuthProvider>
+				<Alerter />
 			</Material3ThemeProvider>
 		</SafeAreaProvider>
 	);

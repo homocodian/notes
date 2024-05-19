@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
+const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,}$/;
 
 export const authSchema = z.object({
 	email: z.string().min(1, "Email is required").email(),
