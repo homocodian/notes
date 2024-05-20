@@ -35,29 +35,29 @@ let isIPhoneWithMonobrow_v = false;
 let isIPhoneWithDynamicIsland_v = false;
 
 if (Platform.OS === "ios" && !Platform.isPad && !Platform.isTV) {
-	if (W_WIDTH === X_WIDTH && W_HEIGHT === X_HEIGHT) {
-		isIPhoneWithMonobrow_v = true;
-		isIPhoneX_v = true;
-		statusBarHeight = STATUSBAR_X_HEIGHT;
-	} else if (W_WIDTH === XSMAX_WIDTH && W_HEIGHT === XSMAX_HEIGHT) {
-		isIPhoneWithMonobrow_v = true;
-		isIPhoneXMax_v = true;
-		statusBarHeight = STATUSBAR_X_HEIGHT;
-	} else if (W_WIDTH === IP12_WIDTH && W_HEIGHT === IP12_HEIGHT) {
-		isIPhoneWithMonobrow_v = true;
-		isIPhone12_v = true;
-		statusBarHeight = STATUSBAR_IP12_HEIGHT;
-	} else if (W_WIDTH === IP12MAX_WIDTH && W_HEIGHT === IP12MAX_HEIGHT) {
-		isIPhoneWithMonobrow_v = true;
-		isIPhone12Max_v = true;
-		statusBarHeight = STATUSBAR_IP12MAX_HEIGHT;
-	} else if (W_WIDTH === IP14PROMAX_WIDTH && W_HEIGHT === IP14PROMAX_HEIGHT) {
-		isIPhoneWithDynamicIsland_v = true;
-		statusBarHeight = STATUSBAR_IP14PRO_HEIGHT;
-	} else if (W_WIDTH === IP14PRO_WIDTH && W_HEIGHT === IP14PRO_HEIGHT) {
-		isIPhoneWithDynamicIsland_v = true;
-		statusBarHeight = STATUSBAR_IP14PRO_HEIGHT;
-	}
+  if (W_WIDTH === X_WIDTH && W_HEIGHT === X_HEIGHT) {
+    isIPhoneWithMonobrow_v = true;
+    isIPhoneX_v = true;
+    statusBarHeight = STATUSBAR_X_HEIGHT;
+  } else if (W_WIDTH === XSMAX_WIDTH && W_HEIGHT === XSMAX_HEIGHT) {
+    isIPhoneWithMonobrow_v = true;
+    isIPhoneXMax_v = true;
+    statusBarHeight = STATUSBAR_X_HEIGHT;
+  } else if (W_WIDTH === IP12_WIDTH && W_HEIGHT === IP12_HEIGHT) {
+    isIPhoneWithMonobrow_v = true;
+    isIPhone12_v = true;
+    statusBarHeight = STATUSBAR_IP12_HEIGHT;
+  } else if (W_WIDTH === IP12MAX_WIDTH && W_HEIGHT === IP12MAX_HEIGHT) {
+    isIPhoneWithMonobrow_v = true;
+    isIPhone12Max_v = true;
+    statusBarHeight = STATUSBAR_IP12MAX_HEIGHT;
+  } else if (W_WIDTH === IP14PROMAX_WIDTH && W_HEIGHT === IP14PROMAX_HEIGHT) {
+    isIPhoneWithDynamicIsland_v = true;
+    statusBarHeight = STATUSBAR_IP14PRO_HEIGHT;
+  } else if (W_WIDTH === IP14PRO_WIDTH && W_HEIGHT === IP14PRO_HEIGHT) {
+    isIPhoneWithDynamicIsland_v = true;
+    statusBarHeight = STATUSBAR_IP14PRO_HEIGHT;
+  }
 }
 
 export const isIPhoneX = () => isIPhoneX_v;
@@ -67,15 +67,15 @@ export const isIPhone12Max = () => isIPhone12Max_v;
 export const isIPhoneWithMonobrow = () => isIPhoneWithMonobrow_v;
 export const isIPhoneWithDynamicIsland = () => isIPhoneWithDynamicIsland_v;
 
-// @ts-expect-error
+// @ts-expect-error enjecting into global
 const getExpoRoot = () => global?.Expo || global?.__expo || global?.__exponent;
 
 export const isExpo = () => getExpoRoot() !== undefined;
 
 export function getStatusBarHeight() {
-	return Platform.select({
-		ios: statusBarHeight,
-		android: StatusBar.currentHeight,
-		default: 0,
-	});
+  return Platform.select({
+    ios: statusBarHeight,
+    android: StatusBar.currentHeight,
+    default: 0
+  });
 }
