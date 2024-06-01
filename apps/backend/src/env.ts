@@ -43,7 +43,7 @@ if (!!process.env.SKIP_ENV_VALIDATION == false) {
             ? "❌ Attempted to access a server-side environment variable on the client"
             : `❌ Attempted to access server-side environment variable '${prop}' on the client`
         );
-      /*  @ts-ignore - can't type this properly in jsdoc */
+      /*  @ts-expect-error - can't type this properly in jsdoc */
       return target[prop];
     }
   });

@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: ./docker/backend.Dockerfile
+    image: ${REMOTE_IMAGE_NAME:?err}
     ports:
       - 5500:5500
     env_file:
