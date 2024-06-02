@@ -9,6 +9,7 @@ import { Menu } from "./menu";
 interface NoteCardProps extends Note {}
 
 export function NoteCard({
+  id,
   category,
   text,
   createdAt,
@@ -30,7 +31,7 @@ export function NoteCard({
             </Chip>
           </View>
           <View>
-            <Menu />
+            <Menu id={id} text={text} />
           </View>
         </View>
         <Text
