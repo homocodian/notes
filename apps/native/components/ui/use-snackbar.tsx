@@ -71,7 +71,7 @@ const addToRemoveQueue = (SnackbarId: string) => {
     SnackbarTimeouts.delete(SnackbarId);
     dispatch({
       type: "REMOVE_SNACKBAR",
-      SnackbarId: SnackbarId
+      SnackbarId
     });
   }, SNACKBAR_REMOVE_DELAY);
 
@@ -172,7 +172,7 @@ function Snackbar({ ...props }: SnackbarProps) {
   });
 
   return {
-    id: id,
+    id,
     dismiss,
     update
   };

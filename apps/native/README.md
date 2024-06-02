@@ -31,6 +31,7 @@ The Cinememo App is a user-friendly and feature-rich application that allows use
 6. Make your dev build: `yarn eas --platform all --profile development`
 
 <!-- INSTALL DEPS -->
+
 7. Install dependencies: `yarn install`
 
 <!-- OR BUILD LOCALLY (MAKE SURE YOU HAVE ANDROID STUDIO/XCODE INSTALLED FOR RESPECTIVE PLATFORMS)-->

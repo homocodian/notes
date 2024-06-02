@@ -66,7 +66,7 @@ const addToRemoveQueue = (toastId: string) => {
     toastTimeouts.delete(toastId);
     dispatch({
       type: "REMOVE_ALERT",
-      toastId: toastId
+      toastId
     });
   }, ALERT_REMOVE_DELAY);
 
@@ -163,7 +163,7 @@ function alert({ ...props }: Omit<Alert, "visible">) {
   });
 
   return {
-    id: id,
+    id,
     dismiss,
     update
   };
@@ -185,8 +185,7 @@ function useAlert() {
   return {
     ...state,
     alert,
-    dismiss: (alertId?: string) =>
-      dispatch({ type: "DISMISS_ALERT", alertId: alertId })
+    dismiss: (alertId?: string) => dispatch({ type: "DISMISS_ALERT", alertId })
   };
 }
 

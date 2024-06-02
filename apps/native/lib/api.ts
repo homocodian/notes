@@ -43,13 +43,11 @@ async function getData<T>(
 ): Promise<T> {
   const token = useUserStore.getState().user?.sessionToken;
 
-  console.log("🚀 ~ token:", token);
   const queryOptions = new URLSearchParams(options?.query).toString();
 
   const fetchUrl = `${process.env.EXPO_PUBLIC_API_URL}${url}${
     queryOptions ? "?" + queryOptions : ""
   }`;
-  console.log("🚀 ~ fetchUrl:", fetchUrl);
   const fetchOptions: RequestInit = {
     headers: {
       ...(token
@@ -63,13 +61,12 @@ async function getData<T>(
           }
         : {})
     },
-    method: method,
+    method,
     body: options?.data ? JSON.stringify(options?.data) : undefined,
     ...options?.options
   };
 
   const res = await fetch(fetchUrl, fetchOptions);
-  console.log("🚀 ~ res:", res);
 
   if (!res.ok) {
     const text = await res.text();

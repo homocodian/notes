@@ -1,0 +1,41 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "react-native", "prettier"],
+  "extends": [
+    "universe",
+    "universe/native",
+    "universe/shared/typescript-analysis",
+    "plugin:prettier/recommended"
+  ],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.d.ts"],
+      "parserOptions": {
+        "project": "./tsconfig.json"
+      },
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    }
+  ],
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ],
+    "@typescript-eslint/member-ordering": "off",
+    "react-native/no-unused-styles": "off",
+    "react-native/no-inline-styles": "off",
+    "react-native/no-raw-text": "off",
+    "react-native/no-single-element-style-arrays": "error",
+    "no-console": "error",
+    "import/order": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+    ]
+  }
+}

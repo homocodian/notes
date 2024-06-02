@@ -122,12 +122,13 @@ export function AuthProvider(props: { children: React.ReactNode }) {
         throw new Error("Unable to logout");
       }
       setUser(null);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast("Failed to logout");
     }
   }, [setUser]);
 
-  const sendPasswordResetEmail = useCallback(async (email: string) => {}, []);
+  const sendPasswordResetEmail = useCallback(async (_email: string) => {}, []);
 
   if (initializing) return null;
 

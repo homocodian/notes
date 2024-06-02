@@ -1,5 +1,5 @@
+node_modules
+coverage
+yarn-error.log
 .expo
-/node_modules
-dist
-.yarn
-.npm
+**/*.hbs

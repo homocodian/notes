@@ -15,8 +15,10 @@ import "@/styles/global.css";
 
 export { ErrorBoundary } from "expo-router";
 
+// eslint-disable-next-line no-console
 const originalConsoleError = console.error;
 // remove default props error message
+// eslint-disable-next-line no-console
 console.error = (message, ...args) => {
   if (
     typeof message === "string" &&
