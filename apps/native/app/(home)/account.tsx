@@ -1,12 +1,13 @@
 import React from "react";
 import { View } from "react-native";
-import { Button, Card, Text, useTheme } from "react-native-paper";
+import { Button, Card, Text } from "react-native-paper";
 
 import { UserAvater } from "@/components/user-avatar";
 import { useAuth } from "@/context/auth";
+import { useAppTheme } from "@/context/material-3-theme-provider";
 
 export default function Account() {
-  const theme = useTheme();
+  const theme = useAppTheme();
   const { user, signOut } = useAuth();
   const [isLoading, setIsLoading] = React.useState(false);
 

@@ -1,5 +1,4 @@
 import React from "react";
-import { Platform } from "react-native";
 
 import { Stack } from "expo-router";
 
@@ -8,8 +7,7 @@ function AuthLayout() {
     <Stack
       initialRouteName="sign-in"
       screenOptions={{
-        headerShown: false,
-        animation: Platform.OS === "android" ? "slide_from_right" : undefined
+        headerShown: false
       }}
     />
   );

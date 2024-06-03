@@ -1,7 +1,8 @@
 import React from "react";
 import { View } from "react-native";
-import { Card, Chip, Text, useTheme } from "react-native-paper";
+import { Card, Chip, Text } from "react-native-paper";
 
+import { useAppTheme } from "@/context/material-3-theme-provider";
 import { Note } from "@/types/note";
 
 import { Menu } from "./menu";
@@ -15,7 +16,7 @@ export function NoteCard({
   createdAt,
   isComplete
 }: NoteCardProps) {
-  const theme = useTheme();
+  const theme = useAppTheme();
 
   return (
     <Card>

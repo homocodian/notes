@@ -122,7 +122,6 @@ export function AuthProvider(props: { children: React.ReactNode }) {
         throw new Error("Unable to logout");
       }
       setUser(null);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast("Failed to logout");
     }

@@ -135,7 +135,6 @@ function SignIn() {
           </Text>
         </View>
       </View>
-
       <View className="flex justify-between items-center  self-stretch px-5">
         <View className="self-stretch">
           <Controller
@@ -161,7 +160,6 @@ function SignIn() {
             {errors.email?.message}
           </HelperText>
         </View>
-
         <View className="self-stretch">
           <Controller
             control={control}
@@ -193,7 +191,6 @@ function SignIn() {
             {errors.password?.message}
           </HelperText>
         </View>
-
         <Pressable
           className="self-end"
           onPress={handleForgotPassword}
@@ -203,7 +200,6 @@ function SignIn() {
             Forgot Password?
           </Text>
         </Pressable>
-
         <Button
           mode="contained"
           onPress={handleSubmit(onSubmit)}
@@ -214,7 +210,6 @@ function SignIn() {
           SIGN IN
         </Button>
       </View>
-
       <Text variant="titleSmall">
         Don&apos;t have an account?{" "}
         <Link href="/sign-up">
@@ -223,7 +218,6 @@ function SignIn() {
           </Text>
         </Link>
       </Text>
-
       <View className="absolute bottom-5 px-5">
         <Text className="text-center">
           By singing in you accept our{" "}

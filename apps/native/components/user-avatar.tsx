@@ -1,13 +1,14 @@
-import { Avatar, IconButton, useTheme } from "react-native-paper";
+import { Avatar, IconButton } from "react-native-paper";
 
 import { useAuth } from "@/context/auth";
+import { useAppTheme } from "@/context/material-3-theme-provider";
 import { getInitials } from "@/utils/get-initials";
 
 const AVATAR_SIZE = 34;
 
 export function UserAvater() {
   const { user } = useAuth();
-  const theme = useTheme();
+  const theme = useAppTheme();
 
   if (!user) {
     return <IconButton icon="account-question" />;

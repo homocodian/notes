@@ -1,13 +1,6 @@
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import {
-  Image,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  View
-} from "react-native";
+import { Image, Keyboard, ScrollView, View } from "react-native";
 import {
   Button,
   HelperText,
@@ -23,12 +16,9 @@ import type { RegisterAuthSchema } from "@/lib/validations/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useRouter } from "expo-router";
 
-import { Snackbar } from "@/components/ui/use-snackbar";
 import { useAuth } from "@/context/auth";
 import { useAppTheme } from "@/context/material-3-theme-provider";
 import { registerAuthSchema } from "@/lib/validations/auth";
-
-const keyboardBehavoir = Platform.OS === "ios" ? "padding" : "height";
 
 function Register() {
   const insets = useSafeAreaInsets();
@@ -72,26 +62,12 @@ function Register() {
   async function onSubmit(data: RegisterAuthSchema) {
     Keyboard.dismiss();
     setIsLoading(true);
-
-    try {
-      await createUser(data.email, data.password, data.confirmPassword);
-    } catch (error) {
-      if (error instanceof Error) {
-        Snackbar({
-          text: error.message
-        });
-      }
-      Snackbar({
-        text: "Failed to register a user"
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    await createUser(data.email, data.password, data.confirmPassword);
+    setIsLoading(false);
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior={keyboardBehavoir}
+    <View
       style={{
         flex: 1,
         // Paddings to handle safe area
@@ -110,7 +86,6 @@ function Register() {
           />
         </Tooltip>
       </View>
-
       <ScrollView
         contentContainerStyle={{
           display: "flex",
@@ -194,7 +169,6 @@ function Register() {
               {errors.password?.message}
             </HelperText>
           </View>
-
           <View className="self-stretch">
             <Controller
               control={control}
@@ -232,7 +206,6 @@ function Register() {
               {errors.confirmPassword?.message}
             </HelperText>
           </View>
-
           <Button
             mode="contained"
             onPress={handleSubmit(onSubmit)}
@@ -243,7 +216,6 @@ function Register() {
             SIGN UP
           </Button>
         </View>
-
         {/* terms */}
         <Text className="text-center px-5">
           By singing in you accept our{" "}
@@ -256,7 +228,7 @@ function Register() {
           </Link>
         </Text>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 

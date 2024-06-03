@@ -57,13 +57,13 @@ export function Material3ThemeProvider({
       const paperTheme = { ...MD3DarkTheme, colors: theme.dark };
       return {
         paperTheme,
-        navigationTheme: merge(DarkTheme, paperTheme)
+        navigationTheme: merge(paperTheme, DarkTheme)
       };
     }
 
     const paperTheme = { ...MD3LightTheme, colors: theme.light };
-    return { paperTheme, navigationTheme: merge(LightTheme, paperTheme) };
-  }, [colorScheme, theme.dark, theme.light]);
+    return { paperTheme, navigationTheme: merge(paperTheme, LightTheme) };
+  }, [colorScheme, theme]);
 
   return (
     <Material3ThemeProviderContext.Provider
