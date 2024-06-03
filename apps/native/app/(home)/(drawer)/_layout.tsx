@@ -4,6 +4,7 @@ import { Drawer } from "expo-router/drawer";
 
 import DrawerContent from "@/components/drawer-content";
 import NavigationBar from "@/components/navigation-bar";
+import { AddNote } from "@/components/note/add-note";
 
 export default function AppLayout() {
   return (
@@ -20,6 +21,7 @@ export default function AppLayout() {
         <Drawer.Screen name="important" options={{ title: "Important" }} />
         <Drawer.Screen name="shared" options={{ title: "Shared" }} />
       </Drawer>
+      <AddNote />
     </GestureHandlerRootView>
   );
 }

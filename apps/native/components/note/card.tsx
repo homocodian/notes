@@ -3,19 +3,13 @@ import { View } from "react-native";
 import { Card, Chip, Text } from "react-native-paper";
 
 import { useAppTheme } from "@/context/material-3-theme-provider";
-import { Note } from "@/types/note";
+import Note from "@/lib/db/model/note";
 
 import { Menu } from "./menu";
 
-interface NoteCardProps extends Note {}
+type NoteCardProps = { item: Note };
 
-export function NoteCard({
-  id,
-  category,
-  text,
-  createdAt,
-  isComplete
-}: NoteCardProps) {
+export function NoteCard({ item }: NoteCardProps) {
   const theme = useAppTheme();
 
   return (
@@ -28,23 +22,23 @@ export function NoteCard({
                 textTransform: "capitalize"
               }}
             >
-              {category}
+              {item.category}
             </Chip>
           </View>
           <View>
-            <Menu id={id} text={text} />
+            <Menu id={item.id} text={item.text} />
           </View>
         </View>
         <Text
           style={{
-            textDecorationLine: isComplete ? "line-through" : undefined
+            textDecorationLine: item.isComplete ? "line-through" : undefined
           }}
         >
-          {text}
+          {item.text}
         </Text>
         <View>
           <Text style={{ color: theme.colors.onSurfaceDisabled }}>
-            Date created {new Date(createdAt).toLocaleDateString()}
+            Date created {item.createdAt.toLocaleDateString()}
           </Text>
         </View>
       </Card.Content>

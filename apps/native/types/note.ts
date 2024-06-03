@@ -1,13 +1,13 @@
 export type Note = {
-  id: number;
+  id: string;
   text: string;
   category: "general" | "important";
   createdAt: string;
   updatedAt: string;
-  name?: string;
-  email?: string;
+  // name?: string;
+  // email?: string;
   userId: number;
-  sharedWith?: SharedWith[] | null;
+  // sharedWith?: SharedWith[] | null;
   isComplete: boolean;
 };
 

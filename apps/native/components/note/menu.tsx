@@ -2,14 +2,15 @@ import React from "react";
 import { IconButton, Menu as PaperMenu } from "react-native-paper";
 
 import { copyString } from "@/lib/copy";
+import { NotesController } from "@/lib/db/controllers/note";
 import { toast } from "@/lib/toast";
 
 type MenuProps = {
-  id: number;
+  id: string;
   text: string;
 };
 
-export function Menu({ text }: MenuProps) {
+export function Menu({ id, text }: MenuProps) {
   const [visible, setVisible] = React.useState(false);
 
   const openMenu = () => setVisible(true);
@@ -26,6 +27,10 @@ export function Menu({ text }: MenuProps) {
     cb();
   };
 
+  async function deleteById() {
+    await NotesController.destroy(id);
+  }
+
   return (
     <PaperMenu
       visible={visible}
@@ -34,7 +39,11 @@ export function Menu({ text }: MenuProps) {
       anchorPosition="bottom"
     >
       <PaperMenu.Item leadingIcon="check" onPress={() => {}} title="Done" />
-      <PaperMenu.Item leadingIcon="delete" onPress={() => {}} title="Delete" />
+      <PaperMenu.Item
+        leadingIcon="delete"
+        onPress={handleClick(deleteById)}
+        title="Delete"
+      />
       <PaperMenu.Item leadingIcon="pencil" onPress={() => {}} title="Edit" />
       <PaperMenu.Item
         leadingIcon="content-copy"
