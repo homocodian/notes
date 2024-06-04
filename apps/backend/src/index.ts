@@ -13,6 +13,12 @@ const app = new Elysia({ prefix: "/api" })
       data: "Server running"
     };
   })
+  .post("/", () => {
+    return {
+      success: true,
+      data: "Server running"
+    };
+  })
   .listen(env.PORT || 3000);
 
 console.log(
