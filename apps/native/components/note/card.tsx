@@ -2,6 +2,9 @@ import React from "react";
 import { View } from "react-native";
 import { Card, Chip, Text } from "react-native-paper";
 
+import { withObservables } from "@nozbe/watermelondb/react";
+
+import { useAuth } from "@/context/auth";
 import { useAppTheme } from "@/context/material-3-theme-provider";
 import Note from "@/lib/db/model/note";
 
@@ -9,8 +12,11 @@ import { Menu } from "./menu";
 
 type NoteCardProps = { item: Note };
 
-export function NoteCard({ item }: NoteCardProps) {
+function NoteCard({ item }: NoteCardProps) {
   const theme = useAppTheme();
+  const { user } = useAuth();
+
+  const isOwner = item.userId === user?.id;
 
   return (
     <Card>
@@ -21,12 +27,19 @@ export function NoteCard({ item }: NoteCardProps) {
               textStyle={{
                 textTransform: "capitalize"
               }}
+              compact
             >
-              {item.category}
+              {!isOwner ? "Shared" : item.category}
             </Chip>
           </View>
           <View>
-            <Menu id={item.id} text={item.text} />
+            <Menu
+              id={item.id}
+              text={item.text}
+              category={item.category}
+              isComplete={item.isComplete}
+              disable={!user?.id || user.id !== item.userId}
+            />
           </View>
         </View>
         <Text
@@ -45,3 +58,7 @@ export function NoteCard({ item }: NoteCardProps) {
     </Card>
   );
 }
+
+export const EnhancedNoteCard = withObservables(["item"], ({ item }) => ({
+  item
+}))(NoteCard);

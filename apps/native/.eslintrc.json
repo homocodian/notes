@@ -31,7 +31,7 @@
     "react-native/no-inline-styles": "off",
     "react-native/no-raw-text": "off",
     "react-native/no-single-element-style-arrays": "error",
-    "no-console": "error",
+    "no-console": "off",
     "import/order": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",

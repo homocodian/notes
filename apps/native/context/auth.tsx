@@ -1,9 +1,9 @@
 import React, { useCallback } from "react";
 
-import { router, useRootNavigationState, useSegments } from "expo-router";
 import { useShallow } from "zustand/react/shallow";
 
 import { USER_SESSION_KEY } from "@/constant/auth";
+import { useProtectedRoute } from "@/hooks/use-protected-route";
 import { API } from "@/lib/api";
 import { APIError } from "@/lib/api-error";
 import {
@@ -32,32 +32,6 @@ const AuthContext = React.createContext({} as Context);
 // This hook can be used to access the user info.
 export function useAuth() {
   return React.useContext(AuthContext);
-}
-
-// This hook will protect the route access based on user authentication.
-function useProtectedRoute(user: User | null) {
-  const segments = useSegments();
-  const navigationState = useRootNavigationState();
-
-  React.useEffect(() => {
-    if (!navigationState?.key) {
-      return;
-    }
-
-    const inAuthGroup = segments[0] === "(auth)";
-
-    if (
-      // If the user is not signed in and the initial segment is not anything in the auth group.
-      !user &&
-      !inAuthGroup
-    ) {
-      // Redirect to the sign-in page.
-      router.replace("/sign-in");
-    } else if (user && inAuthGroup) {
-      // Redirect away from the sign-in page.
-      router.replace("/");
-    }
-  }, [user, segments, navigationState]);
 }
 
 export function AuthProvider(props: { children: React.ReactNode }) {

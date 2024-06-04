@@ -4,7 +4,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { DrawerContentComponentProps } from "@react-navigation/drawer";
 
+import { useAppTheme } from "@/context/material-3-theme-provider";
+
 export default function DrawerContent(props: DrawerContentComponentProps) {
+  const theme = useAppTheme();
   const active = props.state.index;
   const insets = useSafeAreaInsets();
 
@@ -21,6 +24,7 @@ export default function DrawerContent(props: DrawerContentComponentProps) {
         flex: 1
       }}
       showDivider={false}
+      theme={theme}
     >
       <Drawer.Item
         label="Home"

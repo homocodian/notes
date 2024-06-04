@@ -21,6 +21,7 @@ import {
   ThemeProvider
 } from "@react-navigation/native";
 import merge from "deepmerge";
+import { setBackgroundColorAsync } from "expo-system-ui";
 
 type Material3ThemeProviderProps = {
   theme: Material3Theme;
@@ -44,7 +45,7 @@ export function Material3ThemeProvider({
   fallbackSourceColor,
   ...otherProps
 }: ProviderProps & { sourceColor?: string; fallbackSourceColor?: string }) {
-  const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme() ?? "light";
 
   // Material theme adaptive
   const { theme, updateTheme, resetTheme } = useMaterial3Theme({
@@ -64,6 +65,11 @@ export function Material3ThemeProvider({
     const paperTheme = { ...MD3LightTheme, colors: theme.light };
     return { paperTheme, navigationTheme: merge(paperTheme, LightTheme) };
   }, [colorScheme, theme]);
+
+  // Keep the root view background color in sync with the current theme
+  React.useEffect(() => {
+    setBackgroundColorAsync(navigationTheme.colors.background);
+  }, [navigationTheme]);
 
   return (
     <Material3ThemeProviderContext.Provider

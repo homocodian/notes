@@ -32,7 +32,6 @@ const config: ExpoConfig = {
       backgroundColor: "#ffffff",
       monochromeImage: "./assets/images/adaptive-icon.png"
     },
-    softwareKeyboardLayoutMode: "pan",
     package: "com.homocodian.cinememo",
     splash: {
       image: "./assets/images/splash_light.png",
