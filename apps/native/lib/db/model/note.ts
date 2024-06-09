@@ -17,6 +17,8 @@ export default class Note extends Model {
   @field("is_complete") isComplete!: boolean;
   @nochange @field("user_id") userId!: number;
 
+  @field("_deleted") deleted!: boolean;
+
   @readonly @date("created_at") createdAt!: Date;
-  @readonly @date("updated_at") updatedAt!: Date;
+  @date("updated_at") updatedAt!: Date;
 }

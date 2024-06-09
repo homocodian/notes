@@ -1,20 +1,13 @@
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Image, Keyboard, ScrollView, View } from "react-native";
-import {
-  Button,
-  HelperText,
-  IconButton,
-  Text,
-  TextInput,
-  Tooltip
-} from "react-native-paper";
+import { Button, HelperText, Text, TextInput } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import type { RegisterAuthSchema } from "@/lib/validations/auth";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useRouter } from "expo-router";
+import { Link } from "expo-router";
 
 import { useAuth } from "@/context/auth";
 import { useAppTheme } from "@/context/material-3-theme-provider";
@@ -23,7 +16,6 @@ import { registerAuthSchema } from "@/lib/validations/auth";
 function Register() {
   const insets = useSafeAreaInsets();
   const theme = useAppTheme();
-  const router = useRouter();
   const { createUser } = useAuth();
   const [isSecureEntry, setIsSecureEntry] = React.useState(true);
   const [isSecureEntryForConfirm, setIsSecureEntryForConfirm] =
@@ -42,14 +34,6 @@ function Register() {
       confirmPassword: ""
     }
   });
-
-  function handleBackButton() {
-    if (router.canGoBack()) {
-      router.back();
-    } else {
-      router.push("/sign-in");
-    }
-  }
 
   function handleEyePress() {
     setIsSecureEntry((prev) => !prev);
@@ -77,15 +61,6 @@ function Register() {
         paddingRight: insets.right
       }}
     >
-      <View className="flex justify-start items-center flex-row bg-transparent">
-        <Tooltip title="Back">
-          <IconButton
-            icon="chevron-left"
-            size={30}
-            onPress={handleBackButton}
-          />
-        </Tooltip>
-      </View>
       <ScrollView
         contentContainerStyle={{
           display: "flex",

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View } from "react-native";
 import { Button, IconButton, TextInput } from "react-native-paper";
 import DropDown from "react-native-paper-dropdown";
@@ -50,12 +50,21 @@ export default function NoteEditor() {
 function NoteForm() {
   const theme = useAppTheme();
   const [showDropDown, setShowDropDown] = React.useState(false);
+  const { category: initCategory } = useLocalSearchParams<{
+    category?: string;
+  }>();
+
   const [category, setCategory] = useNoteFormStore(
     useShallow((state) => [state.category, state.setCategory])
   );
+
   const [text, setText] = useNoteFormStore(
     useShallow((state) => [state.text, state.setText])
   );
+
+  useEffect(() => {
+    initCategory && setCategory(initCategory);
+  }, [initCategory]);
 
   return (
     <>
@@ -109,7 +118,10 @@ function NoteForm() {
 function SaveButton() {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = React.useState(false);
-  const { edit } = useLocalSearchParams<{ edit?: string }>();
+  const { edit } = useLocalSearchParams<{
+    edit?: string;
+  }>();
+
   const shouldEdit =
     edit && typeof edit !== "undefined" && typeof edit === "string";
 
@@ -134,7 +146,7 @@ function SaveButton() {
     } finally {
       setIsLoading(false);
     }
-  }, [user]);
+  }, [user, shouldEdit]);
 
   return (
     <Button

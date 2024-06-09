@@ -38,7 +38,7 @@ function NoteCard({ item }: NoteCardProps) {
               text={item.text}
               category={item.category}
               isComplete={item.isComplete}
-              disable={!user?.id || user.id !== item.userId}
+              userId={item.userId}
             />
           </View>
         </View>
@@ -46,6 +46,7 @@ function NoteCard({ item }: NoteCardProps) {
           style={{
             textDecorationLine: item.isComplete ? "line-through" : undefined
           }}
+          variant="bodyLarge"
         >
           {item.text}
         </Text>

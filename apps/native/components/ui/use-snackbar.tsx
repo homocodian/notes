@@ -150,7 +150,7 @@ function dispatch(action: Action) {
 interface SnackbarProps
   extends Omit<ToasterSnackbar, "id" | "visible" | "onDismiss" | "close"> {}
 
-function Snackbar({ ...props }: SnackbarProps) {
+function Snackbar(props: SnackbarProps) {
   const id = genId();
 
   const update = (props: ToasterSnackbar) =>

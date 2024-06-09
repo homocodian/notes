@@ -1,8 +1,16 @@
 import { Stack } from "expo-router";
 
+export const unstable_settings = {
+  initialRouteName: "(drawer)"
+};
+
 export default function HomeLayout() {
   return (
-    <Stack screenOptions={{ headerShown: false }} initialRouteName="(drawer)">
+    <Stack
+      screenOptions={{
+        headerShown: false
+      }}
+    >
       <Stack.Screen name="(drawer)" />
       <Stack.Screen
         name="account"

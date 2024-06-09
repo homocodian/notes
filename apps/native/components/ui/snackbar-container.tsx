@@ -4,19 +4,11 @@ import { Portal, Snackbar } from "react-native-paper";
 import { useSnackbar } from "./use-snackbar";
 
 function SnackbarContainer() {
-  const { Snackbars, dismiss } = useSnackbar();
+  const { Snackbars } = useSnackbar();
   return (
     <Portal>
       {Snackbars.map(({ text, id, ...props }) => (
-        <Snackbar
-          key={id}
-          {...props}
-          className="mx-2"
-          icon="close"
-          onIconPress={() => {
-            dismiss(id);
-          }}
-        >
+        <Snackbar key={id} {...props} className="mx-2">
           {text}
         </Snackbar>
       ))}

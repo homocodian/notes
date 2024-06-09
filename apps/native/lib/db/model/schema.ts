@@ -7,15 +7,21 @@ export const Table = {
       { name: "text", type: "string" },
       { name: "category", type: "string" },
       { name: "is_complete", type: "boolean" },
-      { name: "user_id", type: "number" },
+      { name: "user_id", type: "number", isIndexed: true },
       { name: "created_at", type: "number" },
-      { name: "updated_at", type: "number" }
+      { name: "updated_at", type: "number" },
+      {
+        name: "_deleted",
+        type: "boolean",
+        isOptional: true,
+        isIndexed: true
+      }
     ] satisfies ColumnSchema[]
   }
 } as const;
 
 export default appSchema({
-  version: 1,
+  version: 8,
   tables: [
     tableSchema({
       name: Table.note.name,

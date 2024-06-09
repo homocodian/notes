@@ -54,12 +54,10 @@ const config: ExpoConfig = {
     [
       "expo-build-properties",
       {
-        ios: {
-          newArchEnabled: true
-        },
+        // ios: { newArchEnabled: true },
         android: {
-          newArchEnabled: true,
-          kotlinVersion: "1.8.0",
+          // newArchEnabled: true,
+          kotlinVersion: "1.8.10",
           packagingOptions: {
             pickFirst: ["**/libc++_shared.so"]
           }
@@ -67,7 +65,8 @@ const config: ExpoConfig = {
       }
     ],
     "expo-font",
-    "expo-router"
+    "expo-router",
+    "expo-secure-store"
   ],
   experiments: {
     tsconfigPaths: true,

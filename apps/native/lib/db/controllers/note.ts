@@ -22,19 +22,28 @@ export class NotesController {
         note.category = category;
         note.userId = userId;
         note.isComplete = isCompleted ?? false;
+        note.deleted = false;
       });
-    });
-  }
-
-  static async destroy(id: string) {
-    await database.write(async () => {
-      await (await notes.find(id)).destroyPermanently();
     });
   }
 
   static async delete(id: string) {
     await database.write(async () => {
-      await (await notes.find(id)).markAsDeleted();
+      await (
+        await notes.find(id)
+      ).update((note) => {
+        note.deleted = true;
+      });
+    });
+  }
+
+  static async undo(id: string) {
+    await database.write(async () => {
+      await (
+        await notes.find(id)
+      ).update((note) => {
+        note.deleted = false;
+      });
     });
   }
 

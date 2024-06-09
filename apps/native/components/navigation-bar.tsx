@@ -3,8 +3,8 @@ import { Pressable, View } from "react-native";
 import { IconButton, Surface, Text, Tooltip } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { DrawerActions } from "@react-navigation/native";
-import { Link, useNavigation } from "expo-router";
+import { DrawerHeaderProps } from "@react-navigation/drawer";
+import { Link } from "expo-router";
 
 import { SCREEN_HORIZONTAL_PADDING } from "@/constant/screens";
 
@@ -12,9 +12,8 @@ import { UserAvater } from "./user-avatar";
 
 const TOP_PADDING = 10;
 
-export default function NavigationBar() {
+export default function NavigationBar(props: DrawerHeaderProps) {
   const insets = useSafeAreaInsets();
-  const navigation = useNavigation();
   return (
     <View
       style={{
@@ -30,7 +29,7 @@ export default function NavigationBar() {
             <IconButton
               icon="menu"
               onPress={() => {
-                navigation.dispatch(DrawerActions.toggleDrawer());
+                props.navigation.toggleDrawer();
               }}
             />
           </Tooltip>
