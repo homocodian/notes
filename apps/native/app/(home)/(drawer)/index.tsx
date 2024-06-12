@@ -17,6 +17,6 @@ export default function HomeScreen() {
 
 const EnhancedNoteList = withObservables([], () => ({
   data: notes
-    .query(Q.where("_deleted", Q.eq(false)), Q.sortBy("updated_at", Q.desc))
+    .query(Q.where("deleted_at", Q.eq(null)), Q.sortBy("updated_at", Q.desc))
     .observe()
 }))(NoteList);

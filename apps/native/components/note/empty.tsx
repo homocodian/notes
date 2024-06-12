@@ -5,7 +5,11 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { useAppTheme } from "@/context/material-3-theme-provider";
 
-export function EmptyData() {
+type EmptyDataProps = {
+  message?: string;
+};
+
+export function EmptyData({ message = "No data available" }: EmptyDataProps) {
   const theme = useAppTheme();
   return (
     <View className="flex-1 justify-center items-center gap-2">
@@ -14,7 +18,7 @@ export function EmptyData() {
         size={24}
         color={theme.colors.secondary}
       />
-      <Text style={{ color: theme.colors.secondary }}>No data available</Text>
+      <Text style={{ color: theme.colors.secondary }}>{message}</Text>
     </View>
   );
 }

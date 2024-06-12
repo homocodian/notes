@@ -6,11 +6,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DrawerHeaderProps } from "@react-navigation/drawer";
 import { Link } from "expo-router";
 
-import { SCREEN_HORIZONTAL_PADDING } from "@/constant/screens";
+import { SCREEN_HORIZONTAL_PADDING, TOP_PADDING } from "@/constant/screens";
 
 import { UserAvater } from "./user-avatar";
-
-const TOP_PADDING = 10;
 
 export default function NavigationBar(props: DrawerHeaderProps) {
   const insets = useSafeAreaInsets();
@@ -34,7 +32,13 @@ export default function NavigationBar(props: DrawerHeaderProps) {
             />
           </Tooltip>
         </View>
-        <Text className="flex-1">Search</Text>
+        <View className="relative flex-1">
+          <Link href="/search" asChild>
+            <Pressable className="flex-1 flex justify-center">
+              <Text>Search</Text>
+            </Pressable>
+          </Link>
+        </View>
         <Link asChild href="/../account">
           <Pressable>
             <View className="self-end">

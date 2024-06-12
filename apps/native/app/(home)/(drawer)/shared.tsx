@@ -22,7 +22,7 @@ const EnhancedNoteList = withObservables(
   ({ userId }: { userId: number }) => ({
     data: notes
       .query(
-        Q.where("_deleted", Q.eq(false)),
+        Q.where("deleted_at", Q.eq(null)),
         Q.where("user_id", Q.notEq(userId)),
         Q.sortBy("updated_at", Q.desc)
       )

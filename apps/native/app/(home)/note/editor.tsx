@@ -7,6 +7,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useShallow } from "zustand/react/shallow";
 
+import { SeedButton } from "@/components/note/seed";
 import {
   SCREEN_HORIZONTAL_PADDING,
   SCREEN_VERTICAL_PADDING
@@ -18,6 +19,8 @@ import { useNoteFormStore } from "@/lib/store/note";
 import { toast } from "@/lib/toast";
 
 export default function NoteEditor() {
+  const { user } = useAuth();
+
   React.useEffect(() => {
     return () => useNoteFormStore.setState({ text: "", category: null });
   }, []);
@@ -38,7 +41,8 @@ export default function NoteEditor() {
         <View>
           <IconButton icon="close" onPress={router.back} />
         </View>
-        <View>
+        <View className="flex flex-row">
+          {__DEV__ ? <SeedButton userId={user!.id} /> : null}
           <SaveButton />
         </View>
       </View>
@@ -136,8 +140,10 @@ function SaveButton() {
     try {
       if (shouldEdit) {
         await NotesController.edit({ id: edit, text, category });
+        toast("Edited");
       } else {
         await NotesController.save({ text, category, userId: user.id });
+        toast("Saved");
       }
       if (router.canGoBack()) router.back();
       else router.push("/");

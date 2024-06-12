@@ -43,6 +43,7 @@
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.6",
     "expo-web-browser": "~13.0.3",
+    "fuse.js": "^7.0.0",
     "nativewind": "^2.0.11",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -61,7 +62,7 @@
   "devDependencies": {
     "@babel/core": "^7.24.5",
     "@ianvs/prettier-plugin-sort-imports": "^4.2.1",
-    "@types/react": "~18.2.79",
+    "@types/react": "~18.3.3",
     "@typescript-eslint/eslint-plugin": "^7.10.0",
     "@typescript-eslint/parser": "^7.10.0",
     "eslint": "^8.57.0",

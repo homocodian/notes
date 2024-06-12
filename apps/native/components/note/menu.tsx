@@ -61,6 +61,7 @@ export function Menu({
         }
       });
     } catch (error) {
+      console.log("🚀 ~ error:", error);
       toast(failureMessage);
     }
   }

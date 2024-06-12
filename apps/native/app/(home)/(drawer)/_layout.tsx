@@ -23,6 +23,10 @@ export default function AppLayout() {
         <Drawer.Screen name="general" options={{ title: "General" }} />
         <Drawer.Screen name="important" options={{ title: "Important" }} />
         <Drawer.Screen name="shared" options={{ title: "Shared" }} />
+        <Drawer.Screen
+          name="search"
+          options={{ title: "Search", headerShown: false, unmountOnBlur: true }}
+        />
       </Drawer>
       <AddNoteButton />
     </GestureHandlerRootView>

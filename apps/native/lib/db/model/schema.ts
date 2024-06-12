@@ -11,8 +11,8 @@ export const Table = {
       { name: "created_at", type: "number" },
       { name: "updated_at", type: "number" },
       {
-        name: "_deleted",
-        type: "boolean",
+        name: "deleted_at",
+        type: "string",
         isOptional: true,
         isIndexed: true
       }
@@ -21,7 +21,7 @@ export const Table = {
 } as const;
 
 export default appSchema({
-  version: 8,
+  version: 13,
   tables: [
     tableSchema({
       name: Table.note.name,
