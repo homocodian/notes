@@ -31,7 +31,9 @@ const AuthContext = React.createContext({} as Context);
 
 // This hook can be used to access the user info.
 export function useAuth() {
-  return React.useContext(AuthContext);
+  const context = React.useContext(AuthContext);
+  if (!context) throw new Error("useAuth must be used within an AuthProvider");
+  return context;
 }
 
 export function AuthProvider(props: { children: React.ReactNode }) {

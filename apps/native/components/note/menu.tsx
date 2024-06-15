@@ -1,9 +1,12 @@
 import React from "react";
 import { IconButton, Menu as PaperMenu } from "react-native-paper";
 
+import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 
 import { useAuth } from "@/context/auth";
+import { useBoolean } from "@/context/boolean";
+import { useSharedBottomSheetStore } from "@/context/note/shared/bottom-sheet";
 import { copyString } from "@/lib/copy";
 import { NotesController } from "@/lib/db/controllers/note";
 import { useNoteFormStore } from "@/lib/store/note";
@@ -30,6 +33,11 @@ export function Menu({
   disable = false,
   userId
 }: MenuProps) {
+  const setIsSharedBottomSheetVisible = useSharedBottomSheetStore(
+    (state) => state.setIsSharedBottomSheetVisible
+  );
+  const setIsShareDialogOpen = useBoolean((state) => state.setBoolValue);
+
   const { user } = useAuth();
   const [visible, setVisible] = React.useState(false);
 
@@ -61,7 +69,6 @@ export function Menu({
         }
       });
     } catch (error) {
-      console.log("🚀 ~ error:", error);
       toast(failureMessage);
     }
   }
@@ -123,7 +130,19 @@ export function Menu({
           onPress={handleClick(copyText)}
           title="Copy"
         />
-        <PaperMenu.Item leadingIcon="share" onPress={() => {}} title="Share" />
+        <PaperMenu.Item
+          leadingIcon="share"
+          onPress={handleClick(() => setIsShareDialogOpen(true))}
+          title="Share"
+        />
+        <PaperMenu.Item
+          leadingIcon="account-group"
+          onPress={handleClick(async () => {
+            await Haptics.selectionAsync();
+            setIsSharedBottomSheetVisible(true);
+          })}
+          title="Members"
+        />
       </PaperMenu>
     </>
   );

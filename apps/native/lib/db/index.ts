@@ -3,13 +3,14 @@ import { Platform } from "react-native";
 import { Database } from "@nozbe/watermelondb";
 import SQLiteAdapter from "@nozbe/watermelondb/adapters/sqlite";
 
+import migrations from "./model/migrations";
 import Note from "./model/note";
-// import migrations from "./model/migrations";
 import schema from "./model/schema";
+import { SharedWithNote } from "./model/shared-with";
 
 const adapter = new SQLiteAdapter({
   schema,
-  // migrations,
+  migrations,
   jsi: Platform.OS === "ios",
   onSetUpError: (_error) => {
     // eslint-disable-next-line no-console
@@ -20,5 +21,5 @@ const adapter = new SQLiteAdapter({
 
 export const database = new Database({
   adapter,
-  modelClasses: [Note]
+  modelClasses: [Note, SharedWithNote]
 });
