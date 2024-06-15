@@ -3,16 +3,23 @@ import { Portal, Snackbar } from "react-native-paper";
 
 import { useSnackbar } from "./use-snackbar";
 
-function SnackbarContainer() {
+type SnackbarContainerProps = {
+  children?: React.ReactNode | ((contentLength: number) => React.ReactNode);
+};
+
+function SnackbarContainer({ children }: SnackbarContainerProps) {
   const { Snackbars } = useSnackbar();
   return (
-    <Portal>
-      {Snackbars.map(({ text, id, ...props }) => (
-        <Snackbar key={id} {...props} className="mx-2">
-          {text}
-        </Snackbar>
-      ))}
-    </Portal>
+    <>
+      {typeof children === "function" ? children(Snackbars.length) : children}
+      <Portal>
+        {Snackbars.map(({ text, id, ...props }) => (
+          <Snackbar key={id} {...props} className="mx-2">
+            {text}
+          </Snackbar>
+        ))}
+      </Portal>
+    </>
   );
 }
 

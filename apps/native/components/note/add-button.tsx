@@ -1,10 +1,18 @@
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { FAB } from "react-native-paper";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import Animated, {
+  FadeIn,
+  FadeOut,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming
+} from "react-native-reanimated";
 
-import { Link, usePathname } from "expo-router";
+import { Link, usePathname, useSegments } from "expo-router";
 
-export function AddNoteButton() {
+export function AddNoteButton({ contentLength }: { contentLength?: number }) {
+  const translateY = useSharedValue(0);
+  const segments = useSegments();
   const pathname = usePathname();
 
   const category = pathname.includes("general")
@@ -19,12 +27,25 @@ export function AddNoteButton() {
     } else return false;
   }, [pathname]);
 
-  if (isSearchScreen) {
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }]
+  }));
+
+  React.useEffect(() => {
+    translateY.value = withTiming(
+      contentLength && contentLength > 0 ? -60 : 0,
+      {
+        duration: 100
+      }
+    );
+  }, [contentLength]);
+
+  if (isSearchScreen || !segments.includes("(drawer)")) {
     return null;
   }
 
   return (
-    <Animated.View entering={FadeIn} exiting={FadeOut}>
+    <Animated.View entering={FadeIn} exiting={FadeOut} style={animatedStyle}>
       <Link
         asChild
         href={category ? `/note/editor?category=${category}` : "/note/editor"}

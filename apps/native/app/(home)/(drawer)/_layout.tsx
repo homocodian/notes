@@ -4,7 +4,6 @@ import { Drawer } from "expo-router/drawer";
 
 import DrawerContent from "@/components/drawer-content";
 import NavigationBar from "@/components/navigation-bar";
-import { AddNoteButton } from "@/components/note/add-button";
 
 export const unstable_settings = {
   initialRouteName: "index"
@@ -28,7 +27,6 @@ export default function AppLayout() {
           options={{ title: "Search", headerShown: false, unmountOnBlur: true }}
         />
       </Drawer>
-      <AddNoteButton />
     </GestureHandlerRootView>
   );
 }

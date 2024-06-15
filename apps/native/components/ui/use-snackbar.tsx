@@ -167,7 +167,13 @@ function Snackbar(props: SnackbarProps) {
       ...props,
       id,
       visible: true,
-      onDismiss: () => dismiss()
+      onDismiss: () => {
+        dismiss();
+        dispatch({
+          type: "REMOVE_SNACKBAR",
+          SnackbarId: id
+        });
+      }
     }
   });
 

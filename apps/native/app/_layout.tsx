@@ -13,6 +13,8 @@ import { Material3ThemeProvider } from "@/context/material-3-theme-provider";
 
 import "@/styles/global.css";
 
+import { AddNoteButton } from "@/components/note/add-button";
+
 export { ErrorBoundary } from "expo-router";
 
 // eslint-disable-next-line no-console
@@ -81,7 +83,9 @@ function RootLayoutNav() {
       <Material3ThemeProvider>
         <AuthProvider>
           <Slot />
-          <SnackbarContainer />
+          <SnackbarContainer>
+            {(contentLength) => <AddNoteButton contentLength={contentLength} />}
+          </SnackbarContainer>
         </AuthProvider>
         <Alerter />
       </Material3ThemeProvider>
