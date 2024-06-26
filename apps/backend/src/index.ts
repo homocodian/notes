@@ -19,7 +19,7 @@ const app = new Elysia({ prefix: "/api" })
       data: "Server running"
     };
   })
-  .listen({ port: env.PORT || 3000, hostname: env.HOSTNAME });
+  .listen(env.PORT || 3000);
 
 console.log(
   `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
