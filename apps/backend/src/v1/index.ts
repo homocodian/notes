@@ -1,8 +1,10 @@
 import Elysia from "elysia";
 
-import { authRoutes } from "./routes/auth";
+import { authRoute } from "./routes/auth";
 import { noteRoute } from "./routes/note";
+import { syncRoute } from "./routes/sync";
 
 export const v1Routes = new Elysia({ prefix: "v1" })
-  .use(authRoutes)
-  .use(noteRoute);
+  .use(authRoute)
+  .use(noteRoute)
+  .use(syncRoute);

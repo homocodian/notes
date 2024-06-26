@@ -13,7 +13,8 @@ export const db = drizzle(client, {
   schema: {
     ...userSchema,
     ...noteSchema
-  }
+  },
+  logger: process.env.NODE_ENV === "development" ? true : false
 });
 
 export type DB = typeof db;

@@ -7,6 +7,8 @@
     "apps/*"
   ],
   "scripts": {
-    "dev": "bun --filter './apps/*' dev"
+    "dev": "bun --filter './apps/*' dev",
+    "backend:dev": "bun --filter './apps/backend' dev",
+    "web:dev": "bun --filter './apps/web' dev"
   }
 }

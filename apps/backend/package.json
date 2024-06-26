@@ -1,13 +1,15 @@
 {
   "name": "@notes/backend",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
-    "dev": "bun --watch src/index.ts",
+    "dev": "NODE_ENV=development bun --watch src/index.ts",
     "build": "bun build --target=bun ./src/index.ts --outdir ./dist",
     "start": "NODE_ENV=production bun ./dist/index.js",
     "test": "bun test",
-    "migrate": "bun run ./src/db/migrate.ts",
-    "generate": "bunx drizzle-kit generate:pg",
+    "db:migrate": "bun run ./src/db/migrate.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:studio": "drizzle-kit studio",
+    "db:push": "drizzle-kit push",
     "prettier": "prettier --write .",
     "lint": "eslint --fix ."
   },
@@ -15,15 +17,14 @@
     "@elysiajs/bearer": "^1.0.2",
     "@elysiajs/cors": "^1.0.2",
     "@lucia-auth/adapter-drizzle": "^1.0.7",
-    "drizzle-orm": "^0.30.7",
+    "drizzle-orm": "^0.31.2",
     "drizzle-typebox": "^0.1.1",
     "elysia": "^1.0.15",
     "jsonwebtoken": "^9.0.2",
     "lucia": "^3.2.0",
     "oslo": "^1.2.0",
     "pg": "^8.11.5",
-    "postgres": "^3.4.4",
-    "zod": "^3.22.4"
+    "postgres": "^3.4.4"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
@@ -31,9 +32,9 @@
     "@typescript-eslint/eslint-plugin": "^7.8.0",
     "@typescript-eslint/parser": "^7.8.0",
     "bun-types": "latest",
-    "drizzle-kit": "^0.20.17",
+    "drizzle-kit": "^0.22.7",
     "eslint": "^9.0.0",
     "prettier": "^3.2.5",
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.2"
   }
 }

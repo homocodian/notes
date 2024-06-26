@@ -1,4 +1,9 @@
-import { InferSelectModel, relations } from "drizzle-orm";
+import {
+  InferInsertModel,
+  InferSelectModel,
+  relations,
+  sql
+} from "drizzle-orm";
 import {
   boolean,
   index,
@@ -6,24 +11,23 @@ import {
   pgEnum,
   pgTable,
   primaryKey,
-  serial,
   text,
-  timestamp
+  timestamp,
+  uuid
 } from "drizzle-orm/pg-core";
 
 import { userTable } from "./user";
 
-export const noteCategoryEnum = pgEnum("note_category", [
-  "general",
-  "important"
-]);
+export const noteCategory = ["general", "important"] as const;
+
+export const noteCategoryEnum = pgEnum("note_category", noteCategory);
 
 export type NoteCategory = (typeof noteCategoryEnum.enumValues)[number];
 
 export const noteTable = pgTable(
   "note",
   {
-    id: serial("id").notNull().primaryKey(),
+    id: uuid("id").notNull().primaryKey().defaultRandom(),
     text: text("text").notNull(),
     category: noteCategoryEnum("category").notNull().default("general"),
     isComplete: boolean("is_complete").notNull().default(false),
@@ -31,6 +35,8 @@ export const noteTable = pgTable(
     userId: integer("user_id")
       .notNull()
       .references(() => userTable.id, { onDelete: "cascade" }),
+
+    deletedAt: timestamp("deleted_at", { mode: "date" }).default(sql`NULL`),
 
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { mode: "date" })
@@ -45,6 +51,7 @@ export const noteTable = pgTable(
 );
 
 export type Note = InferSelectModel<typeof noteTable>;
+export type CreateNote = InferInsertModel<typeof noteTable>;
 
 export const noteRelations = relations(noteTable, ({ one, many }) => ({
   user: one(userTable, {
@@ -60,18 +67,17 @@ export const notesToUsersTable = pgTable(
     userId: integer("user_id")
       .notNull()
       .references(() => userTable.id, { onDelete: "cascade" }),
-    noteId: integer("note_id")
+    noteId: uuid("note_id")
       .notNull()
       .references(() => noteTable.id, { onDelete: "cascade" })
   },
   (t) => ({
-    pk: primaryKey({ columns: [t.userId, t.noteId] }),
-    notesToUsersNoteIdIdx: index("notes_to_users_note_id_idx").on(t.noteId),
-    notesToUsersUserIdIdx: index("notes_to_users_user_id_idx").on(t.userId)
+    pk: primaryKey({ columns: [t.userId, t.noteId] })
   })
 );
 
 export type NotesToUsers = InferSelectModel<typeof notesToUsersTable>;
+export type CreateNotesToUsers = InferInsertModel<typeof notesToUsersTable>;
 
 export const notesToUsersRelations = relations(
   notesToUsersTable,

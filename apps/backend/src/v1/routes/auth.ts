@@ -7,19 +7,10 @@ import { loginUser } from "../controllers/user/login";
 import { logout } from "../controllers/user/logout";
 import { getProfile } from "../controllers/user/profile";
 import { registerUser } from "../controllers/user/register";
+import { errorHandlerInstance } from "../utils/error-handler";
 
-export const authRoutes = new Elysia({ prefix: "/auth" })
-  .onError(({ error, code }) => {
-    if (code === "VALIDATION") {
-      return error.all[0]?.schema?.description ??
-        error.message.includes("supabase")
-        ? "Something went wrong"
-        : error.message;
-    }
-    return error.message.includes("supabase")
-      ? "Something went wrong"
-      : error.message;
-  })
+export const authRoute = new Elysia({ prefix: "/auth" })
+  .use(errorHandlerInstance)
   .use(bearer())
   .post("/register", registerUser, {
     body: registerUserSchema

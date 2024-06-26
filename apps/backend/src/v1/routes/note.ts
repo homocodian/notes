@@ -10,6 +10,7 @@ import { removeUserFromSharedNote } from "../controllers/notes/remove-from-share
 import { removeSharedNoteForMe } from "../controllers/notes/remove-shared-note-me";
 import { shareNote } from "../controllers/notes/share";
 import { updateNote } from "../controllers/notes/update";
+import { errorHandlerInstance } from "../utils/error-handler";
 import { deriveUser } from "../utils/note/derive-user";
 import {
   createNoteSchema,
@@ -20,17 +21,7 @@ import {
 } from "../validations/note";
 
 export const noteRoute = new Elysia({ prefix: "/notes" })
-  .onError(({ error, code }) => {
-    if (code === "VALIDATION") {
-      return error.all[0]?.schema?.description ??
-        error.message.includes("supabase")
-        ? "Something went wrong"
-        : error.message;
-    }
-    return error.message.includes("supabase")
-      ? "Something went wrong"
-      : error.message;
-  })
+  .use(errorHandlerInstance)
   .use(bearer())
   .derive(deriveUser)
   .get("/", getNotes)

@@ -5,7 +5,7 @@ import { db } from "@/db";
 import { userTable } from "@/db/schema/user";
 import { env } from "@/env";
 import { lucia } from "@/libs/auth";
-import { isValidEmail } from "@/v1/validations/is-valid-email";
+import { isValidEmail } from "@/v1/validations/email";
 import { RegisterUser } from "@/v1/validations/user";
 
 interface RegisterUserProps extends Context {

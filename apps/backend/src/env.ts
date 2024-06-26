@@ -1,18 +1,23 @@
-import { z } from "zod";
+import { Value } from "@sinclair/typebox/value";
+import { t } from "elysia";
 
-const server = z.object({
-  PORT: z.string().min(1).optional(),
-  DATABASE_URL: z.string().min(1),
-  TOKEN_SECRET: z.string().min(1),
-  ALGORITHM: z.string().min(1)
+const server = t.Object({
+  PORT: t.Optional(t.String({ minLength: 1 })),
+  DATABASE_URL: t.String({ minLength: 1 }),
+  TOKEN_SECRET: t.String({ minLength: 1 }),
+  ALGORITHM: t.String({ minLength: 1 }),
+  HOSTNAME: t.Optional(t.String({ minLength: 1 }))
 });
+
+type ServerEnv = typeof server.static;
 
 const processEnv = {
   PORT: process.env.PORT,
   DATABASE_URL: process.env.DATABASE_URL,
   TOKEN_SECRET: process.env.TOKEN_SECRET,
-  ALGORITHM: process.env.ALGORITHM
-} satisfies Record<keyof z.infer<typeof server>, string | undefined>;
+  ALGORITHM: process.env.ALGORITHM,
+  HOSTNAME: process.env.HOSTNAME
+} satisfies Record<keyof ServerEnv, string | undefined>;
 
 // Don't touch the part below
 // --------------------------
@@ -22,17 +27,21 @@ let defaultEnv = process.env;
 if (!!process.env.SKIP_ENV_VALIDATION == false) {
   const isServer = typeof window === "undefined";
 
-  const parsed = server.safeParse(processEnv);
+  let parsed = Value.Check(server, processEnv);
 
-  if (parsed.success === false) {
+  if (parsed === false) {
     console.error(
       "❌ Invalid environment variables:",
-      parsed.error.flatten().fieldErrors
+      [...Value.Errors(server, processEnv)].map((error) => ({
+        path: error.path,
+        value: error.value,
+        message: error.message
+      }))
     );
-    throw new Error("Invalid environment variables");
+    process.exit(1);
   }
 
-  defaultEnv = new Proxy(parsed.data, {
+  defaultEnv = new Proxy(processEnv, {
     get(target, prop) {
       if (typeof prop !== "string") return undefined;
       // Throw a descriptive error if a server-side env var is accessed on the client
@@ -43,10 +52,9 @@ if (!!process.env.SKIP_ENV_VALIDATION == false) {
             ? "❌ Attempted to access a server-side environment variable on the client"
             : `❌ Attempted to access server-side environment variable '${prop}' on the client`
         );
-      /*  @ts-expect-error - can't type this properly in jsdoc */
-      return target[prop];
+      return target[prop as keyof typeof target];
     }
   });
 }
 
-export const env = defaultEnv as z.infer<typeof server>;
+export const env = defaultEnv as ServerEnv;
