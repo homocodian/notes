@@ -113,7 +113,9 @@ export async function pushChanges({
       }
     });
 
-    return "Sync Successful";
+    return {
+      message: "Changes pushed successfully"
+    };
   } catch (err) {
     console.log("🚀 push changes ~ err:", err);
 
