@@ -37,13 +37,16 @@ export async function getSharedWithByNoteId({
     }
 
     const sharedWith = await db
-      .select({ email: userTable.email })
+      .select({
+        email: userTable.email,
+        noteId: notesToUsersTable.noteId,
+        userId: notesToUsersTable.userId
+      })
       .from(notesToUsersTable)
       .where(eq(notesToUsersTable.noteId, params.id))
       .innerJoin(userTable, eq(userTable.id, notesToUsersTable.userId));
 
-    const users = sharedWith.map((i) => i.email);
-    return users;
+    return sharedWith;
   } catch (err) {
     console.log("🚀 ~ getSharedWithByNoteId ~ err:", err);
     return error(500, "Failed to get shared with by note id");

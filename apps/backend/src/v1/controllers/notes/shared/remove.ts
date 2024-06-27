@@ -46,7 +46,7 @@ export async function removeUserFromSharedNote({
         .delete(notesToUsersTable)
         .where(
           and(
-            eq(notesToUsersTable.noteId, params.id),
+            eq(notesToUsersTable.noteId, note.id),
             eq(notesToUsersTable.userId, userToRemove.id)
           )
         );
@@ -62,7 +62,7 @@ export async function removeUserFromSharedNote({
 
       await db.delete(notesToUsersTable).where(
         and(
-          eq(notesToUsersTable.noteId, params.id),
+          eq(notesToUsersTable.noteId, note.id),
           inArray(
             notesToUsersTable.userId,
             usersToRemove.map(({ id }) => id)
@@ -71,7 +71,7 @@ export async function removeUserFromSharedNote({
       );
     }
 
-    return { removedEmail: body };
+    return { removedEmail: body, noteId: note.id };
   } catch (err) {
     return error(500, "Failed to remove user from shared note");
   }
