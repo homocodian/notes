@@ -4,10 +4,11 @@ import { User } from "lucia";
 
 import { db } from "@/db";
 import { noteTable } from "@/db/schema/note";
+import { UpdateNoteParams } from "@/v1/validations/note";
 
 interface DeleteNoteProps extends Omit<Context, "params"> {
   user: User;
-  params: Readonly<Record<"id", number>>;
+  params: Readonly<UpdateNoteParams>;
 }
 
 export async function deleteNote({ user, error, params }: DeleteNoteProps) {

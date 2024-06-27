@@ -4,12 +4,11 @@ import type { User } from "lucia";
 
 import { db } from "@/db";
 import { notesToUsersTable } from "@/db/schema/note";
+import { ShareNoteParams } from "@/v1/validations/note";
 
 interface RemoveSharedNoteForMeProps extends Omit<Context, "params"> {
   user: User;
-  params: {
-    id: number;
-  };
+  params: Readonly<ShareNoteParams>;
 }
 
 export async function removeSharedNoteForMe({

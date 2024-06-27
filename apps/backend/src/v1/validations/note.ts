@@ -38,17 +38,33 @@ export type CreateNote = typeof createNoteSchema.static;
 export const updateNoteSchema = t.Partial(createNoteSchema);
 
 export const updateNoteParamsSchema = t.Object({
-  id: t.Numeric({ minimum: 1 })
+  id: t.String({ minimum: 1 })
 });
+
+export type UpdateNoteParams = typeof updateNoteParamsSchema.static;
 
 export type UpdateNote = typeof updateNoteSchema.static;
 
 // share note
 
-export const shareNoteWithSchema = t.Array(t.String({ format: "email" }));
+export const shareNoteWithSchema = t.String({ format: "email" });
+
+export type ShareNoteWithSchema = typeof shareNoteWithSchema.static;
+
+export const shareNoteWithUsersSchema = t.Array(shareNoteWithSchema);
+
+export type ShareNoteWithUsersSchema = typeof shareNoteWithUsersSchema.static;
 
 export const shareNoteParams = t.Object({
-  id: t.Numeric({ minimum: 1 })
+  id: t.String({ minimum: 1 })
 });
 
-export type ShareNoteWith = typeof shareNoteWithSchema.static;
+export type ShareNoteParams = typeof shareNoteParams.static;
+
+export const patchShareNoteWithUsersBody = t.Union([
+  shareNoteWithSchema,
+  shareNoteWithUsersSchema
+]);
+
+export type PatchShareNoteWithUsersBody =
+  typeof patchShareNoteWithUsersBody.static;

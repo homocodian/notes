@@ -1,21 +1,23 @@
 import bearer from "@elysiajs/bearer";
-import Elysia, { t } from "elysia";
+import Elysia from "elysia";
 
 import { createNote } from "../controllers/notes/create";
 import { deleteNote } from "../controllers/notes/delete";
-import { unshareNote } from "../controllers/notes/delete-shared";
 import { getNotes } from "../controllers/notes/get";
-import { getSharedNotes } from "../controllers/notes/get-shared";
-import { removeUserFromSharedNote } from "../controllers/notes/remove-from-shared";
-import { removeSharedNoteForMe } from "../controllers/notes/remove-shared-note-me";
-import { shareNote } from "../controllers/notes/share";
+import { unshareNote } from "../controllers/notes/shared/delete";
+import { getSharedNotes } from "../controllers/notes/shared/get";
+import { getSharedWithByNoteId } from "../controllers/notes/shared/get-by-note-id";
+import { removeUserFromSharedNote } from "../controllers/notes/shared/remove";
+import { removeSharedNoteForMe } from "../controllers/notes/shared/remove-me";
+import { shareNote } from "../controllers/notes/shared/share";
 import { updateNote } from "../controllers/notes/update";
 import { errorHandlerInstance } from "../utils/error-handler";
 import { deriveUser } from "../utils/note/derive-user";
 import {
   createNoteSchema,
+  patchShareNoteWithUsersBody,
   shareNoteParams,
-  shareNoteWithSchema,
+  shareNoteWithUsersSchema,
   updateNoteParamsSchema,
   updateNoteSchema
 } from "../validations/note";
@@ -34,12 +36,13 @@ export const noteRoute = new Elysia({ prefix: "/notes" })
   .delete("/:id", deleteNote, {
     params: updateNoteParamsSchema
   })
+  .get("/:id/share", getSharedWithByNoteId)
   .post("/:id/share", shareNote, {
-    body: shareNoteWithSchema,
+    body: shareNoteWithUsersSchema,
     params: shareNoteParams
   })
   .patch("/:id/share", removeUserFromSharedNote, {
-    body: t.String({ format: "email" }),
+    body: patchShareNoteWithUsersBody,
     params: shareNoteParams
   })
   .delete("/:id/share", unshareNote, {

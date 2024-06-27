@@ -4,10 +4,11 @@ import { User } from "lucia";
 
 import { db } from "@/db";
 import { noteTable, notesToUsersTable } from "@/db/schema/note";
+import { ShareNoteParams } from "@/v1/validations/note";
 
 interface ShareNoteProps extends Omit<Context, "params"> {
   user: User;
-  params: Readonly<Record<"id", number>>;
+  params: Readonly<ShareNoteParams>;
 }
 
 export async function unshareNote({ user, error, params }: ShareNoteProps) {
