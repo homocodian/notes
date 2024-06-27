@@ -48,6 +48,11 @@ async function getData<T>(
   const fetchUrl = `${process.env.EXPO_PUBLIC_API_URL}${url}${
     queryOptions ? "?" + queryOptions : ""
   }`;
+
+  if (typeof __DEV__ !== "undefined" && __DEV__) {
+    console.log("🚀 ~ fetchUrl:", fetchUrl);
+  }
+
   const fetchOptions: RequestInit = {
     headers: {
       ...(token

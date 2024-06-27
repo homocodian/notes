@@ -1,15 +1,29 @@
+import React from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { Drawer } from "expo-router/drawer";
 
 import DrawerContent from "@/components/drawer-content";
 import NavigationBar from "@/components/navigation-bar";
+import { syncChanges } from "@/lib/db/sync";
+import { useUserStore } from "@/lib/store/user";
 
 export const unstable_settings = {
   initialRouteName: "index"
 };
 
 export default function AppLayout() {
+  React.useEffect(() => {
+    const user = useUserStore.getState().user;
+    if (user) {
+      syncChanges().then().catch(console.error);
+    } else {
+      if (typeof __DEV__ !== "undefined" && __DEV__) {
+        console.log("sync no user");
+      }
+    }
+  }, []);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Drawer

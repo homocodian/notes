@@ -2,12 +2,14 @@ import React from "react";
 import { Keyboard } from "react-native";
 import { Button, Dialog, Portal, Text, TextInput } from "react-native-paper";
 
+import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
 
 import { useAuth } from "@/context/auth";
 import { useBoolean } from "@/context/boolean";
 import { useAppTheme } from "@/context/material-3-theme-provider";
-import { SharedNotesNoteController } from "@/lib/db/controllers/shared-with";
+import { API } from "@/lib/api";
+import { APIError } from "@/lib/api-error";
 import { toast } from "@/lib/toast";
 
 type ShareDialogProps = {
@@ -22,7 +24,12 @@ export function ShareDialog({ noteId }: ShareDialogProps) {
   const [email, setEmail] = React.useState("");
   const visible = useBoolean((state) => state.boolValue);
   const setVisible = useBoolean((state) => state.setBoolValue);
-  const [isSaving, setIsSaving] = React.useState(false);
+
+  const { mutateAsync, isPending } = useMutation({
+    mutationKey: ["share-to"],
+    mutationFn: (emails: string[]) =>
+      API.post(`/v1/notes/${noteId}/share`, { data: emails })
+  });
 
   const hideDialog = React.useCallback(() => {
     Keyboard.dismiss();
@@ -30,9 +37,12 @@ export function ShareDialog({ noteId }: ShareDialogProps) {
     setVisible(false);
   }, []);
 
+  const cancelShare = React.useCallback(() => {
+    hideDialog();
+  }, [hideDialog]);
+
   async function handleSubmit() {
     if (!email) return toast("Email is required.");
-    setIsSaving(true);
 
     const emails = email.split(",").map((email) => email.trim());
 
@@ -41,31 +51,22 @@ export function ShareDialog({ noteId }: ShareDialogProps) {
 
       if (!parsedEmail.success) {
         toast(`Invalid email address '${email}'`);
-        setIsSaving(false);
         return;
       }
 
       if (parsedEmail.data === user?.email) {
         toast("You can't share it yourself");
-        setIsSaving(false);
         return;
       }
     }
 
     try {
-      const data = await SharedNotesNoteController.save({
-        noteId,
-        userEmails: emails
-      });
-
-      data.emailsAlreadySharedWith.forEach((email) => {
-        toast(`Note already shared with ${email}`);
-      });
-    } catch (error) {
-      toast("Failed to share note");
+      await mutateAsync(emails);
+    } catch (error: any) {
+      if (error instanceof APIError) toast(error.message);
+      else toast("Failed to share note");
     }
     setEmail("");
-    setIsSaving(false);
     hideDialog();
   }
 
@@ -84,16 +85,19 @@ export function ShareDialog({ noteId }: ShareDialogProps) {
             mode="outlined"
             label="Email"
             autoFocus
+            disabled={isPending}
           />
           <Text className="mt-2" style={{ color: theme.colors.secondary }}>
             Use comma for multiple emails
           </Text>
         </Dialog.Content>
         <Dialog.Actions className="flex flex-row justify-between items-center">
-          <Button onPress={hideDialog} disabled={isSaving}>
-            Cancel
-          </Button>
-          <Button onPress={handleSubmit} disabled={isSaving} loading={isSaving}>
+          <Button onPress={cancelShare}>Cancel</Button>
+          <Button
+            onPress={handleSubmit}
+            disabled={isPending}
+            loading={isPending}
+          >
             Done
           </Button>
         </Dialog.Actions>

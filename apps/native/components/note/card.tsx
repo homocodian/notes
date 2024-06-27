@@ -65,7 +65,7 @@ function NoteCard({ item }: NoteCardProps) {
         </Card>
         <ShareDialog noteId={item.id} />
       </BoolValueProvider>
-      <SharedNoteSheet sharedWith={item.sharedWith} />
+      <SharedNoteSheet noteId={item.id} />
     </SharedNoteBottomSheetStoreProvider>
   );
 }

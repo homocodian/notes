@@ -1,41 +1,64 @@
 import React from "react";
-import { ListRenderItemInfo, View } from "react-native";
-import { IconButton, Text, Tooltip } from "react-native-paper";
+import { View } from "react-native";
+import {
+  ActivityIndicator,
+  IconButton,
+  Text,
+  Tooltip
+} from "react-native-paper";
 
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { useAppTheme } from "@/context/material-3-theme-provider";
-import { SharedNotesNoteController } from "@/lib/db/controllers/shared-with";
-import { SharedWithNote } from "@/lib/db/model/shared-with";
+import { API } from "@/lib/api";
 import { toast } from "@/lib/toast";
 
-function SharedWithSheetListView({ item }: ListRenderItemInfo<SharedWithNote>) {
-  const theme = useAppTheme();
+function SharedWithSheetListView(item: { email: string; noteId: string }) {
+  const queryClient = useQueryClient();
+  const isRefreshingSharedWith = queryClient.isFetching({
+    queryKey: ["shared-with", item.noteId]
+  });
+
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["shared-with", item.noteId],
+    mutationFn: async (email: string) =>
+      await API.patch(`/v1/notes/${item.noteId}/share`, {
+        data: email
+      }),
+    onSuccess: () => toast("Removed from shared"),
+    onError: () => toast("Failed to removed from shared"),
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["shared-with", item.noteId],
+        exact: true
+      });
+    }
+  });
 
   return (
-    <View key={item.id} className="px-4 py-1 flex flex-row items-center">
-      <Tooltip title="pending">
-        <MaterialCommunityIcons
-          name="clock-outline"
-          size={16}
-          color={theme.colors.secondary}
-          style={{ marginRight: 10 }}
-        />
-      </Tooltip>
-      <Text className="flex-1">{item.userEmail}</Text>
-      <Tooltip title="Remove from shared">
+    <View key={item.email} className="px-4 py-1 flex flex-row items-center">
+      <Text className="flex-1">{item.email}</Text>
+      {isPending ? (
         <IconButton
-          icon="close"
-          onPress={async () => {
-            try {
-              await SharedNotesNoteController.delete(item.id);
-              toast("Removed from shared");
-            } catch (error) {
-              toast("Failed to removed from shared");
-            }
-          }}
+          icon={({ color, size }) => (
+            <ActivityIndicator
+              style={{
+                height: size,
+                width: size
+              }}
+              color={color}
+            />
+          )}
+          disabled
         />
-      </Tooltip>
+      ) : (
+        <Tooltip title="Remove">
+          <IconButton
+            icon="close"
+            onPress={() => mutate(item.email)}
+            disabled={!!isRefreshingSharedWith}
+          />
+        </Tooltip>
+      )}
     </View>
   );
 }

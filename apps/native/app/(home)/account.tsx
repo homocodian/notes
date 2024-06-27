@@ -1,6 +1,13 @@
 import React from "react";
 import { View } from "react-native";
-import { Button, Card, Text } from "react-native-paper";
+import {
+  ActivityIndicator,
+  Button,
+  Card,
+  Dialog,
+  Portal,
+  Text
+} from "react-native-paper";
 
 import { UserAvater } from "@/components/user-avatar";
 import { useAuth } from "@/context/auth";
@@ -9,12 +16,12 @@ import { useAppTheme } from "@/context/material-3-theme-provider";
 export default function Account() {
   const theme = useAppTheme();
   const { user, signOut } = useAuth();
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [visible, setVisible] = React.useState(false);
 
   async function logout() {
-    setIsLoading(true);
+    setVisible(true);
     await signOut();
-    setIsLoading(false);
+    setVisible(false);
   }
 
   return (
@@ -39,16 +46,21 @@ export default function Account() {
               </View>
             </Card.Content>
           </Card>
-          <Button
-            mode="contained"
-            loading={isLoading}
-            onPress={logout}
-            disabled={isLoading}
-          >
+          <Button mode="contained" onPress={logout} disabled={visible}>
             Logout
           </Button>
         </View>
       </View>
+      <Portal>
+        <Dialog visible={visible}>
+          <Dialog.Content>
+            <View className="flex flex-row gap-4">
+              <ActivityIndicator animating />
+              <Text variant="bodyMedium">Logging out...</Text>
+            </View>
+          </Dialog.Content>
+        </Dialog>
+      </Portal>
     </View>
   );
 }

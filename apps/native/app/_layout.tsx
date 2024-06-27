@@ -2,18 +2,21 @@ import React from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import NetInfo from "@react-native-community/netinfo";
-import { onlineManager } from "@tanstack/react-query";
+import {
+  onlineManager,
+  QueryClient,
+  QueryClientProvider
+} from "@tanstack/react-query";
 import { useFonts } from "expo-font";
 import { Slot, SplashScreen } from "expo-router";
 
+import { AddNoteButton } from "@/components/note/add-button";
 import { Alerter } from "@/components/ui/alerter";
 import { SnackbarContainer } from "@/components/ui/snackbar-container";
 import { AuthProvider } from "@/context/auth";
 import { Material3ThemeProvider } from "@/context/material-3-theme-provider";
 
 import "@/styles/global.css";
-
-import { AddNoteButton } from "@/components/note/add-button";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -77,18 +80,25 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
+// Create a client
+const queryClient = new QueryClient();
+
 function RootLayoutNav() {
   return (
-    <SafeAreaProvider>
-      <Material3ThemeProvider>
-        <AuthProvider>
-          <Slot />
-          <SnackbarContainer>
-            {(contentLength) => <AddNoteButton contentLength={contentLength} />}
-          </SnackbarContainer>
-        </AuthProvider>
-        <Alerter />
-      </Material3ThemeProvider>
-    </SafeAreaProvider>
+    <QueryClientProvider client={queryClient}>
+      <SafeAreaProvider>
+        <Material3ThemeProvider>
+          <AuthProvider>
+            <Slot />
+            <SnackbarContainer>
+              {(contentLength) => (
+                <AddNoteButton contentLength={contentLength} />
+              )}
+            </SnackbarContainer>
+          </AuthProvider>
+          <Alerter />
+        </Material3ThemeProvider>
+      </SafeAreaProvider>
+    </QueryClientProvider>
   );
 }

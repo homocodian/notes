@@ -32,8 +32,7 @@ export class NotesController {
     await database.write(async () => {
       const note = await notes.find(id);
       note.update((note) => {
-        const date = new Date().toISOString();
-        (note.deletedAt as unknown as string) = date;
+        note.deletedAt = Date.now();
       });
     });
   }

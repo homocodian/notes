@@ -7,9 +7,13 @@ import { useAppTheme } from "@/context/material-3-theme-provider";
 
 type EmptyDataProps = {
   message?: string;
+  children?: React.ReactNode;
 };
 
-export function EmptyData({ message = "No data available" }: EmptyDataProps) {
+export function EmptyData({
+  message = "No data available",
+  children
+}: EmptyDataProps) {
   const theme = useAppTheme();
   return (
     <View className="flex-1 justify-center items-center gap-2">
@@ -19,6 +23,7 @@ export function EmptyData({ message = "No data available" }: EmptyDataProps) {
         color={theme.colors.secondary}
       />
       <Text style={{ color: theme.colors.secondary }}>{message}</Text>
+      {children}
     </View>
   );
 }

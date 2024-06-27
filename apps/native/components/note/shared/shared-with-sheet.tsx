@@ -2,14 +2,12 @@ import React from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Portal } from "react-native-paper";
 
-import { Model, Query } from "@nozbe/watermelondb";
-
 import { useSharedBottomSheetStore } from "@/context/note/shared/bottom-sheet";
 
 import { SharedWithBottomSheet } from "./bottom-sheet";
-import { EnhancedBottomSheetFlatList } from "./botttom-sheet-flatlist";
+import { BottomSheetList } from "./botttom-sheet-list";
 
-export function SharedNoteSheet({ sharedWith }: { sharedWith: Query<Model> }) {
+export function SharedNoteSheet({ noteId }: { noteId: string }) {
   const visible = useSharedBottomSheetStore(
     (state) => state.isSharedBottomSheetVisible
   );
@@ -26,7 +24,7 @@ export function SharedNoteSheet({ sharedWith }: { sharedWith: Query<Model> }) {
     <Portal>
       <GestureHandlerRootView>
         <SharedWithBottomSheet setVisible={setIsSharedBottomSheetVisible}>
-          <EnhancedBottomSheetFlatList sharedWith={sharedWith} />
+          <BottomSheetList noteId={noteId} />
         </SharedWithBottomSheet>
       </GestureHandlerRootView>
     </Portal>
