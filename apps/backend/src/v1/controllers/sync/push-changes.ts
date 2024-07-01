@@ -66,7 +66,7 @@ export async function pushChanges({
           if (!data || data.deletedAt) throw new Error("Not Found");
 
           if (
-            data.sharedWith?.length === 0 ||
+            (data.userId !== user.id && data.sharedWith?.length === 0) ||
             data.updatedAt.getTime() > query.last_pulled_at
           ) {
             throw new Error("Forbidden");
