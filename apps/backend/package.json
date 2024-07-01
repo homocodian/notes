@@ -1,9 +1,9 @@
 {
   "name": "@notes/backend",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "scripts": {
     "dev": "NODE_ENV=development bun --watch src/index.ts",
-    "build": "bun build --target=bun ./src/index.ts --outdir ./dist",
+    "build": "NODE_ENV=production bun build --target=bun ./src/index.ts --outdir ./dist",
     "start": "NODE_ENV=production bun ./dist/index.js",
     "test": "bun test",
     "db:migrate": "bun run ./src/db/migrate.ts",
