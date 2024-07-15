@@ -50,6 +50,7 @@ export function AuthProvider(props: { children: React.ReactNode }) {
     if (!userString) return;
 
     const user = userSchema.parse(JSON.parse(userString));
+    // console.log("🚀 ~ getUser ~ user:", user);
     setUser(user);
   }, [setUser]);
 

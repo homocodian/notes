@@ -7,6 +7,7 @@ import { router } from "expo-router";
 import { useAuth } from "@/context/auth";
 import { useBoolean } from "@/context/boolean";
 import { useSharedBottomSheetStore } from "@/context/note/shared/bottom-sheet";
+import { sync } from "@/hooks/use-sync";
 import { copyString } from "@/lib/copy";
 import { NotesController } from "@/lib/db/controllers/note";
 import { useNoteFormStore } from "@/lib/store/note";
@@ -38,7 +39,7 @@ export function Menu({
   );
   const setIsShareDialogOpen = useBoolean((state) => state.setBoolValue);
 
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const [visible, setVisible] = React.useState(false);
 
   const openMenu = () => setVisible(true);
@@ -66,6 +67,12 @@ export function Menu({
         action: {
           label: "Undo",
           onPress: () => NotesController.undo(id)
+        },
+        onRemove: async () => {
+          const note = await NotesController.find(id);
+          if (note && note.deletedAt !== null) {
+            sync(signOut);
+          }
         }
       });
     } catch (error) {

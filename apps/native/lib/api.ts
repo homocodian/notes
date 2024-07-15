@@ -75,13 +75,13 @@ async function getData<T>(
 
   if (!res.ok) {
     const text = await res.text();
-    throw new APIError(text, res.status);
+    throw new APIError(text, res.status, fetchUrl);
   }
 
   try {
     const resData = await res.json();
     return resData;
   } catch (error) {
-    throw new APIError(res.statusText, res.status);
+    throw new APIError(res.statusText, res.status, fetchUrl);
   }
 }

@@ -148,9 +148,11 @@ function dispatch(action: Action) {
 }
 
 interface SnackbarProps
-  extends Omit<ToasterSnackbar, "id" | "visible" | "onDismiss" | "close"> {}
+  extends Omit<ToasterSnackbar, "id" | "visible" | "onDismiss" | "close"> {
+  onRemove?: () => void;
+}
 
-function Snackbar(props: SnackbarProps) {
+function Snackbar({ onRemove, ...props }: SnackbarProps) {
   const id = genId();
 
   const update = (props: ToasterSnackbar) =>
@@ -173,6 +175,7 @@ function Snackbar(props: SnackbarProps) {
           type: "REMOVE_SNACKBAR",
           SnackbarId: id
         });
+        onRemove?.();
       }
     }
   });

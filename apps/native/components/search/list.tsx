@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ComponentProps } from "react";
 
 import { Q } from "@nozbe/watermelondb";
 import Fuse from "fuse.js";
@@ -11,7 +11,10 @@ import Note from "@/lib/db/model/note";
 
 import { NoteList } from "../note/list";
 
-function List() {
+interface ListProps
+  extends Partial<Omit<ComponentProps<typeof NoteList>, "data">> {}
+
+function List(props: ListProps) {
   const search = useSearch((state) => state.query);
   const [data, setData] = React.useState<Note[]>([]);
   const debouncedQuery = useDebounce(search, 500);
@@ -56,7 +59,7 @@ function List() {
     }
   }, [debouncedQuery]);
 
-  return <NoteList data={data} emptyMessage="No results" />;
+  return <NoteList data={data} emptyMessage="No results" {...props} />;
 }
 
 export const MemoizedList = React.memo(List);

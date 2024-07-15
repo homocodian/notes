@@ -31,8 +31,10 @@ export class NotesController {
   static async delete(id: string) {
     await database.write(async () => {
       const note = await notes.find(id);
+      const oldUpdatedAt = note.updatedAt;
       note.update((note) => {
         note.deletedAt = Date.now();
+        note._setRaw("updated_at", oldUpdatedAt.getTime());
       });
     });
   }
@@ -40,8 +42,10 @@ export class NotesController {
   static async undo(id: string) {
     await database.write(async () => {
       const note = await notes.find(id);
+      const oldUpdatedAt = note.updatedAt;
       note.update((note) => {
         note.deletedAt = null;
+        note._setRaw("updated_at", oldUpdatedAt.getTime());
       });
     });
   }
@@ -75,6 +79,10 @@ export class NotesController {
         }
       });
     });
+  }
+
+  static async find(id: string) {
+    return await notes.find(id);
   }
 
   static async seed(userId: number) {

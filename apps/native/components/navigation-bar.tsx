@@ -6,7 +6,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DrawerHeaderProps } from "@react-navigation/drawer";
 import { Link } from "expo-router";
 
-import { SCREEN_HORIZONTAL_PADDING, TOP_PADDING } from "@/constant/screens";
+import {
+  SCREEN_HORIZONTAL_PADDING,
+  SCREEN_VERTICAL_PADDING,
+  TOP_PADDING
+} from "@/constant/screens";
 
 import { UserAvater } from "./user-avatar";
 
@@ -16,7 +20,7 @@ export default function NavigationBar(props: DrawerHeaderProps) {
     <View
       style={{
         paddingTop: insets.top + TOP_PADDING,
-        paddingBottom: insets.bottom,
+        paddingBottom: insets.bottom + SCREEN_VERTICAL_PADDING,
         paddingLeft: insets.left + SCREEN_HORIZONTAL_PADDING,
         paddingRight: insets.right + SCREEN_HORIZONTAL_PADDING
       }}
