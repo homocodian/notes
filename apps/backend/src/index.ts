@@ -1,11 +1,13 @@
 import { cors } from "@elysiajs/cors";
 import { Elysia } from "elysia";
+import { ip } from "elysia-ip";
 
 import { env } from "./env";
 import { v1Routes } from "./v1";
 
 const app = new Elysia({ prefix: "/api" })
   .use(cors())
+  .use(ip())
   .use(v1Routes)
   .get("/", () => {
     return {

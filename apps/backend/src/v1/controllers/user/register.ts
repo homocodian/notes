@@ -33,7 +33,9 @@ export async function registerUser({ body, error }: RegisterUserProps) {
       .returning({
         id: userTable.id,
         email: userTable.email,
-        emailVerified: userTable.emailVerified
+        emailVerified: userTable.emailVerified,
+        photoURL: userTable.photoURL,
+        displayName: userTable.displayName
       });
 
     if (!user) {
@@ -47,6 +49,8 @@ export async function registerUser({ body, error }: RegisterUserProps) {
       id: user.id,
       email: user.email,
       emailVerified: user.emailVerified,
+      photoURL: user.photoURL,
+      displayName: user.displayName,
       sessionToken
     };
   } catch (err) {

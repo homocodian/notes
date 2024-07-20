@@ -25,6 +25,7 @@ import { APIError } from "@/lib/api-error";
 import { fetchAPI } from "@/lib/fetch-wrapper";
 import { useAuthStore } from "@/store/auth";
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 interface State {
   email: string;
   password: string;
@@ -213,7 +214,23 @@ export default function SignIn() {
         positiveButtonLabel="Send"
         textFieldLabel="Email Address"
         textFieldType="email"
-        positiveButtonAction={() => toast.error("Not available right now")}
+        positiveButtonAction={async (email, setLoadingToFalse) => {
+          if (!email || !emailRegex.test(email)) {
+            toast.error("Invalid email");
+            setLoadingToFalse();
+            return;
+          }
+          await fetchAPI.post("/v1/auth/reset-password", {
+            data: { email },
+            responseType: "text"
+          });
+          setLoadingToFalse();
+          setIsResetFormOpen(false);
+          toast.success(
+            "Reset link sent to your email, please check your inbox, spam or junk folder.",
+            { duration: 7 * 1000 }
+          );
+        }}
       />
       <Backdrop
         sx={{

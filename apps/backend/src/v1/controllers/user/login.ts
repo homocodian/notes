@@ -30,15 +30,22 @@ export async function loginUser({ body, error }: LoginUserProps) {
     return error(400, "Invalid email or password");
   }
 
-  await lucia.invalidateUserSessions(user.id);
   const session = await lucia.createSession(user.id, {});
 
   try {
+    await db
+      .update(userTable)
+      .set({ lastSignInAt: new Date() })
+      .where(eq(userTable.id, user.id));
+
     const sessionToken = await signJwtAsync(session.id);
+
     return {
       id: user.id,
       email: user.email,
       emailVerified: user.emailVerified,
+      photoURL: user.photoURL,
+      displayName: user.displayName,
       sessionToken
     };
   } catch (err) {

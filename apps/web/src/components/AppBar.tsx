@@ -32,6 +32,9 @@ function AppBar() {
   const [shouldShowSearchbar, setShouldShowSearchbar] = useState(false);
 
   const shouldShow = useMemo(() => {
+    if (location.pathname.includes("/reset-password")) {
+      return true;
+    }
     return !!routeNames.find((item) => item === location.pathname);
   }, [location.pathname]);
 

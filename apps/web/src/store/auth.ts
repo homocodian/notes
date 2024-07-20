@@ -6,6 +6,8 @@ export type User = {
   id: number;
   email: string;
   emailVerified: boolean;
+  photoURL?: string | null;
+  displayName?: string | null;
 };
 
 type AuthProps = {

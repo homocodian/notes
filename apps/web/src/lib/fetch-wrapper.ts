@@ -9,6 +9,7 @@ type Options = {
   data?: unknown;
   options?: FetchOptions;
   query?: Record<string, string>;
+  responseType?: "json" | "text";
 };
 
 type Method = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
@@ -71,7 +72,8 @@ async function getData<T>(
   }
 
   try {
-    const resData = await res.json();
+    const resData =
+      options?.responseType === "text" ? await res.text() : await res.json();
     return resData;
   } catch (error) {
     throw new APIError(res.statusText, res.status);

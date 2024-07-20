@@ -1,7 +1,9 @@
 import { Context } from "elysia";
+import { User } from "lucia";
 
 import { lucia } from "@/libs/auth";
 import { VerifyJwtAsync } from "@/libs/jwt";
+import { Prettify } from "@/types/prettify";
 
 export async function deriveUser({
   error,
@@ -15,5 +17,7 @@ export async function deriveUser({
   const { user } = await lucia.validateSession(sessionId);
   if (!user) return error(401, "Unauthorized");
 
-  return { user };
+  const prettyUser = user as Prettify<User>;
+
+  return { user: prettyUser };
 }

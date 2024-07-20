@@ -32,3 +32,11 @@ export const loginUserSchema = t.Object(
 );
 
 export type LoginUser = typeof loginUserSchema.static;
+
+export const passwordResetSchema = t.Object({
+  email: t.String({
+    description: "Email is required"
+  })
+});
+
+export type PasswordReset = typeof passwordResetSchema.static;

@@ -1,5 +1,3 @@
-import { HTMLInputTypeAttribute, useRef, useState } from "react";
-
 import {
   Button,
   CircularProgress,
@@ -8,9 +6,10 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  TextField,
+  TextField
 } from "@mui/material";
 import Box from "@mui/system/Box";
+import { HTMLInputTypeAttribute, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
 type FormDialogProps = {
@@ -40,7 +39,7 @@ function FormDialog({
   textFieldType,
   positiveButtonLabel,
   positiveButtonAction,
-  TextFieldcolor,
+  TextFieldcolor
 }: FormDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>();
@@ -82,7 +81,9 @@ function FormDialog({
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleClose} disabled={isLoading}>
+            Cancel
+          </Button>
           {isLoading ? (
             <Box mx={2}>
               <CircularProgress size={25} />

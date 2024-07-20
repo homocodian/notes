@@ -10,11 +10,12 @@ const SignUpPage = loadable(() => import("@/pages/SignUp"));
 const SharedPage = loadable(() => import("@/pages/Shared"));
 const GeneralPage = loadable(() => import("@/pages/General"));
 const ImportantPage = loadable(() => import("@/pages/Important"));
+const PasswordResetPage = loadable(() => import("@/pages/PasswordReset"));
 
 export const RouteComponents = [
   {
     path: "*",
-    element: <NotFound />,
+    element: <NotFound />
   },
   {
     path: "/",
@@ -22,7 +23,7 @@ export const RouteComponents = [
       <PrivateRoute>
         <HomePage fallback={<Loading />} />
       </PrivateRoute>
-    ),
+    )
   },
   {
     path: "/general",
@@ -30,7 +31,7 @@ export const RouteComponents = [
       <PrivateRoute>
         <GeneralPage fallback={<Loading />} />
       </PrivateRoute>
-    ),
+    )
   },
   {
     path: "/important",
@@ -38,7 +39,7 @@ export const RouteComponents = [
       <PrivateRoute>
         <ImportantPage fallback={<Loading />} />
       </PrivateRoute>
-    ),
+    )
   },
   {
     path: "/shared",
@@ -46,13 +47,17 @@ export const RouteComponents = [
       <PrivateRoute>
         <SharedPage fallback={<Loading />} />
       </PrivateRoute>
-    ),
+    )
   },
   {
     path: "/login",
-    element: <SignInPage fallback={<Loading />} />,
+    element: <SignInPage fallback={<Loading />} />
   },
-  { path: "/signup", element: <SignUpPage fallback={<Loading />} /> },
+  {
+    path: "/reset-password/:token",
+    element: <PasswordResetPage fallback={<Loading />} />
+  },
+  { path: "/signup", element: <SignUpPage fallback={<Loading />} /> }
 ] as const;
 
 type ExcludeWildcardPath<T> = T extends "*" ? never : T;
@@ -62,5 +67,5 @@ export type Route = (typeof RouteComponents)[number]; // Get the type of a singl
 export type RouteName = ExcludeWildcardPath<Route["path"]>; // Get the type of the 'path' property
 
 export const routeNames = RouteComponents.map((route) => route.path).filter(
-  (path) => path !== "*",
-) as RouteName[];
+  (path) => path !== "*"
+) as RouteName[number][];

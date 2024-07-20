@@ -6,7 +6,10 @@ const server = t.Object({
   DATABASE_URL: t.String({ minLength: 1 }),
   TOKEN_SECRET: t.String({ minLength: 1 }),
   ALGORITHM: t.String({ minLength: 1 }),
-  HOSTNAME: t.Optional(t.String({ minLength: 1 }))
+  HOSTNAME: t.Optional(t.String({ minLength: 1 })),
+  CLIENT_URL: t.String({ minLength: 1, format: "uri" }),
+  RESEND_API_KEY: t.String({ minLength: 1 }),
+  APP_NAME: t.String({ minLength: 1 })
 });
 
 type ServerEnv = typeof server.static;
@@ -16,7 +19,10 @@ const processEnv = {
   DATABASE_URL: process.env.DATABASE_URL,
   TOKEN_SECRET: process.env.TOKEN_SECRET,
   ALGORITHM: process.env.ALGORITHM,
-  HOSTNAME: process.env.HOSTNAME
+  HOSTNAME: process.env.HOSTNAME,
+  CLIENT_URL: process.env.CLIENT_URL,
+  RESEND_API_KEY: process.env.RESEND_API_KEY,
+  APP_NAME: process.env.APP_NAME
 } satisfies Record<keyof ServerEnv, string | undefined>;
 
 // Don't touch the part below
