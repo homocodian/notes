@@ -3,7 +3,7 @@ name: Build and Push & Deploy Docker Image of backend service
 on:
   push:
     branches:
-      - task/monorepo
+      - main
     paths:
       - apps/backend/package.json
 
