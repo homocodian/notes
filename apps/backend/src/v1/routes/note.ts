@@ -1,5 +1,8 @@
 import bearer from "@elysiajs/bearer";
 import Elysia from "elysia";
+import { rateLimit } from "elysia-rate-limit";
+
+import { rateLimiterkeyGenerator } from "@/libs/rate-limiter-key-generator";
 
 import { createNote } from "../controllers/notes/create";
 import { deleteNote } from "../controllers/notes/delete";
@@ -25,6 +28,13 @@ import {
 export const noteRoute = new Elysia({ prefix: "/notes" })
   .use(errorHandlerInstance)
   .use(bearer())
+  .use(
+    rateLimit({
+      max: 50,
+      scoping: "scoped",
+      generator: rateLimiterkeyGenerator
+    })
+  )
   .derive(deriveUser)
   .get("/", getNotes)
   .get("/shared", getSharedNotes)

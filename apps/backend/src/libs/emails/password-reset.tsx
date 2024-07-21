@@ -33,7 +33,7 @@ export async function sendPasswordResetToken(
   });
 }
 
-export const DropboxResetPasswordEmail = ({
+const DropboxResetPasswordEmail = ({
   userFirstname,
   resetPasswordLink
 }: DropboxResetPasswordEmailProps) => {
@@ -43,12 +43,6 @@ export const DropboxResetPasswordEmail = ({
       <Preview>{env.APP_NAME}&nbsp;reset your password</Preview>
       <Body style={main}>
         <Container style={container}>
-          {/* <Img
-            src={`${baseUrl}/static/dropbox-logo.png`}
-            width="40"
-            height="33"
-            alt="Dropbox"
-          /> */}
           <Section>
             <Text style={text}>Hi {userFirstname},</Text>
             <Text style={text}>

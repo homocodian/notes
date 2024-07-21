@@ -1,13 +1,17 @@
 import bearer from "@elysiajs/bearer";
 import Elysia, { t } from "elysia";
-import { Generator, rateLimit } from "elysia-rate-limit";
+import { rateLimit } from "elysia-rate-limit";
 
+import { rateLimiterkeyGenerator } from "@/libs/rate-limiter-key-generator";
 import {
+  emailVerificationSchema,
   loginUserSchema,
   passwordResetSchema,
+  passwordResetTokenSchema,
   registerUserSchema
 } from "@/v1/validations/user";
 
+import { emailVerification } from "../controllers/user/email-verification";
 import { loginUser } from "../controllers/user/login";
 import { logout, logoutAll } from "../controllers/user/logout";
 import { passwordReset } from "../controllers/user/password-reset";
@@ -15,9 +19,7 @@ import { passwordResetToken } from "../controllers/user/password-reset-token";
 import { getProfile } from "../controllers/user/profile";
 import { registerUser } from "../controllers/user/register";
 import { errorHandlerInstance } from "../utils/error-handler";
-
-const keyGenerator: Generator<{ ip: string }> = async (_req, _server, { ip }) =>
-  Bun.hash(JSON.stringify(ip)).toString();
+import { deriveUser } from "../utils/note/derive-user";
 
 export const authRoute = new Elysia({ prefix: "/auth" })
   .use(errorHandlerInstance)
@@ -26,7 +28,7 @@ export const authRoute = new Elysia({ prefix: "/auth" })
     rateLimit({
       max: 5,
       scoping: "scoped",
-      generator: keyGenerator
+      generator: rateLimiterkeyGenerator
     })
   )
   .post("/register", registerUser, {
@@ -37,8 +39,36 @@ export const authRoute = new Elysia({ prefix: "/auth" })
   })
   .post("/logout", logout)
   .post("/logout-all", logoutAll)
-  .get("/profile", getProfile)
+  .get("/profile", getProfile);
+
+export const passwordResetRoute = new Elysia({ prefix: "/auth" })
+  .use(bearer())
+  .use(errorHandlerInstance)
+  .use(
+    rateLimit({
+      scoping: "scoped",
+      max: 3,
+      generator: rateLimiterkeyGenerator,
+      countFailedRequest: true
+    })
+  )
   .post("/reset-password", passwordReset, { body: passwordResetSchema })
   .post("/reset-password/:token", passwordResetToken, {
-    body: t.Object({ password: t.String() })
+    body: passwordResetTokenSchema
+  });
+
+export const emailVerificationRoute = new Elysia({ prefix: "/auth" })
+  .use(bearer())
+  .use(errorHandlerInstance)
+  .derive(deriveUser)
+  .use(
+    rateLimit({
+      scoping: "scoped",
+      max: 3,
+      generator: rateLimiterkeyGenerator,
+      countFailedRequest: true
+    })
+  )
+  .post("/email-verification", emailVerification, {
+    body: emailVerificationSchema
   });

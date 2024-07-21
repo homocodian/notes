@@ -9,11 +9,10 @@ import { passwordResetTokenTable, userTable } from "@/db/schema/user";
 import { lucia } from "@/libs/auth";
 import { signJwtAsync } from "@/libs/jwt";
 import { validatePassword } from "@/libs/password-validation";
+import { PasswordResetToken } from "@/v1/validations/user";
 
 interface PasswordResetTokenProps extends Omit<Context, "params"> {
-  body: {
-    password: string;
-  };
+  body: PasswordResetToken;
   params: {
     token?: string;
   };

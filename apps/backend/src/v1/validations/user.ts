@@ -7,11 +7,8 @@ export const registerUserSchema = t.Object(
       description: "Email must of at least 3 characters"
     }),
     password: t.String({
-      minLength: 6,
+      minLength: 8,
       description: "Password must be at least 6 characters"
-    }),
-    confirmPassword: t.String({
-      description: "Confirm Password is required"
     })
   },
   {
@@ -40,3 +37,21 @@ export const passwordResetSchema = t.Object({
 });
 
 export type PasswordReset = typeof passwordResetSchema.static;
+
+export const userResponseSchema = t.Object({
+  id: t.Number(),
+  email: t.String(),
+  emailVerified: t.Boolean(),
+  photoURL: t.Nullable(t.String()),
+  displayName: t.Nullable(t.String())
+});
+
+export type UserResponse = typeof userResponseSchema.static;
+
+export const emailVerificationSchema = t.Object({ code: t.String() });
+
+export type EmailVerification = typeof emailVerificationSchema.static;
+
+export const passwordResetTokenSchema = t.Object({ password: t.String() });
+
+export type PasswordResetToken = typeof passwordResetTokenSchema.static;

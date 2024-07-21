@@ -5,7 +5,7 @@ import { db } from "@/db";
 import { userTable } from "@/db/schema/user";
 import { lucia } from "@/libs/auth";
 import { signJwtAsync } from "@/libs/jwt";
-import { LoginUser } from "@/v1/validations/user";
+import { LoginUser, UserResponse } from "@/v1/validations/user";
 
 interface LoginUserProps extends Context {
   body: LoginUser;
@@ -47,7 +47,7 @@ export async function loginUser({ body, error }: LoginUserProps) {
       photoURL: user.photoURL,
       displayName: user.displayName,
       sessionToken
-    };
+    } satisfies UserResponse & { sessionToken: string };
   } catch (err) {
     return error(500, "Internal Server Error");
   }

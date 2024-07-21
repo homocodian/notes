@@ -1,12 +1,13 @@
 import { eq } from "drizzle-orm";
+import { User } from "lucia";
 import { TimeSpan, createDate } from "oslo";
 import { alphabet, generateRandomString } from "oslo/crypto";
 
 import { db } from "@/db";
 import { emailVerificationCodeTable } from "@/db/schema/user";
 
-async function generateEmailVerificationCode(
-  userId: number,
+export async function generateEmailVerificationCode(
+  userId: User["id"],
   email: string
 ): Promise<string> {
   await db

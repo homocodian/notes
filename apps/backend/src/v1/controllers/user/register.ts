@@ -5,8 +5,11 @@ import { db } from "@/db";
 import { userTable } from "@/db/schema/user";
 import { env } from "@/env";
 import { lucia } from "@/libs/auth";
+import { sendVerificationCode } from "@/libs/emails/verify-email";
+import { generateEmailVerificationCode } from "@/libs/generate-email-varification-code";
+import { validatePassword } from "@/libs/password-validation";
 import { isValidEmail } from "@/v1/validations/email";
-import { RegisterUser } from "@/v1/validations/user";
+import { RegisterUser, UserResponse } from "@/v1/validations/user";
 
 interface RegisterUserProps extends Context {
   body: RegisterUser;
@@ -17,8 +20,8 @@ export async function registerUser({ body, error }: RegisterUserProps) {
     return error(400, "Invalid email");
   }
 
-  if (body.password !== body.confirmPassword) {
-    return error(400, "Password does not match");
+  if (!validatePassword(body.password)) {
+    return error(400, "Invalid password");
   }
 
   const hashedPassword = await Bun.password.hash(body.password);
@@ -42,6 +45,13 @@ export async function registerUser({ body, error }: RegisterUserProps) {
       return error(500, "Failed to create user");
     }
 
+    const verificationCode = await generateEmailVerificationCode(
+      user.id,
+      user.email
+    );
+
+    await sendVerificationCode(user.email, verificationCode);
+
     const session = await lucia.createSession(user.id, {});
     const sessionToken = jwt.sign(session.id, env.TOKEN_SECRET);
 
@@ -52,8 +62,9 @@ export async function registerUser({ body, error }: RegisterUserProps) {
       photoURL: user.photoURL,
       displayName: user.displayName,
       sessionToken
-    };
+    } satisfies UserResponse & { sessionToken: string };
   } catch (err) {
+    console.log("🚀 ~ registerUser ~ err:", err);
     return error(400, "Email already exists.");
   }
 }

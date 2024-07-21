@@ -7,9 +7,7 @@ import {
   primaryKey,
   serial,
   text,
-  timestamp,
-  uniqueIndex,
-  varchar
+  timestamp
 } from "drizzle-orm/pg-core";
 
 import { noteTable, notesToUsersTable } from "./note";
@@ -18,7 +16,7 @@ export const userTable = pgTable(
   "user",
   {
     id: serial("id").notNull().primaryKey(),
-    email: varchar("email", { length: 256 }).notNull().unique(),
+    email: text("email").notNull().unique(),
     hashedPassword: text("hashed_password"),
     emailVerified: boolean("email_verified").notNull().default(false),
     displayName: text("display_name"),
@@ -46,7 +44,7 @@ export const userTable = pgTable(
       .$onUpdate(() => new Date())
   },
   (t) => ({
-    emailIdx: uniqueIndex("email_idx").on(t.email)
+    emailIdx: index("email_idx").on(t.email)
   })
 );
 
@@ -63,15 +61,24 @@ export const sessionTable = pgTable("session", {
   }).notNull()
 });
 
-export const emailVerificationCodeTable = pgTable("email_verification_code", {
-  id: serial("id").notNull().primaryKey(),
-  code: text("code").notNull(),
-  userId: integer("user_id").notNull(),
-  email: varchar("emai", { length: 256 }).notNull(),
-  expiresAt: timestamp("expires_at", {
-    mode: "date"
-  }).notNull()
-});
+export const emailVerificationCodeTable = pgTable(
+  "email_verification_code",
+  {
+    id: serial("id").notNull().primaryKey(),
+    code: text("code").notNull(),
+    userId: integer("user_id").unique().notNull(),
+    email: text("emai").notNull(),
+    expiresAt: timestamp("expires_at", {
+      withTimezone: true,
+      mode: "date"
+    }).notNull()
+  },
+  (t) => ({
+    emailVerificationCodeUserIdx: index("email_verification_code_user_idx").on(
+      t.userId
+    )
+  })
+);
 
 export const passwordResetTokenTable = pgTable(
   "password_reset_token",

@@ -23,6 +23,7 @@ export async function passwordReset(ctx: PasswordResetProps) {
   }
 
   const verificationToken = await createPasswordResetToken(user.id);
+
   const verificationLink =
     `${env.CLIENT_URL}/reset-password/` + verificationToken;
 

@@ -2,6 +2,7 @@ import { Context } from "elysia";
 
 import { lucia } from "@/libs/auth";
 import { VerifyJwtAsync } from "@/libs/jwt";
+import { UserResponse } from "@/v1/validations/user";
 
 interface GetProfileProps extends Context {
   bearer: string | undefined;
@@ -25,8 +26,10 @@ export async function getProfile({ bearer, error }: GetProfileProps) {
     return {
       id: user.id,
       email: user.email,
-      emailVerified: user.emailVerified
-    };
+      emailVerified: user.emailVerified,
+      photoURL: user.photoURL,
+      displayName: user.displayName
+    } satisfies UserResponse;
   } catch (err) {
     return error(500, "Internal Server Error");
   }
