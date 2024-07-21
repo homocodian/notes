@@ -2,6 +2,7 @@ import LockIcon from "@mui/icons-material/LockOutlined";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import {
+  Alert,
   Avatar,
   Backdrop,
   Box,
@@ -51,13 +52,14 @@ export default function SignUp() {
   const { user, setUser } = useAuthStore(
     useShallow((state) => ({ user: state.user, setUser: state.setUser }))
   );
+  const [showPasswordRules, setShowPasswordRules] = useState(false);
 
   // check for user
   useEffect(() => {
     if (user) {
       navigate("/", { replace: true });
     }
-  }, [user]);
+  }, []);
 
   const handleChange =
     (prop: keyof InputFields) =>
@@ -78,7 +80,12 @@ export default function SignUp() {
   };
 
   const handleSubmit = async () => {
-    setIsLoading(true);
+    setShowPasswordRules(false);
+    setIsError({
+      email: false,
+      password: false,
+      confirmPassword: false
+    });
 
     const [email, password, confirmPassword] = [
       values.email,
@@ -92,7 +99,6 @@ export default function SignUp() {
         password: password === "" ? true : false,
         confirmPassword: confirmPassword === "" ? true : false
       });
-      setIsLoading(false);
       toast.error("Please fill all required fields");
       return;
     }
@@ -103,18 +109,28 @@ export default function SignUp() {
         password: true,
         confirmPassword: true
       });
-      setIsLoading(false);
       toast.error("Password does not match.");
       return;
     }
+
+    if (password.length < 8) {
+      setIsError({
+        email: false,
+        password: true,
+        confirmPassword: true
+      });
+      toast.error("Password must be at least 8 characters long.");
+      return;
+    }
+
+    setIsLoading(true);
 
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const data: any = await fetchAPI.post("/v1/auth/register", {
         data: {
           email,
-          password,
-          confirmPassword
+          password
         },
         // auto abort in 2 minutes
         options: { signal: AbortSignal.timeout(1000 * 60 * 2) }
@@ -134,12 +150,18 @@ export default function SignUp() {
       setUser({
         id: data.id,
         email: data.email,
-        emailVerified: data.emailVerified
+        emailVerified: data.emailVerified,
+        photoURL: data?.photoURL,
+        displayName: data?.displayName
       });
-    } catch (error: unknown) {
-      if (error instanceof APIError) return toast.error(error.message);
-      if (error instanceof Error) return toast.error(error.message);
 
+      navigate("/verify");
+    } catch (error: unknown) {
+      if (error instanceof APIError) {
+        if (error.message.includes("Invalid password"))
+          setShowPasswordRules(true);
+        return toast.error(error.message);
+      }
       toast.error("Something went wrong");
     } finally {
       setIsLoading(false);
@@ -157,20 +179,36 @@ export default function SignUp() {
             paddingTop: "16px"
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockIcon />
-          </Avatar>
-          <Typography
-            component="h1"
-            variant="h5"
-            sx={{ color: "text.primary" }}
-          >
-            Sign Up
-          </Typography>
+          {showPasswordRules ? (
+            <Alert severity="error" variant="outlined">
+              <ul>
+                <li>Password must be 8 characters long.</li>
+                <li>At least one digit.</li>
+                <li>At least one of the allowed special symbols: !@#$%*&.</li>
+                <li>At least one uppercase letter.</li>
+                <li>At least one lowercase letter.</li>
+                <li>No whitespaces.</li>
+              </ul>
+            </Alert>
+          ) : (
+            <>
+              <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+                <LockIcon />
+              </Avatar>
+              <Typography
+                component="h1"
+                variant="h5"
+                sx={{ color: "text.primary" }}
+              >
+                Sign Up
+              </Typography>
+            </>
+          )}
           <Box
             component="form"
             onSubmit={(e) => {
-              e.preventDefault(), handleSubmit();
+              e.preventDefault();
+              handleSubmit();
             }}
             sx={{ mt: 1 }}
             id="signup-form"

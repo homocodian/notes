@@ -97,9 +97,9 @@ export default function SignIn() {
         emailVerified: data.emailVerified
       });
     } catch (error: unknown) {
-      if (error instanceof APIError) return toast.error(error.message);
-      if (error instanceof Error) return toast.error(error.message);
-
+      if (error instanceof APIError) {
+        return toast.error(error.message);
+      }
       toast.error("Something went wrong");
     } finally {
       setIsLoading(false);

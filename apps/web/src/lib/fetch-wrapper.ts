@@ -9,7 +9,7 @@ type Options = {
   data?: unknown;
   options?: FetchOptions;
   query?: Record<string, string>;
-  responseType?: "json" | "text";
+  responseType?: "json" | "text" | "none";
 };
 
 type Method = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
@@ -72,6 +72,9 @@ async function getData<T>(
   }
 
   try {
+    if (options?.responseType === "none") {
+      return null as T;
+    }
     const resData =
       options?.responseType === "text" ? await res.text() : await res.json();
     return resData;

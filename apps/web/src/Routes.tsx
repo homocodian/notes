@@ -11,6 +11,7 @@ const SharedPage = loadable(() => import("@/pages/Shared"));
 const GeneralPage = loadable(() => import("@/pages/General"));
 const ImportantPage = loadable(() => import("@/pages/Important"));
 const PasswordResetPage = loadable(() => import("@/pages/PasswordReset"));
+const ConfirmEmailPage = loadable(() => import("@/pages/ConfirmEmail"));
 
 export const RouteComponents = [
   {
@@ -57,7 +58,15 @@ export const RouteComponents = [
     path: "/reset-password/:token",
     element: <PasswordResetPage fallback={<Loading />} />
   },
-  { path: "/signup", element: <SignUpPage fallback={<Loading />} /> }
+  { path: "/signup", element: <SignUpPage fallback={<Loading />} /> },
+  {
+    path: "/verify",
+    element: (
+      <PrivateRoute>
+        <ConfirmEmailPage fallback={<Loading />} />
+      </PrivateRoute>
+    )
+  }
 ] as const;
 
 type ExcludeWildcardPath<T> = T extends "*" ? never : T;
