@@ -21,6 +21,8 @@ import { Material3ThemeProvider } from "@/context/material-3-theme-provider";
 
 import "@/styles/global.css";
 
+import { StatusBar } from "expo-status-bar";
+
 export { ErrorBoundary } from "expo-router";
 
 // eslint-disable-next-line no-console
@@ -142,21 +144,24 @@ function RootLayoutNav() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <SafeAreaProvider>
-        <Material3ThemeProvider>
-          <AuthProvider>
-            <Slot />
-            <SnackbarContainer>
-              {(contentLength) => (
-                <AddNoteButton contentLength={contentLength} />
-              )}
-            </SnackbarContainer>
-          </AuthProvider>
-          <Alerter />
-        </Material3ThemeProvider>
-      </SafeAreaProvider>
-    </QueryClientProvider>
+    <>
+      <QueryClientProvider client={queryClient}>
+        <SafeAreaProvider>
+          <Material3ThemeProvider>
+            <AuthProvider>
+              <Slot />
+              <SnackbarContainer>
+                {(contentLength) => (
+                  <AddNoteButton contentLength={contentLength} />
+                )}
+              </SnackbarContainer>
+            </AuthProvider>
+            <Alerter />
+          </Material3ThemeProvider>
+        </SafeAreaProvider>
+      </QueryClientProvider>
+      <StatusBar style="auto" animated translucent />
+    </>
   );
 }
 
