@@ -6,7 +6,7 @@ import { ExpoConfig } from "expo/config";
 const config: ExpoConfig = {
   name: "Cinememo",
   slug: "cinememo",
-  version: "1.0.0",
+  version: "0.0.1",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: "cinememo",
@@ -42,7 +42,8 @@ const config: ExpoConfig = {
         resizeMode: "contain",
         backgroundColor: "#000000"
       }
-    }
+    },
+    versionCode: 1
   },
   web: {
     bundler: "metro",
@@ -80,7 +81,13 @@ const config: ExpoConfig = {
       projectId: "383758ce-1b00-4197-a465-0975fb4ba191"
     }
   },
-  owner: "homocodian"
+  owner: "homocodian",
+  updates: {
+    url: "https://u.expo.dev/383758ce-1b00-4197-a465-0975fb4ba191"
+  },
+  runtimeVersion: {
+    policy: "appVersion"
+  }
 };
 
 export default config;

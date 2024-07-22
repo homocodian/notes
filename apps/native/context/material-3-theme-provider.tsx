@@ -20,7 +20,6 @@ import {
   DefaultTheme as NavigationDefaultTheme,
   ThemeProvider
 } from "@react-navigation/native";
-import merge from "deepmerge";
 import { setBackgroundColorAsync } from "expo-system-ui";
 
 type Material3ThemeProviderProps = {
@@ -33,11 +32,6 @@ const Material3ThemeProviderContext =
   React.createContext<Material3ThemeProviderProps>(
     {} as Material3ThemeProviderProps
   );
-
-const { LightTheme, DarkTheme } = adaptNavigationTheme({
-  reactNavigationLight: NavigationDefaultTheme,
-  reactNavigationDark: NavigationDarkTheme
-});
 
 export function Material3ThemeProvider({
   children,
@@ -54,16 +48,27 @@ export function Material3ThemeProvider({
   });
 
   const { paperTheme, navigationTheme } = React.useMemo(() => {
+    const paperThemeLight = { ...MD3DarkTheme, colors: theme.light };
+    const paperThemeDark = { ...MD3LightTheme, colors: theme.dark };
+
+    const navigationTheme = adaptNavigationTheme({
+      reactNavigationLight: NavigationDefaultTheme,
+      reactNavigationDark: NavigationDarkTheme,
+      materialLight: paperThemeLight,
+      materialDark: paperThemeDark
+    });
+
     if (colorScheme === "dark") {
-      const paperTheme = { ...MD3DarkTheme, colors: theme.dark };
       return {
-        paperTheme,
-        navigationTheme: merge(paperTheme, DarkTheme)
+        paperTheme: paperThemeDark,
+        navigationTheme: navigationTheme.DarkTheme
       };
     }
 
-    const paperTheme = { ...MD3LightTheme, colors: theme.light };
-    return { paperTheme, navigationTheme: merge(paperTheme, LightTheme) };
+    return {
+      paperTheme: paperThemeLight,
+      navigationTheme: navigationTheme.LightTheme
+    };
   }, [colorScheme, theme]);
 
   // Keep the root view background color in sync with the current theme

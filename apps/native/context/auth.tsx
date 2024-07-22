@@ -25,7 +25,7 @@ type Context = {
     password: string,
     confirmPassword: string
   ) => Promise<void>;
-  sendPasswordResetEmail: (email: string) => Promise<void>;
+  sendPasswordResetEmail: (email: string) => Promise<string>;
 };
 
 const AuthContext = React.createContext({} as Context);
@@ -50,13 +50,31 @@ export function AuthProvider(props: { children: React.ReactNode }) {
     if (!userString) return;
 
     const user = userSchema.parse(JSON.parse(userString));
-    // console.log("🚀 ~ getUser ~ user:", user);
     setUser(user);
   }, [setUser]);
 
   React.useEffect(() => {
     getUser().finally(() => setInitializing(false));
   }, [getUser]);
+
+  React.useEffect(() => {
+    const user = useUserStore.getState().user;
+    if (!user) return;
+    API.get("/v1/auth/profile")
+      .catch(() => {
+        signOut();
+      })
+      .then((data) => {
+        const updatedUser = userSchema
+          .omit({ sessionToken: true })
+          .safeParse(data);
+        if (updatedUser.success) {
+          setUser({ ...updatedUser.data, sessionToken: user.sessionToken });
+        } else {
+          signOut();
+        }
+      });
+  }, []);
 
   useProtectedRoute(user);
 
@@ -78,9 +96,13 @@ export function AuthProvider(props: { children: React.ReactNode }) {
 
   const createUser = useCallback(
     async (email: string, password: string, confirmPassword: string) => {
+      if (password !== confirmPassword) {
+        toast("Passwords do not match");
+        return;
+      }
       try {
         const res: User = await API.post("/v1/auth/register", {
-          data: { email, password, confirmPassword }
+          data: { email, password }
         });
         await setSecureValue(USER_SESSION_KEY, JSON.stringify(res));
         setUser(res);
@@ -93,8 +115,8 @@ export function AuthProvider(props: { children: React.ReactNode }) {
   );
 
   const signOut = useCallback(async () => {
+    await API.post("/v1/auth/logout").catch(() => {});
     try {
-      await API.post("/v1/auth/logout");
       const deleted = await deleteSecureValue(USER_SESSION_KEY);
       if (!deleted) {
         throw new Error("Unable to logout");
@@ -108,7 +130,12 @@ export function AuthProvider(props: { children: React.ReactNode }) {
     }
   }, [setUser]);
 
-  const sendPasswordResetEmail = useCallback(async (_email: string) => {}, []);
+  const sendPasswordResetEmail = useCallback(async (email: string) => {
+    return await API.post<string>("/v1/auth/reset-password", {
+      data: { email },
+      responseType: "text"
+    });
+  }, []);
 
   if (initializing) return null;
 

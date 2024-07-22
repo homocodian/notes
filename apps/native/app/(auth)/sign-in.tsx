@@ -88,12 +88,10 @@ function SignIn() {
       Snackbar({
         text: "Email sent, if not found please check your spam folder"
       });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      if (error?.code && error.code === "auth/invalid-email") {
-        setError("email", { message: "Invalid email", type: "validate" });
+    } catch (error) {
+      if (error instanceof Error) {
         Snackbar({
-          text: "Invalid email"
+          text: error.message
         });
       } else {
         Snackbar({
@@ -218,14 +216,14 @@ function SignIn() {
           </Text>
         </Link>
       </Text>
-      <View className="absolute bottom-5 px-5">
+      <View className="px-5">
         <Text className="text-center">
           By singing in you accept our{" "}
-          <Link href="https://notes-ashish.netlify.app/">
+          <Link href="https://notes-ashish.netlify.app/terms">
             <Text className="text-blue-500 ml-2 underline">Terms of use</Text>
           </Link>{" "}
           and{" "}
-          <Link href="https://notes-ashish.netlify.app/">
+          <Link href="https://notes-ashish.netlify.app/privacy">
             <Text className="text-blue-500 ml-2 underline">Privary policy</Text>
           </Link>
         </Text>

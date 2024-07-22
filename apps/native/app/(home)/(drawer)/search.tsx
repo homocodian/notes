@@ -26,7 +26,8 @@ export default function SearchScreen() {
           <MemoizedSearchbar />
           <MemoizedList
             contentContainerStyle={{
-              paddingVertical: 12
+              paddingVertical: 12,
+              paddingBottom: 0
             }}
           />
         </LoadingProvider>

@@ -9,6 +9,8 @@ import {
   Text
 } from "react-native-paper";
 
+import * as Application from "expo-application";
+
 import { UserAvater } from "@/components/user-avatar";
 import { useAuth } from "@/context/auth";
 import { useAppTheme } from "@/context/material-3-theme-provider";
@@ -42,7 +44,9 @@ export default function Account() {
                 <UserAvater />
               </View>
               <View className="flex justify-center items-center">
-                <Text className="font-bold">{user?.name ?? user?.email}</Text>
+                <Text className="font-bold">
+                  {user?.displayName ?? user?.email}
+                </Text>
               </View>
             </Card.Content>
           </Card>
@@ -50,6 +54,12 @@ export default function Account() {
             Logout
           </Button>
         </View>
+      </View>
+
+      <View className="absolute bottom-3 w-screen flex justify-center items-center">
+        <Text variant="titleSmall">
+          {`${Application.applicationName} v${Application.nativeApplicationVersion} (${Application.nativeBuildVersion})`}
+        </Text>
       </View>
       <Portal>
         <Dialog visible={visible}>

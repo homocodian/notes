@@ -14,31 +14,34 @@ export function UserAvater() {
     return <IconButton icon="account-question" />;
   }
 
-  if (!user.imageUrl) {
-    const name = user.name ?? user.email ?? "Unknown";
-    const label = getInitials(name);
-
+  if (user.photoURL) {
     return (
       <IconButton
-        icon={(props) => (
-          <Avatar.Text
-            {...props}
-            label={label}
+        icon={() => (
+          <Avatar.Image
             size={AVATAR_SIZE}
-            labelStyle={{
-              fontWeight: "bold",
-              color: theme.colors.onPrimary
-            }}
+            source={{ uri: user.photoURL as string }}
           />
         )}
       />
     );
   }
 
+  const name = user.displayName ?? user.email ?? "Unknown";
+  const label = getInitials(name);
+
   return (
     <IconButton
-      icon={() => (
-        <Avatar.Image size={AVATAR_SIZE} source={{ uri: user.imageUrl }} />
+      icon={(props) => (
+        <Avatar.Text
+          {...props}
+          label={label}
+          size={AVATAR_SIZE}
+          labelStyle={{
+            fontWeight: "bold",
+            color: theme.colors.onPrimary
+          }}
+        />
       )}
     />
   );

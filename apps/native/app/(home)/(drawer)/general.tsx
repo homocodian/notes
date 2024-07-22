@@ -13,7 +13,7 @@ export default function GeneralNotesScreen() {
 
   return (
     <View className="flex-1">
-      <EnhancedNoteList userId={user?.id} />
+      <EnhancedNoteList userId={user?.id ?? null} />
     </View>
   );
 }

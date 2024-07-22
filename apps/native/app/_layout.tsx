@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
 import { Slot, SplashScreen } from "expo-router";
+import { checkForUpdateAsync } from "expo-updates";
 
 import { AddNoteButton } from "@/components/note/add-button";
 import { Alerter } from "@/components/ui/alerter";
@@ -84,6 +85,10 @@ export default function RootLayout() {
 const queryClient = new QueryClient();
 
 function RootLayoutNav() {
+  React.useEffect(() => {
+    checkForUpdateAsync().catch(() => {});
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
