@@ -67,7 +67,14 @@ const config: ExpoConfig = {
     ],
     "expo-font",
     "expo-router",
-    "expo-secure-store"
+    "expo-secure-store",
+    [
+      "@sentry/react-native/expo",
+      {
+        organization: "homocodian",
+        project: "cinememo"
+      }
+    ]
   ],
   experiments: {
     tsconfigPaths: true,

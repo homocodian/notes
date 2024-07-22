@@ -2,14 +2,16 @@ import React from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import NetInfo from "@react-native-community/netinfo";
+import * as Sentry from "@sentry/react-native";
 import {
   onlineManager,
   QueryClient,
   QueryClientProvider
 } from "@tanstack/react-query";
+import { isRunningInExpoGo } from "expo";
 import { useFonts } from "expo-font";
-import { Slot, SplashScreen } from "expo-router";
-import { checkForUpdateAsync } from "expo-updates";
+import { Slot, SplashScreen, useNavigationContainerRef } from "expo-router";
+import * as Updates from "expo-updates";
 
 import { AddNoteButton } from "@/components/note/add-button";
 import { Alerter } from "@/components/ui/alerter";
@@ -44,7 +46,51 @@ SplashScreen.preventAutoHideAsync();
 
 let splashScreenTimout: NodeJS.Timeout | undefined;
 
-export default function RootLayout() {
+const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
+
+Sentry.init({
+  dsn: "https://bf5f689d3f5396e08266abcd9dcbaa6a@o4507646828609536.ingest.us.sentry.io/4507646830379008",
+  debug: __DEV__,
+  integrations: [
+    new Sentry.ReactNativeTracing({
+      routingInstrumentation,
+      enableNativeFramesTracking: !isRunningInExpoGo()
+    })
+  ],
+  tracesSampleRate: 0.5
+});
+
+const manifest = Updates.manifest;
+const metadata = "metadata" in manifest ? manifest.metadata : undefined;
+const extra = "extra" in manifest ? manifest.extra : undefined;
+const updateGroup =
+  metadata && "updateGroup" in metadata ? metadata.updateGroup : undefined;
+
+Sentry.configureScope((scope) => {
+  scope.setTag("expo-update-id", Updates.updateId);
+  scope.setTag("expo-is-embedded-update", Updates.isEmbeddedLaunch);
+
+  if (typeof updateGroup === "string") {
+    scope.setTag("expo-update-group-id", updateGroup);
+
+    const owner = extra?.expoClient?.owner ?? "[account]";
+    const slug = extra?.expoClient?.slug ?? "[project]";
+    scope.setTag(
+      "expo-update-debug-url",
+      `https://expo.dev/accounts/${owner}/projects/${slug}/updates/${updateGroup}`
+    );
+  } else if (Updates.isEmbeddedLaunch) {
+    // This will be `true` if the update is the one embedded in the build, and not one downloaded from the updates server.
+    scope.setTag(
+      "expo-update-debug-url",
+      "not applicable for embedded updates"
+    );
+  }
+});
+
+function RootLayout() {
+  const ref = useNavigationContainerRef();
+
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf")
   });
@@ -53,6 +99,12 @@ export default function RootLayout() {
   React.useEffect(() => {
     if (error) throw error;
   }, [error]);
+
+  React.useEffect(() => {
+    if (ref) {
+      routingInstrumentation.registerNavigationContainer(ref);
+    }
+  }, [ref]);
 
   React.useEffect(() => {
     onlineManager.setEventListener((setOnline) => {
@@ -86,7 +138,7 @@ const queryClient = new QueryClient();
 
 function RootLayoutNav() {
   React.useEffect(() => {
-    checkForUpdateAsync().catch(() => {});
+    Updates.checkForUpdateAsync().catch(() => {});
   }, []);
 
   return (
@@ -107,3 +159,5 @@ function RootLayoutNav() {
     </QueryClientProvider>
   );
 }
+
+export default Sentry.wrap(RootLayout);
