@@ -6,7 +6,7 @@ import { ExpoConfig } from "expo/config";
 const config: ExpoConfig = {
   name: "Cinememo",
   slug: "cinememo",
-  version: "0.0.1",
+  version: "0.0.8",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: "cinememo",
