@@ -1,13 +1,10 @@
 import React from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
 import * as Sentry from "@sentry/react-native";
-import {
-  onlineManager,
-  QueryClient,
-  QueryClientProvider
-} from "@tanstack/react-query";
+import { onlineManager, QueryClient } from "@tanstack/react-query";
 import { isRunningInExpoGo } from "expo";
 import { useFonts } from "expo-font";
 import { Slot, SplashScreen, useNavigationContainerRef } from "expo-router";
@@ -21,6 +18,8 @@ import { Material3ThemeProvider } from "@/context/material-3-theme-provider";
 
 import "@/styles/global.css";
 
+import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { StatusBar } from "expo-status-bar";
 
 export { ErrorBoundary } from "expo-router";
@@ -138,6 +137,10 @@ function RootLayout() {
 // Create a client
 const queryClient = new QueryClient();
 
+const asyncStoragePersister = createAsyncStoragePersister({
+  storage: AsyncStorage
+});
+
 function RootLayoutNav() {
   React.useEffect(() => {
     Updates.checkForUpdateAsync().catch(() => {});
@@ -145,7 +148,10 @@ function RootLayoutNav() {
 
   return (
     <>
-      <QueryClientProvider client={queryClient}>
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={{ persister: asyncStoragePersister }}
+      >
         <SafeAreaProvider>
           <Material3ThemeProvider>
             <AuthProvider>
@@ -159,7 +165,7 @@ function RootLayoutNav() {
             <Alerter />
           </Material3ThemeProvider>
         </SafeAreaProvider>
-      </QueryClientProvider>
+      </PersistQueryClientProvider>
       <StatusBar style="auto" animated translucent />
     </>
   );
