@@ -1,46 +1,55 @@
 import { ExpoConfig } from "expo/config";
 
-// In SDK 46 and lower, use the following import instead:
-// import { ExpoConfig } from '@expo/config-types';
+import pkg from "./package.json";
+
+const LIGHT_BACKGROUND_COLOR = "#ffffff";
+const DARK_BACKGROUND_COLOR = "#000000";
 
 const config: ExpoConfig = {
   name: "Cinememo",
   slug: "cinememo",
-  version: "0.0.8",
+  version: pkg.version,
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: "cinememo",
   userInterfaceStyle: "automatic",
   assetBundlePatterns: ["**/*"],
   ios: {
-    supportsTablet: true,
+    supportsTablet: false,
     bundleIdentifier: "com.homocodian.cinememo",
     splash: {
       image: "./assets/images/splash_light.png",
       resizeMode: "contain",
-      backgroundColor: "#ffffff",
+      backgroundColor: LIGHT_BACKGROUND_COLOR,
       dark: {
         image: "./assets/images/splash.png",
         resizeMode: "contain",
-        backgroundColor: "#000000"
+        backgroundColor: DARK_BACKGROUND_COLOR
       }
     }
+  },
+  androidStatusBar: {
+    translucent: true
+  },
+  androidNavigationBar: {
+    backgroundColor: DARK_BACKGROUND_COLOR,
+    barStyle: "light-content"
   },
   android: {
     adaptiveIcon: {
       foregroundImage: "./assets/images/adaptive-icon.png",
-      backgroundColor: "#ffffff",
+      backgroundColor: LIGHT_BACKGROUND_COLOR,
       monochromeImage: "./assets/images/adaptive-icon.png"
     },
     package: "com.homocodian.cinememo",
     splash: {
       image: "./assets/images/splash_light.png",
       resizeMode: "contain",
-      backgroundColor: "#ffffff",
+      backgroundColor: LIGHT_BACKGROUND_COLOR,
       dark: {
         image: "./assets/images/splash.png",
         resizeMode: "contain",
-        backgroundColor: "#000000"
+        backgroundColor: DARK_BACKGROUND_COLOR
       }
     },
     versionCode: 1
