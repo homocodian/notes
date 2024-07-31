@@ -94,7 +94,8 @@ function NoteCard({
             color={isComplete ? "text.secondary" : ""}
             style={{
               textDecoration: `${isComplete ? "line-through" : "none"}`,
-              whiteSpace: "pre-line"
+              whiteSpace: "pre-line",
+              wordBreak: "break-word"
             }}
           >
             {text}
