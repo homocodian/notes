@@ -1,4 +1,4 @@
-import { desc, eq, getTableColumns, sql } from "drizzle-orm";
+import { and, desc, eq, getTableColumns, isNull, sql } from "drizzle-orm";
 import type { Context } from "elysia";
 import { User } from "lucia";
 
@@ -28,7 +28,13 @@ export async function getSharedNotes({ user, error }: GetSharedNotesProps) {
       })
       .from(notesToUsersTable)
       .where(eq(notesToUsersTable.userId, user.id))
-      .innerJoin(noteTable, eq(noteTable.id, notesToUsersTable.noteId))
+      .innerJoin(
+        noteTable,
+        and(
+          eq(noteTable.id, notesToUsersTable.noteId),
+          isNull(noteTable.deletedAt)
+        )
+      )
       .innerJoin(userTable, eq(userTable.id, noteTable.userId))
       .orderBy(desc(noteTable.updatedAt));
 

@@ -14,7 +14,8 @@ interface DeleteNoteProps extends Omit<Context, "params"> {
 export async function deleteNote({ user, error, params }: DeleteNoteProps) {
   try {
     const [note] = await db
-      .delete(noteTable)
+      .update(noteTable)
+      .set({ deletedAt: new Date() })
       .where(and(eq(noteTable.id, params.id), eq(noteTable.userId, user.id)))
       .returning();
 

@@ -90,7 +90,7 @@ function getSqlStatement(user: User) {
       ${noteTable}
     INNER JOIN ${userTable} ON ${userTable.id} = ${noteTable.userId}
     WHERE 
-      ${noteTable.userId} = ${user.id} OR EXISTS (
+      (${noteTable.userId} = ${user.id} OR EXISTS (
         SELECT 
             1 
         FROM 
@@ -98,6 +98,6 @@ function getSqlStatement(user: User) {
         WHERE 
             ${notesToUsersTable.noteId} = ${noteTable.id} 
             AND ${notesToUsersTable.userId} = ${user.id}
-    )
+    )) AND ${noteTable.deletedAt} IS NULL
     ORDER BY ${noteTable.updatedAt} DESC`;
 }
