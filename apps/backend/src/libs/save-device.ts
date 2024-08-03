@@ -34,7 +34,9 @@ export async function saveDevice({
   let ipResult = null;
 
   if (ip) {
-    const response = await fetch(`ipinfo.io/${ip}?token=${env.IPINFO_TOKEN}`);
+    const response = await fetch(
+      `https://ipinfo.io/${ip}?token=${env.IPINFO_TOKEN}`
+    );
     ipResult = await response.json().catch(() => ({}));
   }
 
