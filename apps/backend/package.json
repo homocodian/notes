@@ -1,10 +1,10 @@
 {
   "name": "@notes/backend",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "scripts": {
     "dev": "NODE_DEBUG=* NODE_ENV=development bun --watch src/index.ts",
-    "build": "bun run db:migrate && NODE_ENV=production bun build --target=bun ./src/index.ts --outdir ./dist",
-    "start": "NODE_ENV=production bun ./dist/index.js",
+    "build": "NODE_ENV=production bun build --target=bun ./src/index.ts --outdir ./dist",
+    "start": "bun run db:migrate && NODE_ENV=production bun ./dist/index.js",
     "test": "bun test",
     "db:migrate": "bun run ./src/db/migrate.ts",
     "db:generate": "drizzle-kit generate",
