@@ -1,17 +1,21 @@
 import { eq } from "drizzle-orm";
 import { Context } from "elysia";
+import UAParser from "ua-parser-js";
 
 import { db } from "@/db";
 import { userTable } from "@/db/schema/user";
 import { lucia } from "@/libs/auth";
+import { BgQueue } from "@/libs/background-worker";
 import { signJwtAsync } from "@/libs/jwt";
+import { SaveDeviceProps } from "@/libs/save-device";
 import { LoginUser, UserResponse } from "@/v1/validations/user";
 
 interface LoginUserProps extends Context {
   body: LoginUser;
+  ip?: string;
 }
 
-export async function loginUser({ body, error }: LoginUserProps) {
+export async function loginUser({ body, error, request, ip }: LoginUserProps) {
   const [user] = await db
     .select()
     .from(userTable)
@@ -39,6 +43,26 @@ export async function loginUser({ body, error }: LoginUserProps) {
       .where(eq(userTable.id, user.id));
 
     const sessionToken = await signJwtAsync(session.id);
+
+    console.log(request.headers.get("user-agent"));
+
+    await BgQueue.add(
+      "saveDevice",
+      {
+        ip,
+        ua: request.headers.get("user-agent") ?? undefined,
+        userId: user.id,
+        sessionId: session.id,
+        device: body.device
+      } satisfies SaveDeviceProps,
+      {
+        attempts: 2,
+        backoff: {
+          type: "exponential",
+          delay: 4000
+        }
+      }
+    );
 
     return {
       id: user.id,

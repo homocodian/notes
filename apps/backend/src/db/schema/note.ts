@@ -45,8 +45,9 @@ export const noteTable = pgTable(
       .defaultNow()
       .notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true, mode: "date" })
-      .$onUpdate(() => new Date())
       .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date())
   },
   (t) => {
     return {

@@ -8,6 +8,7 @@ import {
 import { cronRoute } from "./routes/cron";
 import { noteRoute } from "./routes/note";
 import { syncRoute } from "./routes/sync";
+import { usersRoute } from "./routes/users";
 
 export const v1Routes = new Elysia({ prefix: "v1" })
   .use(authRoute)
@@ -15,4 +16,5 @@ export const v1Routes = new Elysia({ prefix: "v1" })
   .use(passwordResetRoute)
   .use(noteRoute)
   .use(syncRoute)
-  .use(cronRoute);
+  .use(cronRoute)
+  .use(usersRoute);

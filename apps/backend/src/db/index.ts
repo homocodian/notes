@@ -1,6 +1,7 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 
+import * as FCMTokenSchema from "./schema/fcm-token";
 import * as noteSchema from "./schema/note";
 import * as userSchema from "./schema/user";
 
@@ -12,7 +13,8 @@ export const client = postgres(connectionString, { prepare: false });
 export const db = drizzle(client, {
   schema: {
     ...userSchema,
-    ...noteSchema
+    ...noteSchema,
+    ...FCMTokenSchema
   },
   logger: process.env.NODE_ENV === "development" ? true : false
 });

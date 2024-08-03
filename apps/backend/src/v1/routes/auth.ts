@@ -1,11 +1,12 @@
 import bearer from "@elysiajs/bearer";
-import Elysia, { t } from "elysia";
+import Elysia from "elysia";
 import { rateLimit } from "elysia-rate-limit";
 
 import { rateLimiterkeyGenerator } from "@/libs/rate-limiter-key-generator";
 import {
   emailVerificationSchema,
   loginUserSchema,
+  logoutSchema,
   passwordResetSchema,
   passwordResetTokenSchema,
   registerUserSchema
@@ -37,7 +38,7 @@ export const authRoute = new Elysia({ prefix: "/auth" })
   .post("/login", loginUser, {
     body: loginUserSchema
   })
-  .post("/logout", logout)
+  .post("/logout", logout, { body: logoutSchema })
   .post("/logout-all", logoutAll)
   .get("/profile", getProfile);
 

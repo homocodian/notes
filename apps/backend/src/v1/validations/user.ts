@@ -1,5 +1,23 @@
 import { t } from "elysia";
 
+import { deviceTypeList } from "@/db/schema/user";
+
+const deviceType = t.Union(deviceTypeList.map((value) => t.Literal(value)));
+
+export const deviceSchema = t.Optional(
+  t.Partial(
+    t.Object({
+      type: deviceType,
+      name: t.String(),
+      model: t.String(),
+      osVersion: t.String(),
+      os: t.String()
+    })
+  )
+);
+
+export type DeviceSchema = typeof deviceSchema.static | undefined;
+
 export const registerUserSchema = t.Object(
   {
     email: t.String({
@@ -9,7 +27,8 @@ export const registerUserSchema = t.Object(
     password: t.String({
       minLength: 8,
       description: "Password must be at least 6 characters"
-    })
+    }),
+    device: deviceSchema
   },
   {
     description: "Expected an email and password"
@@ -21,9 +40,14 @@ export type RegisterUser = typeof registerUserSchema.static;
 export const loginUserSchema = t.Object(
   {
     email: t.String({
-      description: "Email is required"
+      description: "Email is required",
+      error: "Invalid Email"
     }),
-    password: t.String({ description: "Password is required" })
+    password: t.String({
+      description: "Password is required",
+      error: "Password is required"
+    }),
+    device: deviceSchema
   },
   { description: "Email & password are required" }
 );
@@ -55,3 +79,9 @@ export type EmailVerification = typeof emailVerificationSchema.static;
 export const passwordResetTokenSchema = t.Object({ password: t.String() });
 
 export type PasswordResetToken = typeof passwordResetTokenSchema.static;
+
+export const logoutSchema = t.Optional(
+  t.Object({ deviceId: t.String({ minLength: 1 }) })
+);
+
+export type LogoutSchema = typeof logoutSchema.static;

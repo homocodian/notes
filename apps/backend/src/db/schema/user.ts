@@ -3,6 +3,7 @@ import {
   boolean,
   index,
   integer,
+  pgEnum,
   pgTable,
   primaryKey,
   serial,
@@ -10,7 +11,18 @@ import {
   timestamp
 } from "drizzle-orm/pg-core";
 
+import { FCMTokenTable } from "./fcm-token";
 import { noteTable, notesToUsersTable } from "./note";
+
+export const deviceType = pgEnum("device_type", [
+  "UNKNOWN",
+  "PHONE",
+  "TABLEt",
+  "DESKTOP",
+  "TV"
+]);
+
+export const deviceTypeList = deviceType.enumValues;
 
 export const userTable = pgTable(
   "user",
@@ -41,6 +53,7 @@ export const userTable = pgTable(
       mode: "date"
     })
       .notNull()
+      .defaultNow()
       .$onUpdate(() => new Date())
   },
   (t) => ({
@@ -128,5 +141,35 @@ export const oAuthAccountRelations = relations(
 export const userRelations = relations(userTable, ({ many }) => ({
   notes: many(noteTable),
   sharedNotes: many(notesToUsersTable),
-  oauthAccounts: many(oauthAccountTable)
+  oauthAccounts: many(oauthAccountTable),
+  FCMTokens: many(FCMTokenTable)
 }));
+
+export const deviceTable = pgTable(
+  "device",
+  {
+    ip: text("ip"),
+    userId: integer("user_id").references(() => userTable.id, {
+      onDelete: "cascade"
+    }),
+    sessionId: text("session_id").references(() => sessionTable.id, {
+      onDelete: "cascade"
+    }),
+    type: deviceType("type").notNull().default("UNKNOWN"),
+    os: text("os"),
+    name: text("name"),
+    model: text("model"),
+    osVersion: text("os_version"),
+    city: text("city"),
+    state: text("state"),
+    country: text("country"),
+    timezone: text("timezone"),
+
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "date" })
+      .notNull()
+      .defaultNow()
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.userId, t.sessionId] })
+  })
+);

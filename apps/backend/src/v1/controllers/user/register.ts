@@ -5,17 +5,25 @@ import { db } from "@/db";
 import { userTable } from "@/db/schema/user";
 import { env } from "@/env";
 import { lucia } from "@/libs/auth";
+import { BgQueue } from "@/libs/background-worker";
 import { sendVerificationCode } from "@/libs/emails/verify-email";
 import { generateEmailVerificationCode } from "@/libs/generate-email-varification-code";
 import { validatePassword } from "@/libs/password-validation";
+import { SaveDeviceProps } from "@/libs/save-device";
 import { isValidEmail } from "@/v1/validations/email";
 import { RegisterUser, UserResponse } from "@/v1/validations/user";
 
 interface RegisterUserProps extends Context {
   body: RegisterUser;
+  ip?: string;
 }
 
-export async function registerUser({ body, error }: RegisterUserProps) {
+export async function registerUser({
+  body,
+  error,
+  ip,
+  request
+}: RegisterUserProps) {
   if (!isValidEmail(body.email)) {
     return error(400, "Invalid email");
   }
@@ -54,6 +62,24 @@ export async function registerUser({ body, error }: RegisterUserProps) {
 
     const session = await lucia.createSession(user.id, {});
     const sessionToken = jwt.sign(session.id, env.TOKEN_SECRET);
+
+    await BgQueue.add(
+      "saveDevice",
+      {
+        ip,
+        ua: request.headers.get("user-agent") ?? undefined,
+        userId: user.id,
+        sessionId: session.id,
+        device: body.device
+      } satisfies SaveDeviceProps,
+      {
+        attempts: 2,
+        backoff: {
+          type: "exponential",
+          delay: 4000
+        }
+      }
+    );
 
     return {
       id: user.id,
