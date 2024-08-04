@@ -27,6 +27,7 @@ import { fetchAPI } from "@/lib/fetch-wrapper";
 import { useAuthStore } from "@/store/auth";
 
 interface InputFields {
+  fullName: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -36,6 +37,7 @@ interface InputFields {
 
 export default function SignUp() {
   const [values, setValues] = useState<InputFields>({
+    fullName: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -43,6 +45,7 @@ export default function SignUp() {
     showConfirmPassword: false
   });
   const [isError, setIsError] = useState({
+    fullName: false,
     email: false,
     password: false,
     confirmPassword: false
@@ -82,12 +85,14 @@ export default function SignUp() {
   const handleSubmit = async () => {
     setShowPasswordRules(false);
     setIsError({
+      fullName: false,
       email: false,
       password: false,
       confirmPassword: false
     });
 
-    const [email, password, confirmPassword] = [
+    const [fullName, email, password, confirmPassword] = [
+      values.fullName,
       values.email,
       values.password,
       values.confirmPassword
@@ -95,6 +100,7 @@ export default function SignUp() {
 
     if (email === "" || password === "" || confirmPassword === "") {
       setIsError({
+        fullName: false,
         email: email === "" ? true : false,
         password: password === "" ? true : false,
         confirmPassword: confirmPassword === "" ? true : false
@@ -105,6 +111,7 @@ export default function SignUp() {
 
     if (password !== confirmPassword) {
       setIsError({
+        fullName: false,
         email: false,
         password: true,
         confirmPassword: true
@@ -115,11 +122,23 @@ export default function SignUp() {
 
     if (password.length < 8) {
       setIsError({
+        fullName: false,
         email: false,
         password: true,
         confirmPassword: true
       });
       toast.error("Password must be at least 8 characters long.");
+      return;
+    }
+
+    if (fullName && fullName.length < 3) {
+      setIsError({
+        fullName: true,
+        email: false,
+        password: false,
+        confirmPassword: false
+      });
+      toast.error("Name must be at least 3 characters long");
       return;
     }
 
@@ -130,7 +149,8 @@ export default function SignUp() {
       const data: any = await fetchAPI.post("/v1/auth/register", {
         data: {
           email,
-          password
+          password,
+          fullName
         },
         // auto abort in 2 minutes
         options: { signal: AbortSignal.timeout(1000 * 60 * 2) }
@@ -213,6 +233,18 @@ export default function SignUp() {
             sx={{ mt: 1 }}
             id="signup-form"
           >
+            <TextField
+              value={values.fullName}
+              error={isError.fullName}
+              onChange={handleChange("fullName")}
+              margin="normal"
+              id="fullname"
+              fullWidth
+              label="Name"
+              name="fullname"
+              autoComplete="name"
+              autoFocus
+            />
             <TextField
               value={values.email}
               error={isError.email}

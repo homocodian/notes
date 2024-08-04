@@ -1,14 +1,23 @@
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import { Box, IconButton } from "@mui/material";
+import { styled } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import { styled } from "@mui/system";
 import React from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 
 import { OTP } from "@/components/OtpInput";
 import { APIError } from "@/lib/api-error";
 import { fetchAPI } from "@/lib/fetch-wrapper";
+
+const StyledLink = styled(Link)(({ theme }) => ({
+  // Access theme properties here
+  color: theme.palette.primary.main,
+  "&:hover": {
+    textDecoration: "underline"
+  }
+}));
 
 function ConfirmEmail() {
   const [otp, setOtp] = React.useState("");
@@ -49,7 +58,7 @@ function ConfirmEmail() {
   }, [otp]);
 
   return (
-    <div className="h-full flex gap-12 flex-col justify-center items-center">
+    <div className="h-full flex gap-12 flex-col justify-center items-center max-w-lg mx-auto">
       <div className="text-center">
         <Typography component="h1" variant="h3" sx={{ color: "text.primary" }}>
           Confirm your email
@@ -92,19 +101,30 @@ function ConfirmEmail() {
       />
       <Box
         sx={{
-          height: "3em",
-          width: "4em",
-          display: "grid",
-          placeContent: "center"
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+          paddingLeft: "1rem"
         }}
       >
-        {isLoading ? (
-          <LoadingElement />
-        ) : (
-          <IconButton aria-label="submit" onClick={() => handleSubmit(otp)}>
-            <ArrowForward />
-          </IconButton>
-        )}
+        <StyledLink to="/">Skip</StyledLink>
+        <Box
+          sx={{
+            height: "3em",
+            width: "4em",
+            display: "grid",
+            placeContent: "center"
+          }}
+        >
+          {isLoading ? (
+            <LoadingElement />
+          ) : (
+            <IconButton aria-label="submit" onClick={() => handleSubmit(otp)}>
+              <ArrowForward />
+            </IconButton>
+          )}
+        </Box>
       </Box>
     </div>
   );

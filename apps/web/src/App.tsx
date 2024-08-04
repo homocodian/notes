@@ -10,6 +10,7 @@ import Connectivity from "@/components/general/Connectivity";
 import DrawerProvider from "@/context/DrawerContext";
 import { useTheme } from "@/hooks/useTheme";
 
+import LogoutBackdrop from "./components/LogoutBackdrop";
 import { Auth } from "./components/auth";
 import { queryClient } from "./utils/query-client";
 
@@ -39,6 +40,7 @@ function App() {
                 ))}
               </Routes>
             </div>
+            <LogoutBackdrop />
             <Connectivity />
             <ThemedToaster />
           </DrawerProvider>

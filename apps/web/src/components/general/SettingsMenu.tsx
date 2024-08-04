@@ -10,18 +10,25 @@ import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import toast from "react-hot-toast";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useShallow } from "zustand/react/shallow";
 
 import ProfileAvatar from "@/components/general/ProfileAvatar";
 import ThemeMenuItem from "@/components/general/ThemeMenuItem";
 import { SESSION_TOKEN_KEY } from "@/constant/auth";
+import { APIError } from "@/lib/api-error";
+import { fetchAPI } from "@/lib/fetch-wrapper";
 import { useAuthStore } from "@/store/auth";
 import { useKeyboardShortcutStore } from "@/store/keyboard-shortcut";
 
 export default function SettingsMenu() {
-  const { user, logout } = useAuthStore(
-    useShallow((state) => ({ user: state.user, logout: state.logout }))
+  const { user, logout, setLogoutPending } = useAuthStore(
+    useShallow((state) => ({
+      user: state.user,
+      logout: state.logout,
+      setLogoutPending: state.setLogoutPending
+    }))
   );
   const buttonRef = React.useRef<HTMLButtonElement | null>(null);
   const openModal = useKeyboardShortcutStore((state) => state.openModal);
@@ -38,9 +45,17 @@ export default function SettingsMenu() {
     cb?.();
   };
 
-  const logoutUser = () => {
-    localStorage.removeItem(SESSION_TOKEN_KEY);
-    logout();
+  const logoutUser = async () => {
+    setLogoutPending(true);
+    try {
+      await fetchAPI.post("/v1/auth/logout", { data: {} });
+      localStorage.removeItem(SESSION_TOKEN_KEY);
+      logout();
+    } catch (error) {
+      setLogoutPending(false);
+      if (error instanceof APIError) toast.error(error.message);
+      else toast.error("Failed to logout");
+    }
   };
 
   useHotkeys(

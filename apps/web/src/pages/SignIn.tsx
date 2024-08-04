@@ -220,16 +220,22 @@ export default function SignIn() {
             setLoadingToFalse();
             return;
           }
-          await fetchAPI.post("/v1/auth/reset-password", {
-            data: { email },
-            responseType: "text"
-          });
-          setLoadingToFalse();
-          setIsResetFormOpen(false);
-          toast.success(
-            "Reset link sent to your email, please check your inbox, spam or junk folder.",
-            { duration: 7 * 1000 }
-          );
+          fetchAPI
+            .post<string>("/v1/auth/reset-password", {
+              data: { email },
+              responseType: "text"
+            })
+            .then((data) => toast.success(data, { duration: 7 * 1000 }))
+            .catch((error) => {
+              if (error instanceof APIError) return toast.error(error.message);
+              toast.error(
+                "Unable to send password reset link, something went wrong!"
+              );
+            })
+            .finally(() => {
+              setLoadingToFalse();
+              setIsResetFormOpen(false);
+            });
         }}
       />
       <Backdrop

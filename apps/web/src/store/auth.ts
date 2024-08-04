@@ -15,10 +15,13 @@ type AuthProps = {
   setUser: (user: User | null) => void;
   resetAuth: () => void;
   logout: () => void;
+  logoutPending: boolean;
+  setLogoutPending: (prop: boolean) => void;
 };
 
 export const useAuthStore = create<AuthProps>((set) => ({
   user: null,
+  logoutPending: false,
   setUser(user) {
     set({
       user
@@ -29,10 +32,14 @@ export const useAuthStore = create<AuthProps>((set) => ({
       user: null
     });
   },
-  logout() {
+  logout: () => {
     queryClient.clear();
     set({
-      user: null
+      user: null,
+      logoutPending: false
     });
+  },
+  setLogoutPending: (prop) => {
+    set({ logoutPending: prop });
   }
 }));
