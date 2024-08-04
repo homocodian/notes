@@ -8,13 +8,12 @@ import {
   Section,
   Text
 } from "@react-email/components";
-import * as React from "react";
 
 import { env } from "@/env";
 
 import { MailClient } from "../mail-client";
 
-export async function sendVerificationCode(
+export async function sendVerificationCodeMail(
   email: string,
   validationCode: string
 ) {

@@ -17,6 +17,10 @@ export async function deriveUser({
   const { user } = await lucia.validateSession(sessionId);
   if (!user) return error(401, "Unauthorized");
 
+  if (user.disabled) {
+    return error(403, "Your account has been disabled");
+  }
+
   const prettyUser = user as Prettify<User>;
 
   return { user: prettyUser };

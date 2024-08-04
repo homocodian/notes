@@ -23,6 +23,10 @@ export async function getProfile({ bearer, error }: GetProfileProps) {
       return error(401, "Unauthorized");
     }
 
+    if (user.disabled) {
+      return error(403, "Your account has been disabled");
+    }
+
     return {
       id: user.id,
       email: user.email,

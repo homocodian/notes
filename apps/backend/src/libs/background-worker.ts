@@ -3,7 +3,8 @@ import IORedis from "ioredis";
 
 import { env } from "@/env";
 
-import { saveDevice } from "./save-device";
+import { saveDevice } from "./background/save-device";
+import { sendVerificationCode } from "./background/send-verification-code";
 
 const connection = new IORedis(env.REDIS_URL, {
   enableOfflineQueue: false,
@@ -12,7 +13,15 @@ const connection = new IORedis(env.REDIS_URL, {
 
 export const BgQueue = new Queue("cinememo-bgTask", {
   connection,
-  defaultJobOptions: { removeOnComplete: true, removeOnFail: true }
+  defaultJobOptions: {
+    removeOnComplete: true,
+    removeOnFail: true,
+    attempts: 2,
+    backoff: {
+      type: "exponential",
+      delay: 4000
+    }
+  }
 });
 
 const BgWorker = new Worker(
@@ -22,6 +31,11 @@ const BgWorker = new Worker(
       case "saveDevice":
         await saveDevice(job.data);
         break;
+
+      case "sendVerificationCode":
+        await sendVerificationCode(job.data);
+        break;
+
       default:
         console.error(`Unknown job type: ${job.name}`);
     }

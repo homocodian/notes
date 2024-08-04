@@ -20,6 +20,7 @@ export type DeviceSchema = typeof deviceSchema.static | undefined;
 
 export const registerUserSchema = t.Object(
   {
+    fullName: t.Optional(t.String({ minLength: 3 })),
     email: t.String({
       minLength: 3,
       description: "Email must of at least 3 characters"

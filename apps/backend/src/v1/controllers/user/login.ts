@@ -1,13 +1,12 @@
 import { eq } from "drizzle-orm";
 import { Context } from "elysia";
-import UAParser from "ua-parser-js";
 
 import { db } from "@/db";
 import { userTable } from "@/db/schema/user";
 import { lucia } from "@/libs/auth";
 import { BgQueue } from "@/libs/background-worker";
+import { SaveDeviceProps } from "@/libs/background/save-device";
 import { signJwtAsync } from "@/libs/jwt";
-import { SaveDeviceProps } from "@/libs/save-device";
 import { LoginUser, UserResponse } from "@/v1/validations/user";
 
 interface LoginUserProps extends Context {
@@ -16,6 +15,7 @@ interface LoginUserProps extends Context {
 }
 
 export async function loginUser({ body, error, request, ip }: LoginUserProps) {
+  console.log("🚀 ~ loginUser ~ body:", body);
   const [user] = await db
     .select()
     .from(userTable)
@@ -23,6 +23,10 @@ export async function loginUser({ body, error, request, ip }: LoginUserProps) {
 
   if (!user || !user.hashedPassword) {
     return error(400, "Invalid email or password");
+  }
+
+  if (user.disabled) {
+    return error(403, "Your account has been disabled");
   }
 
   const validPassword = await Bun.password.verify(
@@ -44,25 +48,15 @@ export async function loginUser({ body, error, request, ip }: LoginUserProps) {
 
     const sessionToken = await signJwtAsync(session.id);
 
-    console.log(request.headers.get("user-agent"));
-
-    await BgQueue.add(
-      "saveDevice",
-      {
-        ip,
-        ua: request.headers.get("user-agent") ?? undefined,
-        userId: user.id,
-        sessionId: session.id,
-        device: body.device
-      } satisfies SaveDeviceProps,
-      {
-        attempts: 2,
-        backoff: {
-          type: "exponential",
-          delay: 4000
-        }
-      }
-    );
+    await BgQueue.add("saveDevice", {
+      ip,
+      ua: request.headers.get("user-agent") ?? undefined,
+      userId: user.id,
+      sessionId: session.id,
+      device: body.device
+    } satisfies SaveDeviceProps).catch((err) => {
+      console.log("🚀 ~ loginUser saveDevice ~ err", err);
+    });
 
     return {
       id: user.id,

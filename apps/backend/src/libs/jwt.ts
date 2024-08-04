@@ -7,8 +7,8 @@ type AsyncVerifyJwtProps = Parameters<typeof verify>["0"];
 export const VerifyJwtAsync = (token: AsyncVerifyJwtProps) => {
   return new Promise<string | JwtPayload>(function (resolve, reject) {
     verify(token, env.TOKEN_SECRET, undefined, (error, decoded) => {
-      if (error) return reject(error);
-      if (!decoded) return reject(new Error("failed to decode token"));
+      if (error) return reject(new JwtError(error.message));
+      if (!decoded) return reject(new JwtError("Failed to decode token"));
       return resolve(decoded);
     });
   });
@@ -23,10 +23,18 @@ export const signJwtAsync = (token: AsyncSignJwtProps) => {
       env.TOKEN_SECRET,
       { algorithm: env.ALGORITHM as Algorithm },
       (error, encoded) => {
-        if (error) return reject(error);
-        if (!encoded) return reject(new Error("failed to encode token"));
+        if (error) return reject(new JwtError(error.message));
+        if (!encoded) return reject(new JwtError("Failed to encode token"));
         return resolve(encoded);
       }
     );
   });
 };
+
+export class JwtError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "JwtError";
+    Error.captureStackTrace(this, this.constructor);
+  }
+}

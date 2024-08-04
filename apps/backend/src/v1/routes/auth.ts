@@ -19,6 +19,7 @@ import { passwordReset } from "../controllers/user/password-reset";
 import { passwordResetToken } from "../controllers/user/password-reset-token";
 import { getProfile } from "../controllers/user/profile";
 import { registerUser } from "../controllers/user/register";
+import { sendVerificationEmail } from "../controllers/user/send-verification-email";
 import { errorHandlerInstance } from "../utils/error-handler";
 import { deriveUser } from "../utils/note/derive-user";
 
@@ -73,3 +74,16 @@ export const emailVerificationRoute = new Elysia({ prefix: "/auth" })
   .post("/email-verification", emailVerification, {
     body: emailVerificationSchema
   });
+
+export const getVerificationCodeRoute = new Elysia({ prefix: "/auth" })
+  .use(bearer())
+  .use(errorHandlerInstance)
+  .derive(deriveUser)
+  .use(
+    rateLimit({
+      scoping: "scoped",
+      max: 1,
+      generator: rateLimiterkeyGenerator
+    })
+  )
+  .get("/email-verification", sendVerificationEmail);

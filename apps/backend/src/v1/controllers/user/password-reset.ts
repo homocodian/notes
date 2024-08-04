@@ -18,7 +18,7 @@ export async function passwordReset(ctx: PasswordResetProps) {
     .from(userTable)
     .where(eq(userTable.email, ctx.body.email));
 
-  if (!user) {
+  if (!user || user.disabled) {
     return `If a ${env.APP_NAME} account exists for ${ctx.body.email}, an e-mail will be sent with further instructions.`;
   }
 

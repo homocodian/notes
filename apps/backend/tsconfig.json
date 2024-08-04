@@ -13,6 +13,7 @@
     "noUncheckedIndexedAccess": true,
     "skipLibCheck": true,
     "baseUrl": ".",
+    "moduleDetection": "force",
     "paths": {
       "@/*": ["./src/*"]
     },

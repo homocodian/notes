@@ -3,6 +3,7 @@ import Elysia from "elysia";
 import {
   authRoute,
   emailVerificationRoute,
+  getVerificationCodeRoute,
   passwordResetRoute
 } from "./routes/auth";
 import { cronRoute } from "./routes/cron";
@@ -13,6 +14,7 @@ import { usersRoute } from "./routes/users";
 export const v1Routes = new Elysia({ prefix: "v1" })
   .use(authRoute)
   .use(emailVerificationRoute)
+  .use(getVerificationCodeRoute)
   .use(passwordResetRoute)
   .use(noteRoute)
   .use(syncRoute)

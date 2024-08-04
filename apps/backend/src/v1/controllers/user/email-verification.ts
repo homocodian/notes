@@ -33,7 +33,7 @@ export async function emailVerification({
       .set({ emailVerified: true })
       .where(eq(userTable.id, user.id));
 
-    return;
+    return { message: `${user.email} is verifed` };
   } catch (err) {
     console.log("🚀 ~ err:", err);
     return error(500, "Internal Server Error");

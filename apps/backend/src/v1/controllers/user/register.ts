@@ -6,10 +6,10 @@ import { userTable } from "@/db/schema/user";
 import { env } from "@/env";
 import { lucia } from "@/libs/auth";
 import { BgQueue } from "@/libs/background-worker";
-import { sendVerificationCode } from "@/libs/emails/verify-email";
-import { generateEmailVerificationCode } from "@/libs/generate-email-varification-code";
+import { type SaveDeviceProps } from "@/libs/background/save-device";
+import { type SendVerificationCodeProps } from "@/libs/background/send-verification-code";
+import { JwtError, signJwtAsync } from "@/libs/jwt";
 import { validatePassword } from "@/libs/password-validation";
-import { SaveDeviceProps } from "@/libs/save-device";
 import { isValidEmail } from "@/v1/validations/email";
 import { RegisterUser, UserResponse } from "@/v1/validations/user";
 
@@ -39,7 +39,8 @@ export async function registerUser({
       .insert(userTable)
       .values({
         email: body.email,
-        hashedPassword
+        hashedPassword,
+        displayName: body.fullName
       })
       .returning({
         id: userTable.id,
@@ -53,32 +54,29 @@ export async function registerUser({
       return error(500, "Failed to create user");
     }
 
-    const verificationCode = await generateEmailVerificationCode(
-      user.id,
-      user.email
-    );
-
-    await sendVerificationCode(user.email, verificationCode);
-
     const session = await lucia.createSession(user.id, {});
-    const sessionToken = jwt.sign(session.id, env.TOKEN_SECRET);
+    const sessionToken = await signJwtAsync(session.id);
 
-    await BgQueue.add(
-      "saveDevice",
+    await BgQueue.addBulk([
       {
-        ip,
-        ua: request.headers.get("user-agent") ?? undefined,
-        userId: user.id,
-        sessionId: session.id,
-        device: body.device
-      } satisfies SaveDeviceProps,
+        name: "sendVerificationCode",
+        data: {
+          userId: user.id,
+          userEmail: user.email
+        } satisfies SendVerificationCodeProps
+      },
       {
-        attempts: 2,
-        backoff: {
-          type: "exponential",
-          delay: 4000
-        }
+        name: "saveDevice",
+        data: {
+          ip,
+          ua: request.headers.get("user-agent") ?? undefined,
+          userId: user.id,
+          sessionId: session.id,
+          device: body.device
+        } satisfies SaveDeviceProps
       }
+    ]).catch((error) =>
+      console.log("🚀 ~ registerUser background worker ~ error", error)
     );
 
     return {
@@ -91,6 +89,15 @@ export async function registerUser({
     } satisfies UserResponse & { sessionToken: string };
   } catch (err) {
     console.log("🚀 ~ registerUser ~ err:", err);
-    return error(400, "Email already exists.");
+
+    if (error instanceof JwtError) {
+      return error(500, "Failed to create session");
+    }
+
+    if ((err as any)?.code === "23505") {
+      return error(400, "Email already exists.");
+    }
+
+    return error(500, "Internal Server Error");
   }
 }
