@@ -5,15 +5,15 @@ import postgres from "postgres";
 const sql = postgres(process.env.DATABASE_URL!, { max: 1 });
 const db = drizzle(sql);
 
-async function main() {
-	try {
-		console.log("Migrating....");
-		await migrate(db, { migrationsFolder: import.meta.dir + "./migrations" });
-		await sql.end();
-		console.log("Migration done.");
-	} catch (error) {
-		console.log("🚀 ~ main ~ error:", error);
-	}
+async function runMigration() {
+  try {
+    console.log("Migrating....");
+    await migrate(db, { migrationsFolder: import.meta.dir + "./migrations" });
+    await sql.end();
+    console.log("Migration done.");
+  } catch (error) {
+    console.log("🚀 ~ runMigration ~ error:", error);
+  }
 }
 
-main();
+runMigration();

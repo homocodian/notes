@@ -3,8 +3,8 @@
   "version": "0.0.7",
   "scripts": {
     "dev": "NODE_DEBUG=* NODE_ENV=development bun --watch src/index.ts",
-    "build": "NODE_ENV=production bun build --target=bun ./src/index.ts --outdir ./dist",
-    "start": "bun run db:migrate && NODE_ENV=production bun ./dist/index.js",
+    "build": "NODE_ENV=production bun build --target=bun --sourcemap=linked ./src/index.ts --outdir ./dist",
+    "start": "NODE_ENV=production bun ./dist/index.js",
     "test": "bun test",
     "db:migrate": "bun run ./src/db/migrate.ts",
     "db:generate": "drizzle-kit generate",
@@ -32,6 +32,7 @@
     "pg": "^8.12.0",
     "postgres": "^3.4.4",
     "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "resend": "^3.5.0",
     "ua-parser-js": "^1.0.38",
     "zod": "^3.23.8"
