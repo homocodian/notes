@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - apps/backend/package.json
+  workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
   push_to_registry:
@@ -19,6 +20,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "20"
+
+      - name: Install Bun latest
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "latest"
 
       - name: Extract version from package.json
         id: get_version
@@ -44,13 +50,6 @@ jobs:
       - name: Create .env file from GitHub secret
         run: |
           echo "${{ secrets.BACKEND_ENVS }}" > ./apps/backend/.env
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ./apps/backend/.env
-
-      - name: Install Bun
-        run: |
-          curl -fsSL https://bun.sh/install | bash
-          export BUN_INSTALL="$HOME/.bun"
-          export PATH="$BUN_INSTALL/bin:$PATH"
 
       - name: Install dependencies
         working-directory: ./apps/backend
