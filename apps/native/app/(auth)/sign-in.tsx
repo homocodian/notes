@@ -86,7 +86,7 @@ function SignIn() {
       setIsLoading(true);
       await sendPasswordResetEmail(email);
       Snackbar({
-        text: "Email sent, if not found please check your spam folder"
+        text: "Reset link sent to your email, if not found please check your spam folder"
       });
     } catch (error) {
       if (error instanceof Error) {

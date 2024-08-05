@@ -3,11 +3,20 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
+import analytics from "@react-native-firebase/analytics";
 import * as Sentry from "@sentry/react-native";
+import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import { onlineManager, QueryClient } from "@tanstack/react-query";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { isRunningInExpoGo } from "expo";
 import { useFonts } from "expo-font";
-import { Slot, SplashScreen, useNavigationContainerRef } from "expo-router";
+import {
+  Slot,
+  SplashScreen,
+  useNavigationContainerRef,
+  usePathname
+} from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import * as Updates from "expo-updates";
 
 import { AddNoteButton } from "@/components/note/add-button";
@@ -17,10 +26,6 @@ import { AuthProvider } from "@/context/auth";
 import { Material3ThemeProvider } from "@/context/material-3-theme-provider";
 
 import "@/styles/global.css";
-
-import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
-import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
-import { StatusBar } from "expo-status-bar";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -49,45 +54,48 @@ let splashScreenTimout: NodeJS.Timeout | undefined;
 
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
 
-Sentry.init({
-  dsn: "https://bf5f689d3f5396e08266abcd9dcbaa6a@o4507646828609536.ingest.us.sentry.io/4507646830379008",
-  debug: __DEV__,
-  integrations: [
-    new Sentry.ReactNativeTracing({
-      routingInstrumentation,
-      enableNativeFramesTracking: !isRunningInExpoGo()
-    })
-  ],
-  tracesSampleRate: 0.5
-});
+if (!__DEV__) {
+  Sentry.init({
+    dsn: "https://bf5f689d3f5396e08266abcd9dcbaa6a@o4507646828609536.ingest.us.sentry.io/4507646830379008",
+    debug: __DEV__,
+    integrations: [
+      new Sentry.ReactNativeTracing({
+        routingInstrumentation,
+        enableNativeFramesTracking: !isRunningInExpoGo()
+      })
+    ],
+    tracesSampleRate: 0.5,
+    enabled: !__DEV__
+  });
 
-const manifest = Updates.manifest;
-const metadata = "metadata" in manifest ? manifest.metadata : undefined;
-const extra = "extra" in manifest ? manifest.extra : undefined;
-const updateGroup =
-  metadata && "updateGroup" in metadata ? metadata.updateGroup : undefined;
+  const manifest = Updates.manifest;
+  const metadata = "metadata" in manifest ? manifest.metadata : undefined;
+  const extra = "extra" in manifest ? manifest.extra : undefined;
+  const updateGroup =
+    metadata && "updateGroup" in metadata ? metadata.updateGroup : undefined;
 
-Sentry.configureScope((scope) => {
-  scope.setTag("expo-update-id", Updates.updateId);
-  scope.setTag("expo-is-embedded-update", Updates.isEmbeddedLaunch);
+  Sentry.configureScope((scope) => {
+    scope.setTag("expo-update-id", Updates.updateId);
+    scope.setTag("expo-is-embedded-update", Updates.isEmbeddedLaunch);
 
-  if (typeof updateGroup === "string") {
-    scope.setTag("expo-update-group-id", updateGroup);
+    if (typeof updateGroup === "string") {
+      scope.setTag("expo-update-group-id", updateGroup);
 
-    const owner = extra?.expoClient?.owner ?? "[account]";
-    const slug = extra?.expoClient?.slug ?? "[project]";
-    scope.setTag(
-      "expo-update-debug-url",
-      `https://expo.dev/accounts/${owner}/projects/${slug}/updates/${updateGroup}`
-    );
-  } else if (Updates.isEmbeddedLaunch) {
-    // This will be `true` if the update is the one embedded in the build, and not one downloaded from the updates server.
-    scope.setTag(
-      "expo-update-debug-url",
-      "not applicable for embedded updates"
-    );
-  }
-});
+      const owner = extra?.expoClient?.owner ?? "[account]";
+      const slug = extra?.expoClient?.slug ?? "[project]";
+      scope.setTag(
+        "expo-update-debug-url",
+        `https://expo.dev/accounts/${owner}/projects/${slug}/updates/${updateGroup}`
+      );
+    } else if (Updates.isEmbeddedLaunch) {
+      // This will be `true` if the update is the one embedded in the build, and not one downloaded from the updates server.
+      scope.setTag(
+        "expo-update-debug-url",
+        "not applicable for embedded updates"
+      );
+    }
+  });
+}
 
 function RootLayout() {
   const ref = useNavigationContainerRef();
@@ -146,6 +154,24 @@ function RootLayoutNav() {
     Updates.checkForUpdateAsync().catch(() => {});
   }, []);
 
+  const pathname = usePathname();
+
+  React.useEffect(() => {
+    const logScreenView = async () => {
+      try {
+        await analytics().logScreenView({
+          screen_name: pathname,
+          screen_class: pathname
+        });
+      } catch (err) {
+        Sentry.captureException(err);
+      }
+    };
+    if (!__DEV__) {
+      logScreenView();
+    }
+  }, [pathname]);
+
   return (
     <>
       <PersistQueryClientProvider
@@ -171,4 +197,4 @@ function RootLayoutNav() {
   );
 }
 
-export default Sentry.wrap(RootLayout);
+export default __DEV__ ? RootLayout : Sentry.wrap(RootLayout);

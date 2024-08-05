@@ -52,7 +52,9 @@ const config: ExpoConfig = {
         backgroundColor: DARK_BACKGROUND_COLOR
       }
     },
-    versionCode: 1
+    versionCode: 1,
+    googleServicesFile:
+      process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json"
   },
   web: {
     bundler: "metro",
@@ -61,16 +63,18 @@ const config: ExpoConfig = {
   },
   plugins: [
     ["@morrowdigital/watermelondb-expo-plugin", { disableJsi: true }],
+    "@react-native-firebase/app",
     [
       "expo-build-properties",
       {
-        // ios: { newArchEnabled: true },
         android: {
-          // newArchEnabled: true,
           kotlinVersion: "1.8.10",
           packagingOptions: {
             pickFirst: ["**/libc++_shared.so"]
           }
+        },
+        ios: {
+          useFrameworks: "static"
         }
       }
     ],

@@ -29,6 +29,7 @@ function Register() {
   } = useForm<RegisterAuthSchema>({
     resolver: zodResolver(registerAuthSchema),
     defaultValues: {
+      fullName: undefined,
       email: "",
       password: "",
       confirmPassword: ""
@@ -46,8 +47,9 @@ function Register() {
   async function onSubmit(data: RegisterAuthSchema) {
     Keyboard.dismiss();
     setIsLoading(true);
-    await createUser(data.email, data.password, data.confirmPassword);
-    setIsLoading(false);
+    await createUser(data).finally(() => {
+      setIsLoading(false);
+    });
   }
 
   return (
@@ -89,6 +91,29 @@ function Register() {
           </View>
         </View>
         <View className="flex justify-between items-center  self-stretch px-5">
+          <View className="self-stretch">
+            <Controller
+              control={control}
+              rules={{
+                required: false
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  mode="outlined"
+                  label="Full Name"
+                  className="w-full"
+                  autoComplete="name"
+                />
+              )}
+              name="fullName"
+            />
+            <HelperText type="error" visible={!!errors.fullName}>
+              {errors.fullName?.message}
+            </HelperText>
+          </View>
           <View className="self-stretch">
             <Controller
               control={control}
