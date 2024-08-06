@@ -10,6 +10,7 @@ import { syncChanges } from "@/lib/db/sync";
 import { retryOnce } from "@/lib/retry-once";
 import { useSyncStore } from "@/lib/store/sync";
 import { useUserStore } from "@/lib/store/user";
+import { toast } from "@/lib/toast";
 
 export async function sync(signOut: ReturnType<typeof useAuth>["signOut"]) {
   const user = useUserStore.getState().user;
@@ -23,6 +24,9 @@ export async function sync(signOut: ReturnType<typeof useAuth>["signOut"]) {
     } catch (error) {
       if (typeof __DEV__ !== "undefined" && __DEV__) {
         console.error("Failed to sync data after retrying once:", error);
+        toast("Sync failed. Please log in again", {
+          android: { duration: "LONG" }
+        });
       }
       if (
         error instanceof APIError &&
