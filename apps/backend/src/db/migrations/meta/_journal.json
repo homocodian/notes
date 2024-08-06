@@ -8,6 +8,20 @@
       "when": 1722715603632,
       "tag": "0000_rich_scarlet_spider",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1722897153324,
+      "tag": "0001_neat_donald_blake",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1722960820070,
+      "tag": "0002_glossy_vampiro",
+      "breakpoints": true
     }
   ]
 }

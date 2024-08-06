@@ -1,9 +1,11 @@
 import { Context } from "elysia";
-import { User } from "lucia";
+import { Session, User } from "lucia";
 
 import { lucia } from "@/libs/auth";
 import { VerifyJwtAsync } from "@/libs/jwt";
 import { Prettify } from "@/types/prettify";
+
+export type UserWithSession = User & { session: Session };
 
 export async function deriveUser({
   error,
@@ -14,14 +16,14 @@ export async function deriveUser({
   const sessionId = await VerifyJwtAsync(bearer);
   if (typeof sessionId !== "string") return error(401, "Unauthorized");
 
-  const { user } = await lucia.validateSession(sessionId);
+  const { user, session } = await lucia.validateSession(sessionId);
   if (!user) return error(401, "Unauthorized");
 
   if (user.disabled) {
     return error(403, "Your account has been disabled");
   }
 
-  const prettyUser = user as Prettify<User>;
+  const prettyUser = { ...user, session } as Prettify<UserWithSession>;
 
   return { user: prettyUser };
 }

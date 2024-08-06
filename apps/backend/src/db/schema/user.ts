@@ -17,7 +17,7 @@ import { noteTable, notesToUsersTable } from "./note";
 export const deviceType = pgEnum("device_type", [
   "UNKNOWN",
   "PHONE",
-  "TABLEt",
+  "TABLET",
   "DESKTOP",
   "TV"
 ]);
@@ -148,13 +148,18 @@ export const userRelations = relations(userTable, ({ many }) => ({
 export const deviceTable = pgTable(
   "device",
   {
+    id: serial("id").notNull().primaryKey(),
     ip: text("ip"),
-    userId: integer("user_id").references(() => userTable.id, {
-      onDelete: "cascade"
-    }),
-    sessionId: text("session_id").references(() => sessionTable.id, {
-      onDelete: "cascade"
-    }),
+    userId: integer("user_id")
+      .notNull()
+      .references(() => userTable.id, {
+        onDelete: "cascade"
+      }),
+    sessionId: text("session_id")
+      .notNull()
+      .references(() => sessionTable.id, {
+        onDelete: "cascade"
+      }),
     type: deviceType("type").notNull().default("UNKNOWN"),
     os: text("os"),
     name: text("name"),
@@ -173,3 +178,5 @@ export const deviceTable = pgTable(
     pk: primaryKey({ columns: [t.userId, t.sessionId] })
   })
 );
+
+export type DeviceTable = InferSelectModel<typeof deviceTable>;

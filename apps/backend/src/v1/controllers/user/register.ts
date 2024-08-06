@@ -27,9 +27,10 @@ export async function registerUser({
   if (!isValidEmail(body.email)) {
     return error(400, "Invalid email");
   }
+  const validatedPassword = validatePassword(body.password);
 
-  if (!validatePassword(body.password)) {
-    return error(400, "Invalid password");
+  if (!validatedPassword.ok) {
+    return error(400, validatedPassword.error);
   }
 
   const hashedPassword = await Bun.password.hash(body.password);

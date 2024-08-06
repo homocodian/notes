@@ -86,3 +86,19 @@ export const logoutSchema = t.Optional(
 );
 
 export type LogoutSchema = typeof logoutSchema.static;
+
+export const userUpdateSchema = t.Partial(
+  t.Object({
+    displayName: t.String({ minLength: 3 }),
+    photoURL: t.String({ format: "uri" })
+  })
+);
+
+export type UserUpdateSchema = typeof userUpdateSchema.static;
+
+export const changePasswordSchema = t.Object({
+  currentPassword: t.String(),
+  newPassword: t.String()
+});
+
+export type ChangePasswordSchema = typeof changePasswordSchema.static;

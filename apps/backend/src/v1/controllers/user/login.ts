@@ -15,7 +15,6 @@ interface LoginUserProps extends Context {
 }
 
 export async function loginUser({ body, error, request, ip }: LoginUserProps) {
-  console.log("🚀 ~ loginUser ~ body:", body);
   const [user] = await db
     .select()
     .from(userTable)

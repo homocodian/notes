@@ -1,7 +1,7 @@
 import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
-import { integer, pgTable, primaryKey, text } from "drizzle-orm/pg-core";
+import { index, integer, pgTable, primaryKey, text } from "drizzle-orm/pg-core";
 
-import { userTable } from "./user";
+import { sessionTable, userTable } from "./user";
 
 export const FCMTokenTable = pgTable(
   "fcm_token",
@@ -9,11 +9,15 @@ export const FCMTokenTable = pgTable(
     userId: integer("user_id")
       .notNull()
       .references(() => userTable.id, { onDelete: "cascade" }),
+    sessionId: text("session_id")
+      .notNull()
+      .references(() => sessionTable.id, { onDelete: "cascade" }),
     deviceId: text("device_id").notNull(),
     token: text("token").notNull()
   },
   (t) => ({
-    pk: primaryKey({ columns: [t.userId, t.deviceId] })
+    pk: primaryKey({ columns: [t.userId, t.deviceId] }),
+    fcmTokenSessionIdx: index("fcm_token_session_idx").on(t.sessionId)
   })
 );
 

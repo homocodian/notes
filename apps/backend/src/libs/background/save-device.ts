@@ -1,3 +1,4 @@
+import countryLookup from "country-code-lookup";
 import UAParser from "ua-parser-js";
 import { z } from "zod";
 
@@ -38,6 +39,14 @@ export async function saveDevice({
       `https://ipinfo.io/${ip}?token=${env.IPINFO_TOKEN}`
     );
     ipResult = await response.json().catch(() => ({}));
+    if (ipResult?.country) {
+      try {
+        ipResult["country"] =
+          countryLookup.byIso(ipResult.country)?.country ?? ipResult.country;
+      } catch (error) {
+        console.error("Error looking up country code", error);
+      }
+    }
   }
 
   const { data } = ipResultSchema.safeParse(ipResult);
