@@ -32,81 +32,86 @@ export default function Account() {
   }
 
   return (
-    <View className="flex-1 p-4">
-      <View className="space-y-6">
-        <Section label="Account information">
-          <Surface
-            style={{ borderRadius: theme.roundness * 2, overflow: "hidden" }}
-          >
-            <CardButton
-              label="Display Name"
-              value={user?.displayName ?? "Unknown"}
-              onPress={() =>
-                router.navigate({
-                  pathname: "/edit-account-info-modal",
-                  params: { to: "Name" }
-                })
-              }
-            />
-            <Divider />
-            <CardButton
-              label="Email"
-              value={user?.email ?? "Unknown"}
-              onPress={() => {
-                toast("Cannot change email address at the moment", {
-                  android: { duration: "LONG" }
-                });
-              }}
-            />
-          </Surface>
-        </Section>
-
-        <Section label="Account Settings" twClass="mt-5">
-          <Surface
-            style={{ borderRadius: theme.roundness * 2, overflow: "hidden" }}
-          >
-            <CardButton
-              label="Password"
-              onPress={() =>
-                router.navigate({
-                  pathname: "/edit-account-info-modal",
-                  params: { to: "Password" }
-                })
-              }
-            />
-            <Divider />
-            <CardButton
-              label="Devices"
-              onPress={() =>
-                router.navigate({
-                  pathname: "/edit-account-info-modal",
-                  params: { to: "Devices" }
-                })
-              }
-            />
-          </Surface>
-        </Section>
-
-        <Surface style={{ borderRadius: theme.roundness * 2 }}>
-          <TouchableOpacity onPress={logout} disabled={visible}>
-            <View className="flex flex-row items-center py-4 px-4 space-x-4">
-              <MaterialIcons
-                name="logout"
-                size={24}
-                color={theme.colors.onSurface}
+    <>
+      <View className="flex-1 p-4">
+        <View className="space-y-6">
+          <Section label="Account information">
+            <Surface
+              style={{ borderRadius: theme.roundness * 2, overflow: "hidden" }}
+            >
+              <CardButton
+                label="Display Name"
+                value={user?.displayName ?? "Unknown"}
+                onPress={() =>
+                  router.navigate({
+                    pathname: "/edit-account-info-modal",
+                    params: { to: "Name" }
+                  })
+                }
               />
-              <Text variant="labelLarge" style={{ color: theme.colors.error }}>
-                Log Out
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </Surface>
-      </View>
+              <Divider />
+              <CardButton
+                label="Email"
+                value={user?.email ?? "Unknown"}
+                onPress={() => {
+                  toast("Cannot change email address at the moment", {
+                    android: { duration: "LONG" }
+                  });
+                }}
+              />
+            </Surface>
+          </Section>
 
-      <View className="absolute bottom-3 w-screen flex justify-center items-center">
-        <Text variant="titleSmall">
-          {`${Application.applicationName} v${Application.nativeApplicationVersion} (${Application.nativeBuildVersion})`}
-        </Text>
+          <Section label="Account Settings" twClass="mt-5">
+            <Surface
+              style={{ borderRadius: theme.roundness * 2, overflow: "hidden" }}
+            >
+              <CardButton
+                label="Password"
+                onPress={() =>
+                  router.navigate({
+                    pathname: "/edit-account-info-modal",
+                    params: { to: "Password" }
+                  })
+                }
+              />
+              <Divider />
+              <CardButton
+                label="Devices"
+                onPress={() =>
+                  router.navigate({
+                    pathname: "/edit-account-info-modal",
+                    params: { to: "Devices" }
+                  })
+                }
+              />
+            </Surface>
+          </Section>
+
+          <Surface style={{ borderRadius: theme.roundness * 2 }}>
+            <TouchableOpacity onPress={logout} disabled={visible}>
+              <View className="flex flex-row items-center py-4 px-4 space-x-4">
+                <MaterialIcons
+                  name="logout"
+                  size={24}
+                  color={theme.colors.onSurface}
+                />
+                <Text
+                  variant="labelLarge"
+                  style={{ color: theme.colors.error }}
+                >
+                  Log Out
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </Surface>
+        </View>
+
+        <View className="absolute bottom-3 w-screen flex justify-center items-center">
+          <Text variant="titleSmall">
+            {`${Application.applicationName} v${Application.nativeApplicationVersion} (${Application.nativeBuildVersion})`}
+          </Text>
+        </View>
       </View>
       <Portal>
         <Dialog visible={visible}>
@@ -118,6 +123,6 @@ export default function Account() {
           </Dialog.Content>
         </Dialog>
       </Portal>
-    </View>
+    </>
   );
 }
