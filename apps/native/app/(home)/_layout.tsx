@@ -16,8 +16,14 @@ export default function HomeLayout() {
         name="account"
         options={{
           headerShown: true,
-          animation: "fade_from_bottom",
           title: "Account"
+        }}
+      />
+      <Stack.Screen
+        name="edit-account-info-modal"
+        options={{
+          presentation: "modal",
+          animation: "fade_from_bottom"
         }}
       />
     </Stack>

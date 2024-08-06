@@ -12,12 +12,19 @@ interface UserState {
    * ****************************************************
    * @param user The new user object or null to clear the user.
    */
-  setUser: (user: User | null) => void;
+  setUser: (user: User | null | ((user: User | null) => User)) => void;
 }
 
 export const useUserStore = create<UserState>()(
-  subscribeWithSelector((set) => ({
+  subscribeWithSelector((set, get) => ({
     user: null,
-    setUser: (user) => set({ user })
+    setUser: (user) => {
+      if (typeof user === "function") {
+        const data = user(get().user);
+        set({ user: data });
+      } else {
+        set({ user });
+      }
+    }
   }))
 );

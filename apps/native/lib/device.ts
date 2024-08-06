@@ -3,8 +3,24 @@ import { Platform } from "react-native";
 import * as Sentry from "@sentry/react-native";
 import * as Application from "expo-application";
 import * as Crypto from "expo-crypto";
-import * as Device from "expo-device";
+import * as ExpoDevice from "expo-device";
 import * as SecureStore from "expo-secure-store";
+
+export type Device = {
+  id: number;
+  ip: string | null;
+  userId: number;
+  type: DeviceType;
+  os: string;
+  name: string | null;
+  model: string | null;
+  osVersion: string | null;
+  city: string | null;
+  state: string | null;
+  country: string | null;
+  timezone: string | null;
+  createdAt: string;
+};
 
 export const DEVICE_TYPE = [
   "UNKNOWN",
@@ -24,16 +40,18 @@ export type TDevice = {
   os: string;
 };
 
-function getDeviceType(type: Device.DeviceType | null): DeviceType | undefined {
+function getDeviceType(
+  type: ExpoDevice.DeviceType | null
+): DeviceType | undefined {
   if (!type) return undefined;
   switch (type) {
-    case Device.DeviceType.PHONE:
+    case ExpoDevice.DeviceType.PHONE:
       return "PHONE";
-    case Device.DeviceType.TABLET:
+    case ExpoDevice.DeviceType.TABLET:
       return "TABLET";
-    case Device.DeviceType.DESKTOP:
+    case ExpoDevice.DeviceType.DESKTOP:
       return "DESKTOP";
-    case Device.DeviceType.TV:
+    case ExpoDevice.DeviceType.TV:
       return "TV";
     default:
       return "UNKNOWN";
@@ -42,11 +60,11 @@ function getDeviceType(type: Device.DeviceType | null): DeviceType | undefined {
 
 export function getDeviceInfo() {
   const device: Partial<TDevice> = {
-    type: getDeviceType(Device.deviceType),
-    name: Device.deviceName ?? undefined,
-    model: Device.modelName ?? undefined,
-    osVersion: Device.osVersion ?? undefined,
-    os: Device.osName ?? undefined
+    type: getDeviceType(ExpoDevice.deviceType),
+    name: ExpoDevice.deviceName ?? undefined,
+    model: ExpoDevice.modelName ?? undefined,
+    osVersion: ExpoDevice.osVersion ?? undefined,
+    os: ExpoDevice.osName ?? undefined
   };
   return device;
 }
