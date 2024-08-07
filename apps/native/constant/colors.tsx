@@ -1,1 +1,1 @@
-export const Colors = { muted: "#868e96", darkMuted: "#495057" };
+export const Colors = { muted: "#bdc1c7", darkMuted: "#495057" };

@@ -3,8 +3,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { Drawer } from "expo-router/drawer";
 
+import { Appbar } from "@/components/appbar";
 import DrawerContent from "@/components/drawer-content";
-import NavigationBar from "@/components/navigation-bar";
 import { useSync } from "@/hooks/use-sync";
 
 export const unstable_settings = {
@@ -18,7 +18,7 @@ export default function AppLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Drawer
         screenOptions={{
-          header: (props) => <NavigationBar {...props} />
+          header: (props) => <Appbar {...props} />
         }}
         drawerContent={DrawerContent}
       >

@@ -4,7 +4,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { MemoizedList } from "@/components/search/list";
 import { MemoizedSearchbar } from "@/components/search/searchbar";
-import { TOP_PADDING } from "@/constant/screens";
 import { LoadingProvider } from "@/context/loading";
 import { SearchProvider } from "@/context/search";
 
@@ -14,7 +13,7 @@ export default function SearchScreen() {
   return (
     <View
       style={{
-        paddingTop: insets.top + TOP_PADDING,
+        paddingTop: insets.top + 5,
         paddingBottom: insets.bottom,
         paddingLeft: insets.left,
         paddingRight: insets.right

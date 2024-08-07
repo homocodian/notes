@@ -1,29 +1,27 @@
+import { ComponentProps } from "react";
 import { Avatar, IconButton } from "react-native-paper";
+
+import { MaterialIcons } from "@expo/vector-icons";
 
 import { useAuth } from "@/context/auth";
 import { useAppTheme } from "@/context/material-3-theme-provider";
 import { getInitials } from "@/utils/get-initials";
 
-const AVATAR_SIZE = 34;
+type IconProps = ComponentProps<typeof IconButton>["icon"];
 
-export function UserAvater() {
+type UserAvaterProps = Parameters<Extract<IconProps, Function>>[number];
+
+export function UserAvater(props: UserAvaterProps) {
   const { user } = useAuth();
   const theme = useAppTheme();
 
   if (!user) {
-    return <IconButton icon="account-question" />;
+    return <MaterialIcons name="account-circle" {...props} />;
   }
 
   if (user.photoURL) {
     return (
-      <IconButton
-        icon={() => (
-          <Avatar.Image
-            size={AVATAR_SIZE}
-            source={{ uri: user.photoURL as string }}
-          />
-        )}
-      />
+      <Avatar.Image {...props} source={{ uri: user.photoURL as string }} />
     );
   }
 
@@ -31,18 +29,13 @@ export function UserAvater() {
   const label = getInitials(name);
 
   return (
-    <IconButton
-      icon={(props) => (
-        <Avatar.Text
-          {...props}
-          label={label}
-          size={AVATAR_SIZE}
-          labelStyle={{
-            fontWeight: "bold",
-            color: theme.colors.onPrimary
-          }}
-        />
-      )}
+    <Avatar.Text
+      {...props}
+      label={label}
+      labelStyle={{
+        fontWeight: "bold",
+        color: theme.colors.onPrimary
+      }}
     />
   );
 }

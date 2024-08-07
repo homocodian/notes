@@ -65,7 +65,7 @@ export function DeviceRevokeButton({
           </View>
         </View>
         <View>
-          <Text variant="labelLarge">
+          <Text variant="labelLarge" numberOfLines={1} ellipsizeMode="head">
             {device.os ?? "Unknown"}
             {" • "}
             {device.name ?? "Unkown"}
