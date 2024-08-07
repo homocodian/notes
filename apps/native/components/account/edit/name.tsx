@@ -30,7 +30,7 @@ export function EditAccountName() {
     Keyboard.dismiss();
     setIsLoading(true);
     try {
-      const data = await API.patch("/v1/users/profile", {
+      const data = await API.patch("/v1/user/profile", {
         data: { displayName: displayName.trim() }
       });
       const user = userSchema.omit({ sessionToken: true }).parse(data);
