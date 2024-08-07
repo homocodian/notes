@@ -15,6 +15,10 @@ import { useRouter } from "expo-router";
 
 import { CardButton } from "@/components/account/card-button";
 import { Section } from "@/components/account/section";
+import {
+  SCREEN_HORIZONTAL_PADDING,
+  SCREEN_VERTICAL_PADDING
+} from "@/constant/screens";
 import { useAuth } from "@/context/auth";
 import { useAppTheme } from "@/context/material-3-theme-provider";
 import { toast } from "@/lib/toast";
@@ -33,7 +37,13 @@ export default function Account() {
 
   return (
     <>
-      <View className="flex-1 p-4">
+      <View
+        className="flex-1"
+        style={{
+          paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+          paddingVertical: SCREEN_VERTICAL_PADDING
+        }}
+      >
         <View className="space-y-6">
           <Section label="Account information">
             <Surface

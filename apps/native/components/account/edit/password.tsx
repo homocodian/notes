@@ -5,12 +5,18 @@ import { Button, HelperText, Text, TextInput } from "react-native-paper";
 import { useRouter } from "expo-router";
 
 import { Colors } from "@/constant/colors";
+import {
+  SCREEN_HORIZONTAL_PADDING,
+  SCREEN_VERTICAL_PADDING
+} from "@/constant/screens";
+import { useAppTheme } from "@/context/material-3-theme-provider";
 import { API } from "@/lib/api";
 import { APIError } from "@/lib/api-error";
 import { toast } from "@/lib/toast";
 import { validatePassword } from "@/lib/validations/password";
 
 export function UpdateAccountPassword() {
+  const theme = useAppTheme();
   const router = useRouter();
   const [passwords, setPasswords] = useState({
     currentPassword: "",
@@ -84,7 +90,13 @@ export function UpdateAccountPassword() {
   }
 
   return (
-    <View className="flex gap-6">
+    <View
+      className="flex gap-6"
+      style={{
+        paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+        paddingVertical: SCREEN_VERTICAL_PADDING
+      }}
+    >
       <View className="flex space-y-2">
         <Text variant="headlineSmall" className="text-center font-bold">
           Update your password
@@ -99,19 +111,16 @@ export function UpdateAccountPassword() {
       </View>
 
       <View className="flex flex-col space-y-4">
-        <View className="space-y-2">
-          <Text variant="labelLarge" style={{ color: Colors.muted }}>
-            Current Password
-          </Text>
+        <View>
           <TextInput
             mode="outlined"
             value={passwords.currentPassword}
             onChangeText={handleInputChange("currentPassword")}
-            placeholder="Enter your current password"
             placeholderTextColor={Colors.darkMuted}
             secureTextEntry={!showPasswords.currentPassword}
             autoCapitalize="none"
             autoCorrect={false}
+            label="Current Password"
             right={
               !showPasswords.currentPassword ? (
                 <TextInput.Icon
@@ -125,26 +134,24 @@ export function UpdateAccountPassword() {
                 />
               )
             }
+            outlineStyle={{ borderRadius: theme.roundness * 2 }}
           />
           {error.currentPassword ? (
             <HelperText type="error">{error.currentPassword}</HelperText>
           ) : null}
         </View>
-        <View className="space-y-2">
-          <Text variant="labelLarge" style={{ color: Colors.muted }}>
-            New Password
-          </Text>
+        <View>
           <TextInput
             mode="outlined"
             value={passwords.newPassword}
             onChangeText={handleInputChange("newPassword")}
-            placeholder="Enter your new password"
             placeholderTextColor={Colors.darkMuted}
             secureTextEntry={!showPasswords.newPassword}
             autoComplete="off"
             importantForAutofill="no"
             autoCapitalize="none"
             autoCorrect={false}
+            label="New Password"
             right={
               !showPasswords.newPassword ? (
                 <TextInput.Icon
@@ -158,6 +165,7 @@ export function UpdateAccountPassword() {
                 />
               )
             }
+            outlineStyle={{ borderRadius: theme.roundness * 2 }}
           />
           {error.newPassword ? (
             <HelperText type="error">{error.newPassword}</HelperText>

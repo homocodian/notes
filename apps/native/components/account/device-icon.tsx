@@ -1,4 +1,4 @@
-import { Feather, FontAwesome6, Octicons } from "@expo/vector-icons";
+import { AntDesign, Feather, FontAwesome6, Octicons } from "@expo/vector-icons";
 
 import { useAppTheme } from "@/context/material-3-theme-provider";
 import { DeviceType } from "@/lib/device";
@@ -85,11 +85,7 @@ export function DeviceIcon({
   switch (deviceType) {
     case "PHONE":
       return (
-        <Octicons
-          name="device-mobile"
-          size={20}
-          color={theme.colors.onBackground}
-        />
+        <AntDesign name="mobile1" size={20} color={theme.colors.onBackground} />
       );
     case "TABLET":
       return (

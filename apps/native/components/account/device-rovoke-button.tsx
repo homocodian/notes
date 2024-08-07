@@ -46,7 +46,7 @@ export function DeviceRevokeButton({
   }
 
   return (
-    <View className="flex flex-row justify-between items-center py-3 px-2">
+    <View className="flex flex-row justify-between items-center py-2 px-2">
       <View className="flex flex-row space-x-2">
         <View className="flex justify-center items-center">
           <View

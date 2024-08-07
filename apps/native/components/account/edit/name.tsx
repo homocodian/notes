@@ -6,13 +6,18 @@ import {
   Dialog,
   Portal,
   Text,
-  TextInput
+  TextInput,
+  useTheme
 } from "react-native-paper";
 
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 
 import { Colors } from "@/constant/colors";
+import {
+  SCREEN_HORIZONTAL_PADDING,
+  SCREEN_VERTICAL_PADDING
+} from "@/constant/screens";
 import { API } from "@/lib/api";
 import { APIError } from "@/lib/api-error";
 import { useUserStore } from "@/lib/store/user";
@@ -20,6 +25,7 @@ import { toast } from "@/lib/toast";
 import { userSchema } from "@/lib/validations/user";
 
 export function EditAccountName() {
+  const theme = useTheme();
   const router = useRouter();
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
@@ -52,21 +58,36 @@ export function EditAccountName() {
   }
 
   return (
-    <View className="flex flex-col gap-4">
-      <Text variant="labelLarge" style={{ color: Colors.muted }}>
-        Display Name
-      </Text>
+    <View
+      className="flex flex-col gap-4"
+      style={{
+        paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+        paddingVertical: SCREEN_VERTICAL_PADDING
+      }}
+    >
+      <View className="space-y-1">
+        <Text variant="labelLarge" style={{ color: Colors.muted }}>
+          Display Name
+        </Text>
+        <Text variant="bodySmall" style={{ color: Colors.muted }}>
+          This will be displayed for your memembers when neccessary instead of
+          your email
+        </Text>
+      </View>
       <TextInput
         value={displayName}
         onChangeText={setDisplayName}
         mode="outlined"
-        placeholder="Display Name"
+        label="Display Name"
         right={
           <TextInput.Icon
             icon={(props) => <Ionicons name="close-circle" {...props} />}
             onPress={() => setDisplayName("")}
           />
         }
+        outlineStyle={{
+          borderRadius: theme.roundness * 2
+        }}
       />
       <Button
         mode="contained"

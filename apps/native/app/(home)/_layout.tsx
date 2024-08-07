@@ -6,26 +6,26 @@ export const unstable_settings = {
 
 export default function HomeLayout() {
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false
-      }}
-    >
-      <Stack.Screen name="(drawer)" />
+    <Stack>
+      <Stack.Screen
+        name="(drawer)"
+        options={{
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name="note/editor"
+        options={{
+          headerShown: false
+        }}
+      />
       <Stack.Screen
         name="account"
         options={{
-          headerShown: true,
           title: "Account"
         }}
       />
-      <Stack.Screen
-        name="edit-account-info-modal"
-        options={{
-          presentation: "modal",
-          animation: "fade_from_bottom"
-        }}
-      />
+      <Stack.Screen name="edit-account-info-modal" />
     </Stack>
   );
 }
