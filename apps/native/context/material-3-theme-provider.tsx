@@ -23,6 +23,8 @@ import {
 import * as NavigationBar from "expo-navigation-bar";
 import { setBackgroundColorAsync } from "expo-system-ui";
 
+import { useSplashScreenStatus } from "@/lib/store/splash-screen-status";
+
 type Material3ThemeProviderProps = {
   theme: Material3Theme;
   updateTheme: (sourceColor: string) => void;
@@ -43,6 +45,9 @@ export function Material3ThemeProvider({
   sourceColor?: string;
   fallbackSourceColor?: string;
 }) {
+  const isSplashScreenVisible = useSplashScreenStatus(
+    (state) => state.isSplashScreenVisible
+  );
   const colorScheme = useColorScheme() ?? "light";
 
   // Material theme adaptive
@@ -78,18 +83,16 @@ export function Material3ThemeProvider({
   // Keep the root view background color in sync with the current theme
   React.useEffect(() => {
     setBackgroundColorAsync(navigationTheme.colors.background);
-    const splashScreenHiddenTimeout = setTimeout(() => {
+  }, [navigationTheme]);
+
+  React.useEffect(() => {
+    if (!isSplashScreenVisible) {
       NavigationBar.setBackgroundColorAsync(navigationTheme.colors.background);
       NavigationBar.setButtonStyleAsync(
         colorScheme === "dark" ? "light" : "dark"
       );
-    }, 1500);
-    return () => {
-      if (splashScreenHiddenTimeout) {
-        clearTimeout(splashScreenHiddenTimeout);
-      }
-    };
-  }, [navigationTheme, colorScheme]);
+    }
+  }, [colorScheme, navigationTheme, isSplashScreenVisible]);
 
   return (
     <Material3ThemeProviderContext.Provider
