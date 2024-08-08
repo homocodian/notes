@@ -36,7 +36,7 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-let splashScreenTimout: NodeJS.Timeout | undefined;
+// let splashScreenTimout: NodeJS.Timeout | undefined;
 
 removeDefaultPropError();
 
@@ -65,16 +65,16 @@ function RootLayout() {
 
   React.useEffect(() => {
     if (!isLoading && ref.current?.isReady()) {
-      splashScreenTimout = setTimeout(() => {
-        SplashScreen.hideAsync().then(() => setSplashScreenVisible(false));
-      }, 500);
+      // splashScreenTimout = setTimeout(() => {
+      SplashScreen.hideAsync().then(() => setSplashScreenVisible(false));
+      // }, 500);
     }
 
-    return function cleanup() {
-      if (splashScreenTimout) {
-        clearTimeout(splashScreenTimout);
-      }
-    };
+    // return function cleanup() {
+    //   if (splashScreenTimout) {
+    //     clearTimeout(splashScreenTimout);
+    //   }
+    // };
   }, [isLoading, ref]);
 
   if (isLoading) {

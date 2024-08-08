@@ -1,10 +1,18 @@
-import { Stack } from "expo-router";
+import { Redirect, Stack } from "expo-router";
+
+import { useAuth } from "@/context/auth";
 
 export const unstable_settings = {
   initialRouteName: "(drawer)"
 };
 
 export default function HomeLayout() {
+  const { user } = useAuth();
+
+  if (!user) {
+    return <Redirect href="/sign-in" />;
+  }
+
   return (
     <Stack>
       <Stack.Screen

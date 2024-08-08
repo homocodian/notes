@@ -2,25 +2,30 @@ import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Image, Keyboard, ScrollView, View } from "react-native";
 import { Button, HelperText, Text, TextInput } from "react-native-paper";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import type { RegisterAuthSchema } from "@/lib/validations/auth";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 
 import { useAuth } from "@/context/auth";
 import { useAppTheme } from "@/context/material-3-theme-provider";
 import { registerAuthSchema } from "@/lib/validations/auth";
 
 function Register() {
-  const insets = useSafeAreaInsets();
   const theme = useAppTheme();
-  const { createUser } = useAuth();
+  const { createUser, user } = useAuth();
   const [isSecureEntry, setIsSecureEntry] = React.useState(true);
   const [isSecureEntryForConfirm, setIsSecureEntryForConfirm] =
     React.useState(true);
   const [isLoading, setIsLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    if (user) {
+      router.replace("/");
+    }
+  }, [user]);
 
   const {
     control,
@@ -53,14 +58,9 @@ function Register() {
   }
 
   return (
-    <View
+    <SafeAreaView
       style={{
-        flex: 1,
-        // Paddings to handle safe area
-        paddingTop: insets.top,
-        paddingBottom: insets.bottom,
-        paddingLeft: insets.left,
-        paddingRight: insets.right
+        flex: 1
       }}
     >
       <ScrollView
@@ -228,7 +228,7 @@ function Register() {
           </Link>
         </Text>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 

@@ -3,7 +3,6 @@ import React, { useCallback } from "react";
 import NetInfo from "@react-native-community/netinfo";
 
 import { USER_SESSION_KEY } from "@/constant/auth";
-import { useProtectedRoute } from "@/hooks/use-protected-route";
 import { API } from "@/lib/api";
 import { APIError } from "@/lib/api-error";
 import { database } from "@/lib/db";
@@ -57,8 +56,6 @@ export function AuthProvider(props: { children: React.ReactNode }) {
       }
     });
   }, []);
-
-  useProtectedRoute(user);
 
   const signIn = useCallback(async (email: string, password: string) => {
     try {

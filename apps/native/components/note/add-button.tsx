@@ -14,6 +14,8 @@ export function AddNoteButton({ contentLength }: { contentLength?: number }) {
   const translateY = useSharedValue(0);
   const segments = useSegments();
   const pathname = usePathname();
+  console.log("🚀 ~ AddNoteButton ~ segments:", segments);
+  console.log("🚀 ~ AddNoteButton ~ pathname:", pathname);
 
   const category = pathname.includes("general")
     ? "general"
