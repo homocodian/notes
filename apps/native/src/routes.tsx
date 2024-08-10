@@ -18,14 +18,18 @@ export function Routes() {
   return (
     <Stack.Navigator>
       {user ? (
-        <Stack.Group>
+        <Stack.Group screenOptions={{ headerShadowVisible: false }}>
           <Stack.Screen
             name="Root"
             component={Root}
             options={{ headerShown: false }}
           />
           <Stack.Screen name="Devices" component={Devices} />
-          <Stack.Screen name="Search" component={Search} />
+          <Stack.Screen
+            name="Search"
+            component={Search}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen
             name="Editor"
             component={NoteEditor}

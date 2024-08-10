@@ -107,20 +107,20 @@ function App() {
         client={queryClient}
         persistOptions={{ persister: asyncStoragePersister }}
       >
-        <Material3ThemeProvider>
-          <ThemedNavigationContainer>
-            <GestureHandlerRootView style={{ flex: 1 }}>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <Material3ThemeProvider>
+            <ThemedNavigationContainer>
               <InnerApp>
                 <AuthProvider>
                   <Routes />
                 </AuthProvider>
                 <StatusBar style="auto" animated translucent />
               </InnerApp>
-            </GestureHandlerRootView>
-            <SnackbarContainer />
-            <Alerter />
-          </ThemedNavigationContainer>
-        </Material3ThemeProvider>
+              <SnackbarContainer />
+              <Alerter />
+            </ThemedNavigationContainer>
+          </Material3ThemeProvider>
+        </GestureHandlerRootView>
       </PersistQueryClientProvider>
     </SafeAreaProvider>
   );

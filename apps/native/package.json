@@ -11,7 +11,7 @@
     "lint:fix": "eslint . --fix",
     "prettier:check": "prettier . --check",
     "prettier:fix": "prettier . --write",
-    "nuke": "rm -rf node_modules && rm -rf .expo"
+    "clean": "rimraf -rf .expo && rimraf -rf node_modules"
   },
   "jest": {
     "preset": "jest-expo"

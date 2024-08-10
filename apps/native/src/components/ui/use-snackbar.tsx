@@ -3,9 +3,9 @@ import React from "react";
 import type { SnackbarProps as DefaultSnackbarProps } from "react-native-paper";
 
 const SNACKBAR_LIMIT = 1;
-const SNACKBAR_REMOVE_DELAY = 1000000;
+const SNACKBAR_REMOVE_DELAY = 0;
 
-type ToasterSnackbar = Pick<
+export type ToasterSnackbar = Pick<
   DefaultSnackbarProps,
   | "visible"
   | "action"
@@ -20,6 +20,7 @@ type ToasterSnackbar = Pick<
 > & {
   id: string;
   text: string;
+  swipeToDismiss: boolean;
 };
 
 const actionTypes = {
@@ -148,8 +149,12 @@ function dispatch(action: Action) {
 }
 
 interface SnackbarProps
-  extends Omit<ToasterSnackbar, "id" | "visible" | "onDismiss" | "close"> {
+  extends Omit<
+    ToasterSnackbar,
+    "id" | "visible" | "onDismiss" | "close" | "swipeToDismiss"
+  > {
   onRemove?: () => void;
+  swipeToDismiss?: boolean;
 }
 
 function Snackbar({ onRemove, ...props }: SnackbarProps) {
@@ -166,6 +171,7 @@ function Snackbar({ onRemove, ...props }: SnackbarProps) {
   dispatch({
     type: "ADD_SNACKBAR",
     Snackbar: {
+      swipeToDismiss: true,
       ...props,
       id,
       visible: true,
@@ -204,7 +210,9 @@ function useSnackbar() {
     ...state,
     Snackbar,
     dismiss: (SnackbarId?: string) =>
-      dispatch({ type: "DISMISS_SNACKBAR", SnackbarId })
+      dispatch({ type: "DISMISS_SNACKBAR", SnackbarId }),
+    remove: (SnackbarId?: string) =>
+      dispatch({ type: "REMOVE_SNACKBAR", SnackbarId })
   };
 }
 
