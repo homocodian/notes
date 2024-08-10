@@ -58,7 +58,6 @@ const config: ExpoConfig = {
   },
   web: {
     bundler: "metro",
-    output: "static",
     favicon: "./assets/images/favicon.png"
   },
   plugins: [
@@ -79,7 +78,6 @@ const config: ExpoConfig = {
       }
     ],
     "expo-font",
-    "expo-router",
     "expo-secure-store",
     [
       "@sentry/react-native/expo",
@@ -90,13 +88,9 @@ const config: ExpoConfig = {
     ]
   ],
   experiments: {
-    tsconfigPaths: true,
-    typedRoutes: true
+    tsconfigPaths: true
   },
   extra: {
-    router: {
-      origin: false
-    },
     eas: {
       projectId: "383758ce-1b00-4197-a465-0975fb4ba191"
     }

@@ -5,7 +5,6 @@ const { getSentryExpoConfig } = require("@sentry/react-native/metro");
 
 /** @type {import('@sentry/react-native/metro').MetroConfig} */
 const config = getSentryExpoConfig(__dirname, {
-  // [Web-only]: Enables CSS support in Metro.
   isCSSEnabled: true
 });
 
