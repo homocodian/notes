@@ -2,8 +2,6 @@ import React from "react";
 
 import { debounceTime, filter, skip } from "rxjs/operators";
 
-import { useAuth } from "@/context/auth";
-import { APIError } from "@/lib/api-error";
 import { database } from "@/lib/db";
 import { Table } from "@/lib/db/model/schema";
 import { syncChanges } from "@/lib/db/sync";
@@ -12,7 +10,7 @@ import { useSyncStore } from "@/lib/store/sync";
 import { useUserStore } from "@/lib/store/user";
 import { toast } from "@/lib/toast";
 
-export async function sync(signOut: ReturnType<typeof useAuth>["signOut"]) {
+export async function sync() {
   const user = useUserStore.getState().user;
   const setSyncing = useSyncStore.getState().setSyncing;
   const isSyncing = useSyncStore.getState().isSyncing;
@@ -28,13 +26,6 @@ export async function sync(signOut: ReturnType<typeof useAuth>["signOut"]) {
       toast("Sync failed. Please log in again", {
         android: { duration: "LONG" }
       });
-      if (
-        error instanceof APIError &&
-        error.status === 401 &&
-        error.url.includes("/sync/pull")
-      ) {
-        signOut();
-      }
     } finally {
       setSyncing(false);
     }
@@ -46,11 +37,9 @@ export async function sync(signOut: ReturnType<typeof useAuth>["signOut"]) {
 }
 
 export function useSync() {
-  const { signOut } = useAuth();
-
   React.useEffect(() => {
-    sync(signOut);
-  }, [signOut]);
+    sync();
+  }, []);
 
   React.useEffect(() => {
     const unsub = database
@@ -75,7 +64,7 @@ export function useSync() {
         // debounce to avoid syncing in the middle of related actions
         debounceTime(500)
       )
-      .subscribe(() => sync(signOut));
+      .subscribe(() => sync());
 
     return () => unsub.unsubscribe();
   }, []);

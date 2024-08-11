@@ -39,7 +39,7 @@ export function Menu({
   );
   const setIsShareDialogOpen = useBoolean((state) => state.setBoolValue);
 
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const [visible, setVisible] = React.useState(false);
 
   const openMenu = () => setVisible(true);
@@ -71,7 +71,7 @@ export function Menu({
         onRemove: async () => {
           const note = await NotesController.find(id);
           if (note && note.deletedAt !== null) {
-            sync(signOut);
+            sync();
           }
         }
       });
