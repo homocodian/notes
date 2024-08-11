@@ -2,6 +2,7 @@ import { View } from "react-native";
 import { Text } from "react-native-paper";
 
 import { Colors } from "@/constant/colors";
+import { useAppTheme } from "@/context/material-3-theme-provider";
 
 export function Section({
   children,
@@ -12,12 +13,14 @@ export function Section({
   label: string;
   twClass?: string;
 }) {
+  const theme = useAppTheme();
+
   return (
     <View className={`space-y-2 ${twClass ?? ""}`}>
       <Text
         variant="labelMedium"
         className="pl-2"
-        style={{ color: Colors.muted }}
+        style={{ color: theme.dark ? Colors.darkMuted : Colors.muted }}
       >
         {label}
       </Text>

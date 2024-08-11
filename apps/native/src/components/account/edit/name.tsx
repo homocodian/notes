@@ -66,10 +66,16 @@ export function EditAccountName() {
       }}
     >
       <View className="space-y-1">
-        <Text variant="labelLarge" style={{ color: Colors.muted }}>
+        <Text
+          variant="labelLarge"
+          style={{ color: theme.dark ? Colors.darkMuted : Colors.muted }}
+        >
           Display Name
         </Text>
-        <Text variant="bodySmall" style={{ color: Colors.muted }}>
+        <Text
+          variant="bodySmall"
+          style={{ color: theme.dark ? Colors.darkMuted : Colors.muted }}
+        >
           This will be displayed for your memembers when neccessary instead of
           your email
         </Text>

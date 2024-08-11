@@ -104,7 +104,7 @@ export function UpdateAccountPassword() {
         <Text
           variant="bodyMedium"
           className="text-center"
-          style={{ color: Colors.muted }}
+          style={{ color: theme.dark ? Colors.darkMuted : Colors.muted }}
         >
           Enter your current password and then your new password.
         </Text>

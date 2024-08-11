@@ -151,7 +151,10 @@ export default function Devices() {
               <Text variant="titleMedium" style={{ color: theme.colors.error }}>
                 Log Out All Known Devices
               </Text>
-              <Text variant="labelLarge" style={{ color: Colors.muted }}>
+              <Text
+                variant="labelLarge"
+                style={{ color: theme.dark ? Colors.darkMuted : Colors.muted }}
+              >
                 You'll have to log in again on all devices
               </Text>
             </View>

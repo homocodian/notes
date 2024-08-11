@@ -98,7 +98,11 @@ function App() {
         setOnline(!!state.isConnected);
       });
     });
-    Updates.checkForUpdateAsync().catch(() => {});
+
+    Updates.checkForUpdateAsync().catch(async (error) => {
+      if (__DEV__) console.log("Error checking updates : ", error);
+      else Sentry.captureException(error);
+    });
   }, []);
 
   return (

@@ -58,8 +58,8 @@ const config: ExpoConfig = {
     },
     versionCode: 1,
     googleServicesFile: IS_DEV
-      ? process.env.GOOGLE_SERVICES_DEV_JSON ?? "./google-services-dev.json"
-      : process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json"
+      ? (process.env.GOOGLE_SERVICES_DEV_JSON ?? "./google-services-dev.json")
+      : (process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json")
   },
   web: {
     bundler: "metro",

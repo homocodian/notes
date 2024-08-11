@@ -11,7 +11,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { DrawerHeaderProps } from "@react-navigation/drawer";
 
-import { Colors } from "@/constant/colors";
 import {
   SCREEN_HORIZONTAL_PADDING,
   SCREEN_VERTICAL_PADDING
@@ -49,9 +48,7 @@ export function Appbar({ navigation }: DrawerHeaderProps) {
                 </Tooltip>
               </View>
               <View className="relative flex-1">
-                <Text style={{ color: Colors.muted }} variant="bodyLarge">
-                  Search
-                </Text>
+                <Text variant="bodyLarge">Search</Text>
               </View>
               <View className="self-center">
                 <IconButton
