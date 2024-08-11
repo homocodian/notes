@@ -65,13 +65,22 @@ export type UserTable = InferSelectModel<typeof userTable>;
 
 export const sessionTable = pgTable("session", {
   id: text("id").notNull().primaryKey(),
+
   userId: integer("user_id")
     .notNull()
     .references(() => userTable.id, { onDelete: "cascade" }),
+
   expiresAt: timestamp("expires_at", {
     withTimezone: true,
     mode: "date"
-  }).notNull()
+  }).notNull(),
+
+  lastUsedAt: timestamp("last_used_at", {
+    withTimezone: true,
+    mode: "string"
+  })
+    .notNull()
+    .defaultNow()
 });
 
 export const emailVerificationCodeTable = pgTable(

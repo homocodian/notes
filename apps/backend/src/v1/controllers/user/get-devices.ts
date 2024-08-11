@@ -1,4 +1,4 @@
-import { and, eq, getTableColumns, ne } from "drizzle-orm";
+import { and, desc, eq, getTableColumns, ne } from "drizzle-orm";
 import { Context } from "elysia";
 
 import { db } from "@/db";
@@ -34,6 +34,7 @@ export async function getDevices({ user, error }: GetDevicesProps) {
             ne(deviceTable.sessionId, user.session.id)
           )
         )
+        .orderBy(desc(deviceTable.createdAt))
     ]);
 
     return { current, others: others as Device[] };

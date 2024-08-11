@@ -5,6 +5,7 @@ import { env } from "@/env";
 
 import { saveDevice } from "./background/save-device";
 import { sendVerificationCode } from "./background/send-verification-code";
+import { updateSessionLastUsedAt } from "./background/update-session-last-used";
 
 const connection = new IORedis(env.REDIS_URL, {
   enableOfflineQueue: false,
@@ -34,6 +35,10 @@ const BgWorker = new Worker(
 
       case "sendVerificationCode":
         await sendVerificationCode(job.data);
+        break;
+
+      case "updateSessionLastUsedAt":
+        await updateSessionLastUsedAt(job.data);
         break;
 
       default:

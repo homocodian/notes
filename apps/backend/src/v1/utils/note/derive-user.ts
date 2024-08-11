@@ -17,6 +17,7 @@ export async function deriveUser({
   if (typeof sessionId !== "string") return error(401, "Unauthorized");
 
   const { user, session } = await lucia.validateSession(sessionId);
+
   if (!user) return error(401, "Unauthorized");
 
   if (user.disabled) {

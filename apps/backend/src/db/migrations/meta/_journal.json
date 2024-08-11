@@ -22,6 +22,13 @@
       "when": 1722960820070,
       "tag": "0002_glossy_vampiro",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1723334062399,
+      "tag": "0003_wide_inertia",
+      "breakpoints": true
     }
   ]
 }

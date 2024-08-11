@@ -1,6 +1,8 @@
 import { Context } from "elysia";
 
 import { lucia } from "@/libs/auth";
+import { BgQueue } from "@/libs/background-worker";
+import { UpdateSessionLastUsedAtProps } from "@/libs/background/update-session-last-used";
 import { VerifyJwtAsync } from "@/libs/jwt";
 import { UserResponse } from "@/v1/validations/user";
 
@@ -26,6 +28,11 @@ export async function getProfile({ bearer, error }: GetProfileProps) {
     if (user.disabled) {
       return error(403, "Your account has been disabled");
     }
+
+    await BgQueue.add("updateSessionLastUsedAt", {
+      sessionId: session.id,
+      lastUsedAt: new Date().toISOString()
+    } satisfies UpdateSessionLastUsedAtProps).catch(() => {});
 
     return {
       id: user.id,
