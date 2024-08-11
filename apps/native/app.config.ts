@@ -2,21 +2,25 @@ import { ExpoConfig } from "expo/config";
 
 import pkg from "./package.json";
 
+const IS_DEV = process.env.APP_VARIANT === "development";
+
 const LIGHT_BACKGROUND_COLOR = "#ffffff";
 const DARK_BACKGROUND_COLOR = "#000000";
 
 const config: ExpoConfig = {
-  name: "Cinememo",
+  name: IS_DEV ? "Cinememo (Dev)" : "Cinememo",
   slug: "cinememo",
   version: pkg.version,
   orientation: "portrait",
   icon: "./assets/images/icon.png",
-  scheme: "cinememo",
+  scheme: IS_DEV ? "cinememo_dev" : "cinememo",
   userInterfaceStyle: "automatic",
   assetBundlePatterns: ["**/*"],
   ios: {
     supportsTablet: false,
-    bundleIdentifier: "com.homocodian.cinememo",
+    bundleIdentifier: IS_DEV
+      ? "com.homocodian.cinememo.dev"
+      : "com.homocodian.cinememo",
     splash: {
       image: "./assets/images/splash_light.png",
       resizeMode: "contain",
@@ -41,7 +45,7 @@ const config: ExpoConfig = {
       backgroundColor: LIGHT_BACKGROUND_COLOR,
       monochromeImage: "./assets/images/adaptive-icon.png"
     },
-    package: "com.homocodian.cinememo",
+    package: IS_DEV ? "com.homocodian.cinememo.dev" : "com.homocodian.cinememo",
     splash: {
       image: "./assets/images/splash_light.png",
       resizeMode: "contain",
@@ -53,8 +57,9 @@ const config: ExpoConfig = {
       }
     },
     versionCode: 1,
-    googleServicesFile:
-      process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json"
+    googleServicesFile: IS_DEV
+      ? process.env.GOOGLE_SERVICES_DEV_JSON ?? "./google-services-dev.json"
+      : process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json"
   },
   web: {
     bundler: "metro",

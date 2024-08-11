@@ -1,5 +1,4 @@
 import React from "react";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Portal } from "react-native-paper";
 
 import { useSharedBottomSheetStore } from "@/context/note/shared/bottom-sheet";
@@ -22,11 +21,9 @@ export function SharedNoteSheet({ noteId }: { noteId: string }) {
 
   return (
     <Portal>
-      <GestureHandlerRootView>
-        <SharedWithBottomSheet setVisible={setIsSharedBottomSheetVisible}>
-          <BottomSheetList noteId={noteId} />
-        </SharedWithBottomSheet>
-      </GestureHandlerRootView>
+      <SharedWithBottomSheet setVisible={setIsSharedBottomSheetVisible}>
+        <BottomSheetList noteId={noteId} />
+      </SharedWithBottomSheet>
     </Portal>
   );
 }

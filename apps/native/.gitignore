@@ -41,7 +41,7 @@ expo-env.d.ts
 # @end expo-cli
 
 # firebase
-google-services.json
+google-services*.json
 
 *.env
 
