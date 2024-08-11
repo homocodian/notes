@@ -12,19 +12,36 @@ interface UserState {
    * ****************************************************
    * @param user The new user object or null to clear the user.
    */
-  setUser: (user: User | null | ((user: User | null) => User)) => void;
+  setUser: (
+    user: User | null | ((user: User | null) => User),
+    isSignUp?: boolean
+  ) => void;
+  isSignUp: boolean;
+  setIsSignUp: (isSignUp: boolean) => void;
 }
 
 export const useUserStore = create<UserState>()(
   subscribeWithSelector((set, get) => ({
     user: null,
-    setUser: (user) => {
+    isSignUp: false,
+    setUser: (user, isSignUp) => {
       if (typeof user === "function") {
         const data = user(get().user);
-        set({ user: data });
+        if (typeof isSignUp !== "undefined") {
+          set({ user: data, isSignUp });
+        } else {
+          set({ user: data });
+        }
       } else {
-        set({ user });
+        if (typeof isSignUp !== "undefined") {
+          set({ user, isSignUp });
+        } else {
+          set({ user });
+        }
       }
+    },
+    setIsSignUp: (isSignUp) => {
+      set({ isSignUp });
     }
   }))
 );

@@ -22,6 +22,7 @@ export type RootStackParamList = {
   SignUp: undefined;
   Devices: undefined;
   Search: undefined;
+  OTP: undefined;
 };
 
 export type RootDrawerParamsList = {

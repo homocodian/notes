@@ -5,6 +5,7 @@ import Devices from "./screens/devices";
 import Root from "./screens/drawer/root";
 import EditProfile from "./screens/edit-profile";
 import NoteEditor from "./screens/note/editor";
+import OTP from "./screens/otp";
 import Search from "./screens/search";
 import Settings from "./screens/settings";
 import SignIn from "./screens/sign-in";
@@ -14,10 +15,10 @@ import { RootStackParamList } from "./types/navigation";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export function Routes() {
-  const { user } = useAuth();
+  const { user, isSignUp } = useAuth();
   return (
     <Stack.Navigator>
-      {user ? (
+      {user && !isSignUp ? (
         <Stack.Group screenOptions={{ headerShadowVisible: false }}>
           <Stack.Screen
             name="Root"
@@ -42,6 +43,7 @@ export function Routes() {
         <Stack.Group screenOptions={{ headerShown: false }}>
           <Stack.Screen name="SignIn" component={SignIn} />
           <Stack.Screen name="SignUp" component={SignUp} />
+          <Stack.Screen name="OTP" component={OTP} />
         </Stack.Group>
       )}
     </Stack.Navigator>

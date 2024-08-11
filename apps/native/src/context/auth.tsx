@@ -19,6 +19,8 @@ type Context = {
   user: User | null;
   createUser: (data: RegisterAuthSchema) => Promise<void>;
   sendPasswordResetEmail: (email: string) => Promise<string>;
+  verifyEmail: (code: string) => Promise<void>;
+  isSignUp: boolean;
 };
 
 const AuthContext = React.createContext({} as Context);
@@ -33,6 +35,8 @@ export function useAuth() {
 export function AuthProvider(props: { children: React.ReactNode }) {
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
+  const setIsSignUp = useUserStore((state) => state.setIsSignUp);
+  const isSignUp = useUserStore((state) => state.isSignUp);
 
   React.useEffect(() => {
     const user = useUserStore.getState().user;
@@ -91,11 +95,14 @@ export function AuthProvider(props: { children: React.ReactNode }) {
             device: getDeviceInfo()
           }
         });
-        await setSecureValue(USER_SESSION_KEY, JSON.stringify(res));
-        setUser(res);
+        const user = userSchema.parse(res);
+        await setSecureValue(USER_SESSION_KEY, JSON.stringify(user));
+        //  user and isSignUp -> true
+        setUser(user, true);
       } catch (error) {
         if (error instanceof APIError) toast(error.message);
         else toast("Something went wrong");
+        throw error;
       }
     },
     []
@@ -130,13 +137,31 @@ export function AuthProvider(props: { children: React.ReactNode }) {
     });
   }, []);
 
+  const verifyEmail = useCallback(async (code: string) => {
+    try {
+      const res: any = await API.post("/v1/auth/email-verification", {
+        data: { code }
+      });
+
+      if (res && typeof res?.message === "string") {
+        toast(res.message);
+      }
+      setIsSignUp(false);
+    } catch (error) {
+      if (error instanceof APIError) toast(error.message);
+      else toast("Something went wrong");
+    }
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
         user,
         signIn,
         signOut,
+        isSignUp,
         createUser,
+        verifyEmail,
         sendPasswordResetEmail
       }}
     >

@@ -11,9 +11,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ExternalLink } from "@/components/external-link";
 import { useAuth } from "@/context/auth";
 import { useAppTheme } from "@/context/material-3-theme-provider";
+import { toast } from "@/lib/toast";
 import { registerAuthSchema } from "@/lib/validations/auth";
+import { RootStackScreenProps } from "@/types/navigation";
 
-function SignUp() {
+function SignUp({ navigation }: RootStackScreenProps<"SignUp">) {
   const theme = useAppTheme();
   const { createUser } = useAuth();
   const [isSecureEntry, setIsSecureEntry] = React.useState(true);
@@ -43,12 +45,18 @@ function SignUp() {
     setIsSecureEntryForConfirm((prev) => !prev);
   }
 
-  async function onSubmit(data: RegisterAuthSchema) {
+  function onSubmit(data: RegisterAuthSchema) {
     Keyboard.dismiss();
     setIsLoading(true);
-    await createUser(data).finally(() => {
-      setIsLoading(false);
-    });
+    createUser(data)
+      .then(() => {
+        toast("Please verify your email.");
+        navigation.navigate("OTP");
+      })
+      .catch(() => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   return (
