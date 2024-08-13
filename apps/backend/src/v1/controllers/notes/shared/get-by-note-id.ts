@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/bun";
 import { and, eq, isNull } from "drizzle-orm";
 import { Context } from "elysia";
 import { User } from "lucia";
@@ -49,6 +50,7 @@ export async function getSharedWithByNoteId({
     return sharedWith;
   } catch (err) {
     console.log("🚀 ~ getSharedWithByNoteId ~ err:", err);
+    Sentry.captureException(err);
     return error(500, "Failed to get shared with by note id");
   }
 }

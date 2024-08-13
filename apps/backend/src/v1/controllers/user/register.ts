@@ -1,9 +1,8 @@
+import * as Sentry from "@sentry/bun";
 import { Context } from "elysia";
-import jwt from "jsonwebtoken";
 
 import { db } from "@/db";
 import { userTable } from "@/db/schema/user";
-import { env } from "@/env";
 import { lucia } from "@/libs/auth";
 import { BgQueue } from "@/libs/background-worker";
 import { type SaveDeviceProps } from "@/libs/background/save-device";
@@ -76,9 +75,10 @@ export async function registerUser({
           device: body.device
         } satisfies SaveDeviceProps
       }
-    ]).catch((error) =>
-      console.log("🚀 ~ registerUser background worker ~ error", error)
-    );
+    ]).catch((error) => {
+      console.log("🚀 ~ registerUser background worker ~ error", error);
+      Sentry.captureException(error);
+    });
 
     return {
       id: user.id,
@@ -90,6 +90,7 @@ export async function registerUser({
     } satisfies UserResponse & { sessionToken: string };
   } catch (err) {
     console.log("🚀 ~ registerUser ~ err:", err);
+    Sentry.captureException(err);
 
     if (error instanceof JwtError) {
       return error(500, "Failed to create session");

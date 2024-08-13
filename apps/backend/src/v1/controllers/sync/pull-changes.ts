@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/bun";
 import { Context, t } from "elysia";
 import { User } from "lucia";
 
@@ -38,7 +39,7 @@ export async function pullChanges({
     return { changes, timestamp: epochTimestamp };
   } catch (err) {
     console.log("🚀 ~ pull changes err:", err);
-
+    Sentry.captureException(err);
     return error(500, "Internal Server Error");
   }
 }

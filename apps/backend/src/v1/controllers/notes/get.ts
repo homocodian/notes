@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/bun";
 import { and, desc, eq, getTableColumns, sql } from "drizzle-orm";
 import type { Context } from "elysia";
 import { User } from "lucia";
@@ -57,6 +58,8 @@ export async function getNotes({ user, query, error }: GetNotesProps) {
 
     return notes;
   } catch (err) {
+    console.log("🚀 ~ getNotes ~ err:", err);
+    Sentry.captureException(err);
     return error(500, "Failed to get notes");
   }
 }

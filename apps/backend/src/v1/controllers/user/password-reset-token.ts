@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/bun";
 import { eq } from "drizzle-orm";
 import { Context } from "elysia";
 import { isWithinExpirationDate } from "oslo";
@@ -83,6 +84,8 @@ export async function passwordResetToken({
       sessionToken
     };
   } catch (err) {
+    console.log("🚀 ~ err:", err);
+    Sentry.captureException(err);
     return error(500, "Failed to update your password, please try again later");
   }
 }

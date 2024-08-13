@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/bun";
 import { Client } from "pg";
 
 import { env } from "@/env";
@@ -12,6 +13,7 @@ export async function checkDatabaseHealth() {
   try {
     await client.connect();
   } catch (error) {
+    Sentry.captureException(error);
     sendDatabaseUnhealthyReport(error);
   } finally {
     await client.end();

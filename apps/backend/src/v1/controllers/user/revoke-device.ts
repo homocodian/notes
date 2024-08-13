@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/bun";
 import { and, eq } from "drizzle-orm";
 import { Context } from "elysia";
 
@@ -35,6 +36,7 @@ export async function revokeDevice({ user, params, error }: RevokeDeviceProps) {
     return { message: "Device Revoked" };
   } catch (err) {
     console.error("🚀 ~ revokeDevice ~ err:", err);
+    Sentry.captureException(err);
     return error(500, "Internal Server Error");
   }
 }

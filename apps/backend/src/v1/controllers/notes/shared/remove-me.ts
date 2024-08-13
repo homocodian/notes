@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/bun";
 import { and, eq } from "drizzle-orm";
 import { Context } from "elysia";
 import type { User } from "lucia";
@@ -33,6 +34,8 @@ export async function removeSharedNoteForMe({
 
     return removedSharedNote;
   } catch (err) {
+    console.error("🚀 removeSharedNoteForMe ~ err:", err);
+    Sentry.captureException(err);
     return error(500, "Failed to remove from shared note");
   }
 }

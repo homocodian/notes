@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/bun";
 import { and, desc, eq, getTableColumns, isNull, sql } from "drizzle-orm";
 import type { Context } from "elysia";
 import { User } from "lucia";
@@ -41,6 +42,7 @@ export async function getSharedNotes({ user, error }: GetSharedNotesProps) {
     return notes;
   } catch (err) {
     console.log("🚀 ~ getSharedNotes ~ err:", err);
+    Sentry.captureException(err);
     return error(500, "Failed to get shared notes");
   }
 }

@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/bun";
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { Context } from "elysia";
 import { User } from "lucia";
@@ -118,6 +119,7 @@ export async function pushChanges({
     };
   } catch (err) {
     console.log("🚀 push changes ~ err:", err);
+    Sentry.captureException(err);
 
     if (err instanceof ValidationError) return error(422, err.message);
 

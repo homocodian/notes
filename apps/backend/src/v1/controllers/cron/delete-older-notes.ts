@@ -1,10 +1,9 @@
+import * as Sentry from "@sentry/bun";
 import { lte, sql } from "drizzle-orm";
 
 import { db } from "@/db";
 import { noteTable } from "@/db/schema/note";
-import { env } from "@/env";
 import { sendCronErrorReport } from "@/libs/emails/send-cron-error-report";
-import { MailClient } from "@/libs/mail-client";
 
 export async function deleteOlderNotes() {
   try {
@@ -12,6 +11,7 @@ export async function deleteOlderNotes() {
       .delete(noteTable)
       .where(lte(noteTable.deletedAt, sql`NOW() - INTERVAL '30 days'`));
   } catch (error) {
+    Sentry.captureException(error);
     sendCronErrorReport(error);
   }
 }

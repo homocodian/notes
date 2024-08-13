@@ -41,7 +41,7 @@ export const updateNoteParamsSchema = t.Object({
   id: t.String({ minimum: 1 })
 });
 
-export type UpdateNoteParams = typeof updateNoteParamsSchema.static;
+export type UpdateNoteParamsSchema = typeof updateNoteParamsSchema.static;
 
 export type UpdateNote = typeof updateNoteSchema.static;
 

@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/bun";
 import { eq } from "drizzle-orm";
 import { Context } from "elysia";
 import { User } from "lucia";
@@ -35,7 +36,8 @@ export async function emailVerification({
 
     return { message: `${user.email} is verifed` };
   } catch (err) {
-    console.log("🚀 ~ err:", err);
+    console.error("🚀 ~ err:", err);
+    Sentry.captureException(err);
     return error(500, "Internal Server Error");
   }
 }

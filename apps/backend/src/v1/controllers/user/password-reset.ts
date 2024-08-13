@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/bun";
 import { eq } from "drizzle-orm";
 import { Context, error } from "elysia";
 
@@ -43,6 +44,8 @@ export async function passwordReset(ctx: PasswordResetProps) {
 
     return `If a ${env.APP_NAME} account exists for ${ctx.body.email}, an e-mail will be sent with further instructions.`;
   } catch (err) {
+    console.error("🚀 ~ passwordReset ~ err:", err);
+    Sentry.captureException(err);
     return error(500, "Internal Server Error");
   }
 }

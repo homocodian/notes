@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/bun";
 import { eq } from "drizzle-orm";
 import { Context } from "elysia";
 
@@ -55,6 +56,7 @@ export async function loginUser({ body, error, request, ip }: LoginUserProps) {
       device: body.device
     } satisfies SaveDeviceProps).catch((err) => {
       console.log("🚀 ~ loginUser saveDevice ~ err", err);
+      Sentry.captureException(err);
     });
 
     return {
@@ -66,6 +68,8 @@ export async function loginUser({ body, error, request, ip }: LoginUserProps) {
       sessionToken
     } satisfies UserResponse & { sessionToken: string };
   } catch (err) {
+    console.error("🚀 ~ loginUser ~ err:", err);
+    Sentry.captureException(err);
     return error(500, "Internal Server Error");
   }
 }

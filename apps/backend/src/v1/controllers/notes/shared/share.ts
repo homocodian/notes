@@ -1,3 +1,4 @@
+import * as Setnry from "@sentry/bun";
 import { inArray } from "drizzle-orm";
 import { Context } from "elysia";
 import { User } from "lucia";
@@ -41,6 +42,7 @@ export async function shareNote({ body, error, params }: ShareNoteProps) {
     return sharedWith;
   } catch (err) {
     console.log("🚀 ~ shareNote ~ err:", err);
+    Setnry.captureException(err);
     return error(500, "Failed to share the note");
   }
 }

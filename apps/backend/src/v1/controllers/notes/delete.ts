@@ -1,14 +1,15 @@
+import * as Sentry from "@sentry/bun";
 import { and, eq } from "drizzle-orm";
 import { Context } from "elysia";
 import { User } from "lucia";
 
 import { db } from "@/db";
 import { noteTable } from "@/db/schema/note";
-import { UpdateNoteParams } from "@/v1/validations/note";
+import { UpdateNoteParamsSchema } from "@/v1/validations/note";
 
 interface DeleteNoteProps extends Omit<Context, "params"> {
   user: User;
-  params: Readonly<UpdateNoteParams>;
+  params: Readonly<UpdateNoteParamsSchema>;
 }
 
 export async function deleteNote({ user, error, params }: DeleteNoteProps) {
@@ -25,6 +26,8 @@ export async function deleteNote({ user, error, params }: DeleteNoteProps) {
 
     return note;
   } catch (err) {
+    console.log("🚀 ~ deleteNote ~ err:", err);
+    Sentry.captureException(err);
     return error(500, "Server error : Failed to delete the note");
   }
 }

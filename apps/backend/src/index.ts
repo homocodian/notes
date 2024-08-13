@@ -1,3 +1,6 @@
+// sort-imports-ignore
+import "./libs/sentry";
+
 import { cors } from "@elysiajs/cors";
 import { Elysia } from "elysia";
 import { ip } from "elysia-ip";

@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/bun";
 import { Context } from "elysia";
 import { User } from "lucia";
 
@@ -23,6 +24,8 @@ export async function createNote({ user, body, error }: CreateNoteProps) {
 
     return note;
   } catch (err) {
+    console.log("🚀 ~ createNote ~ err:", err);
+    Sentry.captureException(err);
     return error(500, "Internal Server Error");
   }
 }

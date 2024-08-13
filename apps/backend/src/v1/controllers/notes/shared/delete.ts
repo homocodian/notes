@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/bun";
 import { and, eq } from "drizzle-orm";
 import { Context } from "elysia";
 import { User } from "lucia";
@@ -33,6 +34,8 @@ export async function unshareNote({ user, error, params }: ShareNoteProps) {
 
     return note;
   } catch (err) {
+    console.error("🚀 ~ unshareNote ~ err:", err);
+    Sentry.captureException(err);
     return error(500, "Failed to unshare the note");
   }
 }

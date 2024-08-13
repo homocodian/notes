@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/bun";
 import { Context } from "elysia";
 
 import { lucia } from "@/libs/auth";
@@ -42,6 +43,8 @@ export async function getProfile({ bearer, error }: GetProfileProps) {
       displayName: user.displayName
     } satisfies UserResponse;
   } catch (err) {
+    console.log("🚀 ~ getProfile ~ err:", err);
+    Sentry.captureException(err);
     return error(500, "Internal Server Error");
   }
 }

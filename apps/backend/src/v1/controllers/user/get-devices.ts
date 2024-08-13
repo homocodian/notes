@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/bun";
 import { and, desc, eq, getTableColumns, ne } from "drizzle-orm";
 import { Context } from "elysia";
 
@@ -40,6 +41,7 @@ export async function getDevices({ user, error }: GetDevicesProps) {
     return { current, others: others as Device[] };
   } catch (err) {
     console.error("🚀 ~ getDevices ~ err:", err);
+    Sentry.captureException(err);
     return error(500, "Internal Server Error");
   }
 }

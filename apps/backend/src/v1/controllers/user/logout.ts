@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/bun";
 import { and, eq } from "drizzle-orm";
 import { Context } from "elysia";
 
@@ -40,6 +41,8 @@ export async function logout({ bearer, error, body }: LogoutProps) {
 
     return { message: "Logout successful" };
   } catch (err) {
+    console.error("🚀 ~ logout ~ err:", err);
+    Sentry.captureException(err);
     return error(500, "Internal Server Error");
   }
 }
@@ -61,6 +64,8 @@ export async function logoutAll({ bearer, error }: LogoutProps) {
     await db.delete(FCMTokenTable).where(eq(FCMTokenTable.userId, user.id));
     return { message: "Logout successful" };
   } catch (err) {
+    console.error("🚀 ~ logoutAll ~ err:", err);
+    Sentry.captureException(err);
     return error(500, "Internal Server Error");
   }
 }

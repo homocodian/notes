@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/bun";
 import { and, eq, ne } from "drizzle-orm";
 import { Context } from "elysia";
 
@@ -68,6 +69,8 @@ export async function changePassword({
 
     return { message: "Password changed successfully" };
   } catch (err) {
+    console.log("🚀 ~ err:", err);
+    Sentry.captureException(err);
     return error(500, "Internal Server Error");
   }
 }

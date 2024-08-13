@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/bun";
 import { Context } from "elysia";
 
 import { db } from "@/db";
@@ -23,7 +24,8 @@ export async function createFCMToken({
     if (!token) return error(500, "Internal Server Error");
     return token;
   } catch (err) {
-    console.log("🚀 ~ createFCMToken ~ err:", err);
+    console.error("🚀 ~ createFCMToken ~ err:", err);
+    Sentry.captureException(err);
     return error(500, "Internal Server Error");
   }
 }
