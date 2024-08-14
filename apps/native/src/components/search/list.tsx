@@ -1,8 +1,11 @@
 import React, { ComponentProps } from "react";
+import { View } from "react-native";
+import { Divider } from "react-native-paper";
 
 import { Q } from "@nozbe/watermelondb";
 import Fuse from "fuse.js";
 
+import { SCREEN_VERTICAL_PADDING } from "@/constant/screens";
 import { useLoading } from "@/context/loading";
 import { useSearch } from "@/context/search";
 import { useDebounce } from "@/hooks/use-debouce";
@@ -39,9 +42,6 @@ function List(props: ListProps) {
     const results = await notes.query(finalCondition).fetch();
     const fuse = new Fuse(results, {
       keys: ["category", "text"]
-      // includeScore: true,
-      // for highlighting purposes
-      // includeMatches: true
     });
     return fuse.search(query).map((result) => result.item);
   }, []);
@@ -59,7 +59,16 @@ function List(props: ListProps) {
     }
   }, [debouncedQuery]);
 
-  return <NoteList data={data} emptyMessage="No results" {...props} />;
+  return (
+    <>
+      {data.length > 0 ? (
+        <View style={{ paddingTop: SCREEN_VERTICAL_PADDING }}>
+          <Divider />
+        </View>
+      ) : null}
+      <NoteList data={data} emptyMessage="No results" {...props} />
+    </>
+  );
 }
 
 export const MemoizedList = React.memo(List);

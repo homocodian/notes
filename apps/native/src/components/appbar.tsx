@@ -1,6 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 import {
+  Divider,
   IconButton,
   Surface,
   Text,
@@ -61,6 +62,7 @@ export function Appbar({ navigation }: DrawerHeaderProps) {
           </TouchableRipple>
         </Surface>
       </View>
+      <Divider />
     </SafeAreaView>
   );
 }

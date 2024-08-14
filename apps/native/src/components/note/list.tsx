@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { useWindowDimensions, View, ViewStyle } from "react-native";
+import { ActivityIndicator, Divider } from "react-native-paper";
 
 import { useHeaderHeight } from "@react-navigation/elements";
 import {
@@ -8,11 +9,8 @@ import {
   ListRenderItemInfo
 } from "@shopify/flash-list";
 
-import {
-  CARD_SEPERATION_GAP,
-  LIST_PADDING_BOTTOM,
-  SCREEN_HORIZONTAL_PADDING
-} from "@/constant/screens";
+import { LIST_PADDING_BOTTOM } from "@/constant/screens";
+import { useAppTheme } from "@/context/material-3-theme-provider";
 import Note from "@/lib/db/model/note";
 
 import { EnhancedNoteCard } from "./card";
@@ -28,8 +26,10 @@ export function NoteList<T extends Note>({
   contentContainerStyle,
   ...props
 }: ListProps<T>) {
+  const theme = useAppTheme();
   const height = useWindowDimensions().height;
   const headerHeight = useHeaderHeight();
+  const [loading, setLoading] = useState(true);
 
   const renderItem = React.useCallback(({ item }: ListRenderItemInfo<Note>) => {
     return <EnhancedNoteCard item={item} />;
@@ -45,29 +45,33 @@ export function NoteList<T extends Note>({
   }, [emptyMessage, height, headerHeight]);
 
   const SeperatorComponent = React.useCallback(() => {
-    return (
-      <View
-        style={{
-          height: CARD_SEPERATION_GAP
-        }}
-      />
-    );
+    return <Divider />;
   }, []);
 
   return (
-    <FlashList
-      keyExtractor={(item) => item.id}
-      contentContainerStyle={{
-        paddingBottom: LIST_PADDING_BOTTOM,
-        paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
-        ...contentContainerStyle
-      }}
-      ListEmptyComponent={emptyComponent}
-      estimatedItemSize={100}
-      {...props}
-      renderItem={renderItem}
-      showsVerticalScrollIndicator={false}
-      ItemSeparatorComponent={SeperatorComponent}
-    />
+    <View className="flex-1 relative">
+      <FlashList
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={{
+          paddingBottom: LIST_PADDING_BOTTOM,
+          ...contentContainerStyle
+        }}
+        ListEmptyComponent={emptyComponent}
+        estimatedItemSize={20}
+        {...props}
+        renderItem={renderItem}
+        showsVerticalScrollIndicator={false}
+        ItemSeparatorComponent={SeperatorComponent}
+        onLoad={() => setLoading(false)}
+      />
+      {loading ? (
+        <View
+          className="absolute bottom-0 top-0 right-0 left-0 flex justify-center items-center"
+          style={{ backgroundColor: theme.colors.background }}
+        >
+          <ActivityIndicator />
+        </View>
+      ) : null}
+    </View>
   );
 }

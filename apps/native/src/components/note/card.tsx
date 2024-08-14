@@ -1,9 +1,13 @@
 import React from "react";
 import { View } from "react-native";
-import { Card, Chip, Text } from "react-native-paper";
+import { Chip, Text } from "react-native-paper";
 
 import { withObservables } from "@nozbe/watermelondb/react";
 
+import {
+  SCREEN_HORIZONTAL_PADDING,
+  SCREEN_VERTICAL_PADDING
+} from "@/constant/screens";
 import { useAuth } from "@/context/auth";
 import { BoolValueProvider } from "@/context/boolean";
 import { useAppTheme } from "@/context/material-3-theme-provider";
@@ -25,8 +29,13 @@ function NoteCard({ item }: NoteCardProps) {
   return (
     <SharedNoteBottomSheetStoreProvider>
       <BoolValueProvider>
-        <Card>
-          <Card.Content className="space-y-4 pt-1">
+        <View
+          style={{
+            paddingLeft: SCREEN_HORIZONTAL_PADDING,
+            paddingBottom: SCREEN_VERTICAL_PADDING
+          }}
+        >
+          <View className="space-y-4 pt-1">
             <View className="flex flex-row justify-between items-center">
               <View>
                 <Chip
@@ -34,6 +43,9 @@ function NoteCard({ item }: NoteCardProps) {
                     textTransform: "capitalize"
                   }}
                   compact
+                  style={{
+                    borderRadius: 9999
+                  }}
                 >
                   {!isOwner ? "Shared" : item.category}
                 </Chip>
@@ -50,7 +62,10 @@ function NoteCard({ item }: NoteCardProps) {
             </View>
             <Text
               style={{
-                textDecorationLine: item.isComplete ? "line-through" : undefined
+                textDecorationLine: item.isComplete
+                  ? "line-through"
+                  : undefined,
+                paddingRight: SCREEN_HORIZONTAL_PADDING
               }}
               variant="bodyLarge"
             >
@@ -61,8 +76,8 @@ function NoteCard({ item }: NoteCardProps) {
                 Date created {item.createdAt.toLocaleDateString()}
               </Text>
             </View>
-          </Card.Content>
-        </Card>
+          </View>
+        </View>
         <ShareDialog noteId={item.id} />
       </BoolValueProvider>
       <SharedNoteSheet noteId={item.id} />
