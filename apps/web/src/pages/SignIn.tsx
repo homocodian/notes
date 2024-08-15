@@ -1,6 +1,8 @@
+import Google from "@mui/icons-material/Google";
 import LockIcon from "@mui/icons-material/LockOutlined";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Avatar,
   Backdrop,
@@ -18,11 +20,13 @@ import InputAdornment from "@mui/material/InputAdornment";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
+import { useSearchParams } from "react-router-dom";
 
 import FormDialog from "@/components/FormDialog";
 import { SESSION_TOKEN_KEY } from "@/constant/auth";
 import { APIError } from "@/lib/api-error";
 import { fetchAPI } from "@/lib/fetch-wrapper";
+import { getAuthProviderURL } from "@/lib/get-auth-provider-url";
 import { useAuthStore } from "@/store/auth";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -43,6 +47,8 @@ export default function SignIn() {
   const [isResetFormOpen, setIsResetFormOpen] = useState(false);
   const user = useAuthStore((state) => state.user);
   const setUser = useAuthStore((state) => state.setUser);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [searchParams] = useSearchParams();
 
   // check for user
   useEffect(() => {
@@ -50,6 +56,13 @@ export default function SignIn() {
       navigate("/", { replace: true });
     }
   }, [user]);
+
+  useEffect(() => {
+    if (searchParams.has("error")) {
+      const error = searchParams.get("error");
+      if (error) toast.error(error);
+    }
+  }, [searchParams]);
 
   const handleChange =
     (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,6 +117,11 @@ export default function SignIn() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleGoogleLogin = () => {
+    setIsGoogleLoading(true);
+    window.location.href = getAuthProviderURL("google");
   };
 
   return (
@@ -175,15 +193,34 @@ export default function SignIn() {
                 )
               }}
             />
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{ mt: 2 }}
-              type="submit"
-              form="login-form"
-            >
-              Sign In
-            </Button>
+            <div className="flex flex-col gap-3">
+              <Button
+                fullWidth
+                variant="contained"
+                sx={{ mt: 2 }}
+                type="submit"
+                form="login-form"
+                disabled={isLoading || isGoogleLoading}
+              >
+                Sign In
+              </Button>
+              <div className="flex justify-center items-center gap-2">
+                <div className="h-px w-full bg-gray-500"></div>
+                <span className="text-primary-foreground">OR</span>
+                <div className="h-px w-full bg-gray-500"></div>
+              </div>
+              <LoadingButton
+                startIcon={<Google />}
+                fullWidth
+                variant="contained"
+                type="button"
+                disabled={isGoogleLoading}
+                onClick={handleGoogleLogin}
+                loading={isGoogleLoading}
+              >
+                Google
+              </LoadingButton>
+            </div>
             <Grid container sx={{ mt: 2 }}>
               <Grid item xs>
                 <Link

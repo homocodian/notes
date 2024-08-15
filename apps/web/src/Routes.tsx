@@ -12,6 +12,7 @@ const GeneralPage = loadable(() => import("@/pages/General"));
 const ImportantPage = loadable(() => import("@/pages/Important"));
 const PasswordResetPage = loadable(() => import("@/pages/PasswordReset"));
 const ConfirmEmailPage = loadable(() => import("@/pages/ConfirmEmail"));
+const AuthRedirectPage = loadable(() => import("@/pages/AuthRedirect"));
 
 export const RouteComponents = [
   {
@@ -66,6 +67,10 @@ export const RouteComponents = [
         <ConfirmEmailPage fallback={<Loading />} />
       </PrivateRoute>
     )
+  },
+  {
+    path: "/login/:provider/callback",
+    element: <AuthRedirectPage fallback={<Loading />} />
   }
 ] as const;
 

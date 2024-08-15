@@ -12,7 +12,10 @@ const server = t.Object({
   APP_NAME: t.String({ minLength: 1 }),
   ADMIN_EMAIL: t.String({ minLength: 1, format: "email" }),
   REDIS_URL: t.String({ minLength: 1 }),
-  IPINFO_TOKEN: t.String({ minLength: 1 })
+  IPINFO_TOKEN: t.String({ minLength: 1 }),
+  GOOGLE_CLIENT_ID: t.String({ minLength: 1 }),
+  GOOGLE_CLIENT_SECRET: t.String({ minLength: 1 }),
+  GOOGLE_REDIRECT_URI: t.String({ minLength: 1 })
 });
 
 type ServerEnv = typeof server.static;
@@ -28,7 +31,10 @@ const processEnv = {
   APP_NAME: process.env.APP_NAME,
   ADMIN_EMAIL: process.env.ADMIN_EMAIL,
   REDIS_URL: process.env.REDIS_URL,
-  IPINFO_TOKEN: process.env.IPINFO_TOKEN
+  IPINFO_TOKEN: process.env.IPINFO_TOKEN,
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+  GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI
 } satisfies Record<keyof ServerEnv, string | undefined>;
 
 // Don't touch the part below

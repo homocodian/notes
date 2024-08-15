@@ -1,5 +1,8 @@
 import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
+import { Google } from "arctic";
 import { Lucia } from "lucia";
+
+import { env } from "@/env";
 
 import { db } from "../db";
 import { sessionTable, userTable } from "../db/schema/user";
@@ -23,6 +26,12 @@ export const lucia = new Lucia(adapter, {
     };
   }
 });
+
+export const google = new Google(
+  env.GOOGLE_CLIENT_ID,
+  env.GOOGLE_CLIENT_SECRET,
+  env.GOOGLE_REDIRECT_URI
+);
 
 // IMPORTANT!
 declare module "lucia" {

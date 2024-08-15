@@ -1,4 +1,4 @@
-import { InferSelectModel, relations } from "drizzle-orm";
+import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -62,6 +62,7 @@ export const userTable = pgTable(
 );
 
 export type UserTable = InferSelectModel<typeof userTable>;
+export type CreateUserTable = InferInsertModel<typeof userTable>;
 
 export const sessionTable = pgTable("session", {
   id: text("id").notNull().primaryKey(),

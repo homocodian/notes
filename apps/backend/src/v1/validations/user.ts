@@ -102,3 +102,13 @@ export const changePasswordSchema = t.Object({
 });
 
 export type ChangePasswordSchema = typeof changePasswordSchema.static;
+
+export const oAuthQuerySchema = t.Partial(
+  t.Object({
+    device: deviceSchema,
+    redirect: t.String({ format: "uri" }),
+    callback: t.String({ format: "uri" })
+  })
+);
+
+export type OAuthQuerySchema = typeof oAuthQuerySchema.static;

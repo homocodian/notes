@@ -22,7 +22,7 @@ export type SaveDeviceProps = {
   userId: number;
   sessionId: string;
   ua?: string;
-  device: DeviceSchema;
+  device?: DeviceSchema;
 };
 
 export async function saveDevice({

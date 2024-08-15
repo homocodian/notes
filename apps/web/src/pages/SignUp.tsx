@@ -1,6 +1,8 @@
+import Google from "@mui/icons-material/Google";
 import LockIcon from "@mui/icons-material/LockOutlined";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Alert,
   Avatar,
@@ -18,12 +20,13 @@ import {
 import Container from "@mui/material/Container";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useShallow } from "zustand/react/shallow";
 
 import { SESSION_TOKEN_KEY } from "@/constant/auth";
 import { APIError } from "@/lib/api-error";
 import { fetchAPI } from "@/lib/fetch-wrapper";
+import { getAuthProviderURL } from "@/lib/get-auth-provider-url";
 import { useAuthStore } from "@/store/auth";
 
 interface InputFields {
@@ -56,13 +59,22 @@ export default function SignUp() {
     useShallow((state) => ({ user: state.user, setUser: state.setUser }))
   );
   const [showPasswordRules, setShowPasswordRules] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [searchParams] = useSearchParams();
 
   // check for user
   useEffect(() => {
     if (user) {
       navigate("/", { replace: true });
     }
-  }, []);
+  }, [user]);
+
+  useEffect(() => {
+    if (searchParams.has("error")) {
+      const error = searchParams.get("error");
+      if (error) toast.error(error);
+    }
+  }, [searchParams]);
 
   const handleChange =
     (prop: keyof InputFields) =>
@@ -151,9 +163,7 @@ export default function SignUp() {
           email,
           password,
           fullName
-        },
-        // auto abort in 2 minutes
-        options: { signal: AbortSignal.timeout(1000 * 60 * 2) }
+        }
       });
 
       if (
@@ -186,6 +196,11 @@ export default function SignUp() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleGoogleLogin = () => {
+    setIsGoogleLoading(true);
+    window.location.href = getAuthProviderURL("google");
   };
 
   return (
@@ -230,7 +245,7 @@ export default function SignUp() {
               e.preventDefault();
               handleSubmit();
             }}
-            sx={{ mt: 1 }}
+            sx={{ mt: 1, mb: 3 }}
             id="signup-form"
           >
             <TextField
@@ -317,15 +332,35 @@ export default function SignUp() {
                 )
               }}
             />
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{ mt: 2 }}
-              form="signup-form"
-              type="submit"
-            >
-              Sign Up
-            </Button>
+
+            <div className="flex flex-col gap-3">
+              <Button
+                fullWidth
+                variant="contained"
+                sx={{ mt: 2 }}
+                form="signup-form"
+                type="submit"
+                disabled={isLoading || isGoogleLoading}
+              >
+                Sign Up
+              </Button>
+              <div className="flex justify-center items-center gap-2">
+                <div className="h-px w-full bg-gray-500"></div>
+                <span className="text-primary-foreground">OR</span>
+                <div className="h-px w-full bg-gray-500"></div>
+              </div>
+              <LoadingButton
+                startIcon={<Google />}
+                fullWidth
+                variant="contained"
+                type="button"
+                disabled={isGoogleLoading}
+                onClick={handleGoogleLogin}
+                loading={isGoogleLoading}
+              >
+                Google
+              </LoadingButton>
+            </div>
             <Grid container>
               <Grid item sx={{ mt: 2 }}>
                 <Link href="/login" variant="body2">

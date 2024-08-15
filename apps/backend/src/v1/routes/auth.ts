@@ -7,12 +7,15 @@ import {
   emailVerificationSchema,
   loginUserSchema,
   logoutSchema,
+  oAuthQuerySchema,
   passwordResetSchema,
   passwordResetTokenSchema,
   registerUserSchema
 } from "@/v1/validations/user";
 
 import { emailVerification } from "../controllers/user/email-verification";
+import { googleCallback } from "../controllers/user/google-callback";
+import { googleLogin } from "../controllers/user/google-login";
 import { loginUser } from "../controllers/user/login";
 import { logout, logoutAll } from "../controllers/user/logout";
 import { passwordReset } from "../controllers/user/password-reset";
@@ -28,7 +31,7 @@ export const authRoute = new Elysia({ prefix: "/auth" })
   .use(bearer())
   .use(
     rateLimit({
-      max: 5,
+      max: 3,
       scoping: "scoped",
       generator: rateLimiterkeyGenerator
     })
@@ -39,6 +42,8 @@ export const authRoute = new Elysia({ prefix: "/auth" })
   .post("/login", loginUser, {
     body: loginUserSchema
   })
+  .get("/google", googleLogin)
+  .get("/google/callback", googleCallback, { query: oAuthQuerySchema })
   .post("/logout", logout, { body: logoutSchema })
   .post("/logout-all", logoutAll)
   .get("/profile", getProfile);
@@ -49,7 +54,7 @@ export const passwordResetRoute = new Elysia({ prefix: "/auth" })
   .use(
     rateLimit({
       scoping: "scoped",
-      max: 3,
+      max: 5,
       generator: rateLimiterkeyGenerator,
       countFailedRequest: true
     })
