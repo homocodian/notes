@@ -20,9 +20,7 @@ import {
   deviceSchema
 } from "@/v1/validations/user";
 
-interface GoogleCallbackProps extends Context {
-  ip: string;
-}
+interface GoogleCallbackProps extends Context {}
 
 const googleUserSchema = z.object({
   id: z.string(),
@@ -35,8 +33,6 @@ const googleUserSchema = z.object({
 export async function googleCallback({
   cookie,
   request,
-  error,
-  ip,
   redirect
 }: GoogleCallbackProps) {
   const codeVerifierCookie = cookie?.google_oauth_code_verifier?.value ?? null;
@@ -46,12 +42,15 @@ export async function googleCallback({
   const callbackURL = cookie?.callback?.value ?? env.CLIENT_URL + "/login";
   const redirectURL =
     cookie?.redirect?.value ?? env.CLIENT_URL + "/login/google/callback";
+  // request origin ip
+  const ip = cookie.ip?.value;
 
   cookie?.google_oauth_state?.remove();
   cookie?.google_oauth_code_verifier?.remove();
   cookie?.device?.remove();
   cookie?.callback?.remove();
   cookie?.redirect?.remove();
+  cookie?.ip?.remove();
 
   const jsonDevice = parseJson(deviceCookie);
 

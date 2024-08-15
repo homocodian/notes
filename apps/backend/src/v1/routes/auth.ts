@@ -31,7 +31,7 @@ export const authRoute = new Elysia({ prefix: "/auth" })
   .use(bearer())
   .use(
     rateLimit({
-      max: 3,
+      max: 10,
       scoping: "scoped",
       generator: rateLimiterkeyGenerator
     })
@@ -54,7 +54,7 @@ export const passwordResetRoute = new Elysia({ prefix: "/auth" })
   .use(
     rateLimit({
       scoping: "scoped",
-      max: 5,
+      max: 3,
       generator: rateLimiterkeyGenerator,
       countFailedRequest: true
     })

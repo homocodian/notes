@@ -6,18 +6,20 @@ import { OAuthQuerySchema } from "@/v1/validations/user";
 
 interface GoogleLoginProps extends Omit<Context, "query"> {
   query: OAuthQuerySchema;
+  ip: string;
 }
 
 export async function googleLogin({
   cookie,
   redirect,
   query,
-  request
+  request,
+  ip
 }: GoogleLoginProps) {
-  console.log(request.url);
-
   const state = generateState();
   const codeVerifier = generateCodeVerifier();
+  const clientIP =
+    request.headers.get("x-forwarded-for")?.split(",")?.[0] || ip;
 
   const url = await google.createAuthorizationURL(state, codeVerifier, {
     scopes: ["email", "profile"]
@@ -28,7 +30,8 @@ export async function googleLogin({
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 10,
-    path: "/"
+    path: "/",
+    sameSite: "lax"
   });
 
   cookie?.google_oauth_state?.set({
@@ -36,7 +39,8 @@ export async function googleLogin({
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 10,
-    path: "/"
+    path: "/",
+    sameSite: "lax"
   });
 
   if (query.device) {
@@ -45,7 +49,8 @@ export async function googleLogin({
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 10,
-      path: "/"
+      path: "/",
+      sameSite: "lax"
     });
   }
 
@@ -55,7 +60,8 @@ export async function googleLogin({
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 10,
-      path: "/"
+      path: "/",
+      sameSite: "lax"
     });
   }
 
@@ -65,9 +71,19 @@ export async function googleLogin({
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 10,
-      path: "/"
+      path: "/",
+      sameSite: "lax"
     });
   }
+
+  cookie?.ip?.set({
+    value: clientIP,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 60 * 10,
+    path: "/",
+    sameSite: "lax"
+  });
 
   return redirect(url.toString(), 302);
 }
