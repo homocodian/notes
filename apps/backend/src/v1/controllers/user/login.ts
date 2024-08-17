@@ -8,7 +8,7 @@ import { lucia } from "@/libs/auth";
 import { BgQueue } from "@/libs/background-worker";
 import { SaveDeviceProps } from "@/libs/background/save-device";
 import { signJwtAsync } from "@/libs/jwt";
-import { LoginUser, UserResponse } from "@/v1/validations/user";
+import { LoginUser, UserSchema } from "@/v1/validations/user";
 
 interface LoginUserProps extends Context {
   body: LoginUser;
@@ -66,7 +66,7 @@ export async function loginUser({ body, error, request, ip }: LoginUserProps) {
       photoURL: user.photoURL,
       displayName: user.displayName,
       sessionToken
-    } satisfies UserResponse & { sessionToken: string };
+    } satisfies UserSchema & { sessionToken: string };
   } catch (err) {
     console.error("🚀 ~ loginUser ~ err:", err);
     Sentry.captureException(err);

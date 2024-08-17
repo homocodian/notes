@@ -5,7 +5,7 @@ import { User } from "lucia";
 
 import { db } from "@/db";
 import { userTable } from "@/db/schema/user";
-import type { UserResponse, UserUpdateSchema } from "@/v1/validations/user";
+import type { UserSchema, UserUpdateSchema } from "@/v1/validations/user";
 
 interface UpdateUserProps extends Context {
   user: User;
@@ -30,7 +30,7 @@ export async function updateUser({ user, error, body }: UpdateUserProps) {
       photoURL: updatedUser.photoURL,
       displayName: updatedUser.displayName,
       emailVerified: updatedUser.emailVerified
-    } satisfies UserResponse;
+    } satisfies UserSchema;
   } catch (err) {
     console.error("🚀 ~ updateUser ~ err:", err);
     Sentry.captureException(err);

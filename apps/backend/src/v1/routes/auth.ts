@@ -13,6 +13,7 @@ import {
   registerUserSchema
 } from "@/v1/validations/user";
 
+import { createGoogleOAuth } from "../controllers/auth/create-google-oauth";
 import { emailVerification } from "../controllers/user/email-verification";
 import { googleCallback } from "../controllers/user/google-callback";
 import { googleLogin } from "../controllers/user/google-login";
@@ -25,6 +26,7 @@ import { registerUser } from "../controllers/user/register";
 import { sendVerificationEmail } from "../controllers/user/send-verification-email";
 import { errorHandlerInstance } from "../utils/error-handler";
 import { deriveUser } from "../utils/note/derive-user";
+import { oAuthBodySchema } from "../validations/auth";
 
 export const authRoute = new Elysia({ prefix: "/auth" })
   .use(errorHandlerInstance)
@@ -43,6 +45,7 @@ export const authRoute = new Elysia({ prefix: "/auth" })
     body: loginUserSchema
   })
   .get("/google", googleLogin)
+  .post("/google", createGoogleOAuth, { body: oAuthBodySchema })
   .get("/google/callback", googleCallback, { query: oAuthQuerySchema })
   .post("/logout", logout, { body: logoutSchema })
   .post("/logout-all", logoutAll)

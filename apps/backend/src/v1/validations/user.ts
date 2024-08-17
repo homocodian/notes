@@ -63,15 +63,15 @@ export const passwordResetSchema = t.Object({
 
 export type PasswordReset = typeof passwordResetSchema.static;
 
-export const userResponseSchema = t.Object({
+export const userSchema = t.Object({
   id: t.Number(),
-  email: t.String(),
+  email: t.String({ format: "email" }),
   emailVerified: t.Boolean(),
   photoURL: t.Nullable(t.String()),
   displayName: t.Nullable(t.String())
 });
 
-export type UserResponse = typeof userResponseSchema.static;
+export type UserSchema = typeof userSchema.static;
 
 export const emailVerificationSchema = t.Object({ code: t.String() });
 

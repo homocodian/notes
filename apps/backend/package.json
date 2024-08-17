@@ -1,6 +1,6 @@
 {
   "name": "@notes/backend",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "scripts": {
     "dev": "NODE_DEBUG=* NODE_ENV=development bun --watch src/index.ts",
     "build": "NODE_ENV=production bun build --target=bun --sourcemap=linked ./src/index.ts --outdir ./dist",

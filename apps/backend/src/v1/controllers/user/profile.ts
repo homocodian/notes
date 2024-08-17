@@ -5,7 +5,7 @@ import { lucia } from "@/libs/auth";
 import { BgQueue } from "@/libs/background-worker";
 import { UpdateSessionLastUsedAtProps } from "@/libs/background/update-session-last-used";
 import { VerifyJwtAsync } from "@/libs/jwt";
-import { UserResponse } from "@/v1/validations/user";
+import { UserSchema } from "@/v1/validations/user";
 
 interface GetProfileProps extends Context {
   bearer: string | undefined;
@@ -41,7 +41,7 @@ export async function getProfile({ bearer, error }: GetProfileProps) {
       emailVerified: user.emailVerified,
       photoURL: user.photoURL,
       displayName: user.displayName
-    } satisfies UserResponse;
+    } satisfies UserSchema;
   } catch (err) {
     console.log("🚀 ~ getProfile ~ err:", err);
     Sentry.captureException(err);

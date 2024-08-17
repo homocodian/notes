@@ -14,11 +14,7 @@ import { SaveDeviceProps } from "@/libs/background/save-device";
 import { signJwtAsync } from "@/libs/jwt";
 import { parseJson } from "@/libs/parse-json";
 import { Prettify } from "@/types/prettify";
-import {
-  DeviceSchema,
-  UserResponse,
-  deviceSchema
-} from "@/v1/validations/user";
+import { DeviceSchema, UserSchema, deviceSchema } from "@/v1/validations/user";
 
 interface GoogleCallbackProps extends Context {}
 
@@ -190,7 +186,7 @@ export async function googleCallback({
       emailVerified: user.emailVerified,
       photoURL: user.photoURL,
       displayName: user.displayName
-    } satisfies UserResponse;
+    } satisfies UserSchema;
 
     return redirect(
       `${redirectURL}?sessionToken=${sessionToken}&user=${encodeURIComponent(JSON.stringify(sessionUser))}`

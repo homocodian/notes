@@ -10,7 +10,7 @@ import { type SendVerificationCodeProps } from "@/libs/background/send-verificat
 import { JwtError, signJwtAsync } from "@/libs/jwt";
 import { validatePassword } from "@/libs/password-validation";
 import { isValidEmail } from "@/v1/validations/email";
-import { RegisterUser, UserResponse } from "@/v1/validations/user";
+import { RegisterUser, UserSchema } from "@/v1/validations/user";
 
 interface RegisterUserProps extends Context {
   body: RegisterUser;
@@ -87,7 +87,7 @@ export async function registerUser({
       photoURL: user.photoURL,
       displayName: user.displayName,
       sessionToken
-    } satisfies UserResponse & { sessionToken: string };
+    } satisfies UserSchema & { sessionToken: string };
   } catch (err) {
     console.log("🚀 ~ registerUser ~ err:", err);
     Sentry.captureException(err);
