@@ -7,6 +7,8 @@ import {
   NavigatorScreenParams
 } from "@react-navigation/native";
 
+import { Prettify } from "./prettify";
+
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootDrawerParamsList>;
   Settings: undefined;
@@ -18,12 +20,15 @@ export type RootStackParamList = {
       }
     | undefined;
   EditProfile: { to: "Name" | "Password" } | undefined;
+  Auth: { to: "SignIn" | "SignUp" };
   SignIn: undefined;
   SignUp: undefined;
   Devices: undefined;
   Search: undefined;
   OTP: undefined;
 };
+
+export type RootStackScreenName = Prettify<keyof RootStackParamList>;
 
 export type RootDrawerParamsList = {
   Home: undefined;

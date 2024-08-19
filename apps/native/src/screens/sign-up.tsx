@@ -1,22 +1,19 @@
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Image, Keyboard, ScrollView, View } from "react-native";
+import { Keyboard, View } from "react-native";
 import { Button, HelperText, Text, TextInput } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 import type { RegisterAuthSchema } from "@/lib/validations/auth";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { ExternalLink } from "@/components/external-link";
+import { SCREEN_HORIZONTAL_PADDING } from "@/constant/screens";
 import { useAuth } from "@/context/auth";
-import { useAppTheme } from "@/context/material-3-theme-provider";
 import { toast } from "@/lib/toast";
 import { registerAuthSchema } from "@/lib/validations/auth";
 import { RootStackScreenProps } from "@/types/navigation";
 
 function SignUp({ navigation }: RootStackScreenProps<"SignUp">) {
-  const theme = useAppTheme();
   const { createUser } = useAuth();
   const [isSecureEntry, setIsSecureEntry] = React.useState(true);
   const [isSecureEntryForConfirm, setIsSecureEntryForConfirm] =
@@ -60,40 +57,24 @@ function SignUp({ navigation }: RootStackScreenProps<"SignUp">) {
   }
 
   return (
-    <SafeAreaView
+    <View
       style={{
-        flex: 1
+        flex: 1,
+        paddingHorizontal: SCREEN_HORIZONTAL_PADDING
       }}
     >
-      <ScrollView
-        contentContainerStyle={{
+      <View
+        style={{
           display: "flex",
           flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          position: "relative",
           gap: 20
         }}
-        keyboardShouldPersistTaps="handled"
       >
-        <View className="flex justify-center items-center gap-3 px-5">
-          <Image
-            source={require("./../../assets/images/icon_light.png")}
-            style={{
-              width: 50,
-              height: 50,
-              tintColor: theme.colors.primary
-            }}
-          />
-          <View className="flex gap-1">
-            <Text className="text-center text-2xl font-bold">Cinememo</Text>
-            <Text variant="labelLarge" className="text-center">
-              Create your account
-            </Text>
-          </View>
-        </View>
-        <View className="flex justify-between items-center  self-stretch px-5">
-          <View className="self-stretch">
+        <Text variant="titleLarge" className="text-center font-bold">
+          Create an account
+        </Text>
+        <View style={{ display: "flex", gap: 15, flex: 1 }}>
+          <View>
             <Controller
               control={control}
               rules={{
@@ -112,11 +93,13 @@ function SignUp({ navigation }: RootStackScreenProps<"SignUp">) {
               )}
               name="fullName"
             />
-            <HelperText type="error" visible={!!errors.fullName}>
-              {errors.fullName?.message}
-            </HelperText>
+            {errors.fullName?.message ? (
+              <HelperText type="error" visible>
+                {errors.fullName?.message}
+              </HelperText>
+            ) : null}
           </View>
-          <View className="self-stretch">
+          <View>
             <Controller
               control={control}
               rules={{
@@ -136,11 +119,13 @@ function SignUp({ navigation }: RootStackScreenProps<"SignUp">) {
               )}
               name="email"
             />
-            <HelperText type="error" visible={!!errors.email}>
-              {errors.email?.message}
-            </HelperText>
+            {errors.email?.message ? (
+              <HelperText type="error" visible>
+                {errors.email?.message}
+              </HelperText>
+            ) : null}
           </View>
-          <View className="self-stretch">
+          <View>
             <Controller
               control={control}
               rules={{
@@ -167,11 +152,13 @@ function SignUp({ navigation }: RootStackScreenProps<"SignUp">) {
               )}
               name="password"
             />
-            <HelperText type="error" visible={!!errors.password}>
-              {errors.password?.message}
-            </HelperText>
+            {errors.password?.message ? (
+              <HelperText type="error" visible>
+                {errors.password?.message}
+              </HelperText>
+            ) : null}
           </View>
-          <View className="self-stretch">
+          <View>
             <Controller
               control={control}
               rules={{
@@ -204,33 +191,24 @@ function SignUp({ navigation }: RootStackScreenProps<"SignUp">) {
               )}
               name="confirmPassword"
             />
-            <HelperText type="error" visible={!!errors.confirmPassword}>
-              {errors.confirmPassword?.message}
-            </HelperText>
+            {errors.confirmPassword?.message ? (
+              <HelperText type="error" visible>
+                {errors.confirmPassword?.message}
+              </HelperText>
+            ) : null}
           </View>
-          <Button
-            mode="contained"
-            onPress={handleSubmit(onSubmit)}
-            className="self-stretch mt-1"
-            loading={isLoading}
-            disabled={isLoading}
-          >
-            SIGN UP
-          </Button>
         </View>
-        {/* terms */}
-        <Text className="text-center px-5">
-          By singing in you accept our{" "}
-          <ExternalLink href="https://notes-ashish.netlify.app/">
-            <Text className="text-blue-500 ml-2 underline">Terms of use</Text>
-          </ExternalLink>{" "}
-          and{" "}
-          <ExternalLink href="https://notes-ashish.netlify.app/">
-            <Text className="text-blue-500 ml-2 underline">Privary policy</Text>
-          </ExternalLink>
-        </Text>
-      </ScrollView>
-    </SafeAreaView>
+        <Button
+          mode="contained"
+          onPress={handleSubmit(onSubmit)}
+          className="mb-3"
+          loading={isLoading}
+          disabled={isLoading}
+        >
+          SIGN UP
+        </Button>
+      </View>
+    </View>
   );
 }
 

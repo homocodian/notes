@@ -35,10 +35,6 @@ const config: ExpoConfig = {
   androidStatusBar: {
     translucent: true
   },
-  androidNavigationBar: {
-    backgroundColor: DARK_BACKGROUND_COLOR,
-    barStyle: "light-content"
-  },
   android: {
     adaptiveIcon: {
       foregroundImage: "./assets/images/adaptive-icon.png",
@@ -66,6 +62,12 @@ const config: ExpoConfig = {
     favicon: "./assets/images/favicon.png"
   },
   plugins: [
+    [
+      "@vonovak/react-native-theme-control",
+      {
+        mode: "userPreference"
+      }
+    ],
     ["@morrowdigital/watermelondb-expo-plugin", { disableJsi: true }],
     "@react-native-firebase/app",
     [
@@ -90,7 +92,8 @@ const config: ExpoConfig = {
         organization: "homocodian",
         project: "cinememo"
       }
-    ]
+    ],
+    "@react-native-google-signin/google-signin"
   ],
   experiments: {
     tsconfigPaths: true

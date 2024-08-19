@@ -22,7 +22,7 @@ import { API } from "@/lib/api";
 import { APIError } from "@/lib/api-error";
 import { useUserStore } from "@/lib/store/user";
 import { toast } from "@/lib/toast";
-import { userSchema } from "@/lib/validations/user";
+import { userWithSessionSchema } from "@/lib/validations/user";
 
 export function EditAccountName() {
   const theme = useTheme();
@@ -39,7 +39,9 @@ export function EditAccountName() {
       const data = await API.patch("/v1/user/profile", {
         data: { displayName: displayName.trim() }
       });
-      const user = userSchema.omit({ sessionToken: true }).parse(data);
+      const user = userWithSessionSchema
+        .omit({ sessionToken: true })
+        .parse(data);
       setUser((data: any) => {
         if (!data) return data;
         return { ...data, ...user };

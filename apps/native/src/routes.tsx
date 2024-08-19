@@ -1,6 +1,8 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
+import { HeaderNavButton } from "./components/header-nav-button";
 import { useAuth } from "./context/auth";
+import { Auth } from "./screens/auth";
 import Devices from "./screens/devices";
 import Root from "./screens/drawer/root";
 import EditProfile from "./screens/edit-profile";
@@ -40,10 +42,48 @@ export function Routes() {
           <Stack.Screen name="EditProfile" component={EditProfile} />
         </Stack.Group>
       ) : (
-        <Stack.Group screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="SignIn" component={SignIn} />
-          <Stack.Screen name="SignUp" component={SignUp} />
-          <Stack.Screen name="OTP" component={OTP} />
+        <Stack.Group
+          screenOptions={{
+            headerShadowVisible: false,
+            animationTypeForReplace: "push",
+            animation: "slide_from_right"
+          }}
+        >
+          <Stack.Screen
+            name="Auth"
+            component={Auth}
+            options={{
+              headerShown: false
+            }}
+            initialParams={{ to: "SignIn" }}
+          />
+          <Stack.Screen
+            name="SignIn"
+            component={SignIn}
+            options={{
+              title: "",
+              headerStyle: { backgroundColor: "transparent" },
+              headerRight: () => (
+                <HeaderNavButton label="Sign up" screen="SignUp" />
+              )
+            }}
+          />
+          <Stack.Screen
+            name="SignUp"
+            component={SignUp}
+            options={{
+              title: "",
+              headerStyle: { backgroundColor: "transparent" },
+              headerRight: () => (
+                <HeaderNavButton label="Sign in" screen="SignIn" />
+              )
+            }}
+          />
+          <Stack.Screen
+            name="OTP"
+            component={OTP}
+            options={{ headerShown: false }}
+          />
         </Stack.Group>
       )}
     </Stack.Navigator>

@@ -1,22 +1,18 @@
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Image, Keyboard, Pressable, View } from "react-native";
+import { Keyboard, View } from "react-native";
 import { Button, HelperText, Text, TextInput } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 import type { AuthSchema } from "@/lib/validations/auth";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "@react-navigation/native";
 
-import { ExternalLink } from "@/components/external-link";
 import { ForgotPasswordDialog } from "@/components/sign-in/forgot-password-dialog";
+import { SCREEN_HORIZONTAL_PADDING } from "@/constant/screens";
 import { useAuth } from "@/context/auth";
-import { useAppTheme } from "@/context/material-3-theme-provider";
 import { authSchema } from "@/lib/validations/auth";
 
 function SignIn() {
-  const theme = useAppTheme();
   const [isLoading, setIsLoading] = React.useState(false);
   const [isSecureEntry, setIsSecureEntry] = React.useState(true);
   const { signIn } = useAuth();
@@ -47,138 +43,93 @@ function SignIn() {
 
   return (
     <>
-      <SafeAreaView style={{ flex: 1 }}>
-        <View
-          className="flex flex-1 justify-center items-center"
-          style={{
-            gap: 20
-          }}
-        >
-          <View className="flex justify-center items-center gap-3 px-5">
-            <Image
-              source={require("./../../assets/images/icon_light.png")}
-              style={{
-                width: 50,
-                height: 50,
-                tintColor: theme.colors.primary
+      <View
+        style={{
+          flex: 1,
+          paddingHorizontal: SCREEN_HORIZONTAL_PADDING
+        }}
+      >
+        <View style={{ display: "flex", gap: 15, flex: 1 }}>
+          <Text className="text-center font-bold my-4" variant="titleLarge">
+            Enter your sign in information
+          </Text>
+          <View>
+            <Controller
+              control={control}
+              rules={{
+                required: true
               }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  mode="outlined"
+                  label="Email"
+                  className="w-full"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                />
+              )}
+              name="email"
             />
-            <View className="flex gap-1">
-              <Text variant="titleMedium" className="text-center text-xl">
-                Welcome back
-              </Text>
-              <Text variant="labelLarge" className="text-center">
-                Please enter your details to sign in.
-              </Text>
-            </View>
-          </View>
-          <View className="flex justify-between items-center  self-stretch px-5">
-            <View className="self-stretch">
-              <Controller
-                control={control}
-                rules={{
-                  required: true
-                }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    mode="outlined"
-                    label="Email"
-                    className="w-full"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                  />
-                )}
-                name="email"
-              />
-              <HelperText type="error" visible={!!errors.email}>
+            {errors.email?.message ? (
+              <HelperText type="error" visible>
                 {errors.email?.message}
               </HelperText>
-            </View>
-            <View className="self-stretch">
-              <Controller
-                control={control}
-                rules={{
-                  required: true
-                }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    mode="outlined"
-                    label="Password"
-                    className="w-full"
-                    secureTextEntry={isSecureEntry}
-                    autoCapitalize="none"
-                    right={
-                      isSecureEntry ? (
-                        <TextInput.Icon icon="eye" onPress={handleEyePress} />
-                      ) : (
-                        <TextInput.Icon
-                          icon="eye-off"
-                          onPress={handleEyePress}
-                        />
-                      )
-                    }
-                  />
-                )}
-                name="password"
-              />
-              <HelperText type="error" visible={!!errors.password}>
+            ) : null}
+          </View>
+          <View>
+            <Controller
+              control={control}
+              rules={{
+                required: true
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  mode="outlined"
+                  label="Password"
+                  className="w-full"
+                  secureTextEntry={isSecureEntry}
+                  autoCapitalize="none"
+                  right={
+                    isSecureEntry ? (
+                      <TextInput.Icon icon="eye" onPress={handleEyePress} />
+                    ) : (
+                      <TextInput.Icon icon="eye-off" onPress={handleEyePress} />
+                    )
+                  }
+                />
+              )}
+              name="password"
+            />
+            {errors.password?.message ? (
+              <HelperText type="error" visible>
                 {errors.password?.message}
               </HelperText>
-            </View>
-            <Pressable
-              className="self-end"
-              onPress={() => setVisible(true)}
-              disabled={isLoading}
-            >
-              <Text variant="titleMedium" className="text-blue-500 underline">
-                Forgot Password?
-              </Text>
-            </Pressable>
-            <Button
-              mode="contained"
-              onPress={handleSubmit(onSubmit)}
-              className="self-stretch mt-5"
-              loading={isLoading}
-              disabled={isLoading}
-            >
-              SIGN IN
-            </Button>
+            ) : null}
           </View>
-          <Text variant="titleSmall">
-            Don&apos;t have an account?{" "}
-            <Link to={{ screen: "SignUp" }}>
-              <Text
-                variant="titleMedium"
-                className="text-blue-500 ml-2 underline"
-              >
-                SIGN UP
-              </Text>
-            </Link>
-          </Text>
-          <View className="px-5">
-            <Text className="text-center">
-              By singing in you accept our{" "}
-              <ExternalLink href="https://notes-ashish.netlify.app/terms">
-                <Text className="text-blue-500 ml-2 underline">
-                  Terms of use
-                </Text>
-              </ExternalLink>{" "}
-              and{" "}
-              <ExternalLink href="https://notes-ashish.netlify.app/privacy">
-                <Text className="text-blue-500 ml-2 underline">
-                  Privary policy
-                </Text>
-              </ExternalLink>
-            </Text>
-          </View>
+          <Button
+            className="self-end"
+            onPress={() => setVisible(true)}
+            disabled={isLoading}
+          >
+            Forgot password?
+          </Button>
         </View>
-      </SafeAreaView>
+        <Button
+          mode="contained"
+          onPress={handleSubmit(onSubmit)}
+          className="mb-3"
+          loading={isLoading}
+          disabled={isLoading}
+        >
+          SIGN IN
+        </Button>
+      </View>
       <ForgotPasswordDialog visible={visible} setVisible={setVisible} />
     </>
   );

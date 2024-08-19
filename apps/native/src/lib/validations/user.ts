@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const userSchema = z.object({
+export const userWithSessionSchema = z.object({
   id: z.coerce.number().positive(),
   email: z.string().email(),
   emailVerified: z
@@ -11,4 +11,18 @@ export const userSchema = z.object({
   sessionToken: z.string()
 });
 
-export type User = z.infer<typeof userSchema>;
+export type UserWithSession = z.infer<typeof userWithSessionSchema>;
+
+export const userSchema = userWithSessionSchema.omit({
+  sessionToken: true
+});
+
+export type UserSchema = z.infer<typeof userSchema>;
+
+export const googleUserSchema = z.object({
+  sub: z.string(),
+  email: z.string().email(),
+  name: z.string().optional().nullable(),
+  picture: z.string().url().optional().nullable(),
+  email_verified: z.boolean().default(false)
+});

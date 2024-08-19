@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { USER_SESSION_KEY } from "@/constant/auth";
 import { getSecureValue } from "@/lib/secure-store";
 import { useUserStore } from "@/lib/store/user";
-import { userSchema } from "@/lib/validations/user";
+import { userWithSessionSchema } from "@/lib/validations/user";
 
 export function useLoadPersistedSession() {
   const [isLoading, setIsLoading] = useState(true);
@@ -15,7 +15,7 @@ export function useLoadPersistedSession() {
 
       if (!userString) return;
 
-      const user = userSchema.parse(JSON.parse(userString));
+      const user = userWithSessionSchema.parse(JSON.parse(userString));
       setUser(user);
     };
 

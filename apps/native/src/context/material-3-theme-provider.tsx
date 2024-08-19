@@ -1,5 +1,4 @@
 import React from "react";
-import { useColorScheme } from "react-native";
 import {
   adaptNavigationTheme,
   MD3DarkTheme,
@@ -21,10 +20,9 @@ import {
   Theme,
   ThemeProvider
 } from "@react-navigation/native";
-import * as NavigationBar from "expo-navigation-bar";
 import { setBackgroundColorAsync } from "expo-system-ui";
 
-import { useSplashScreenStatus } from "@/lib/store/splash-screen-status";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 
 type Material3ThemeProviderProps = {
   theme: Material3Theme;
@@ -47,10 +45,7 @@ export function Material3ThemeProvider({
   sourceColor?: string;
   fallbackSourceColor?: string;
 }) {
-  const isSplashScreenVisible = useSplashScreenStatus(
-    (state) => state.isSplashScreenVisible
-  );
-  const colorScheme = useColorScheme() ?? "light";
+  const colorScheme = useColorScheme();
 
   // Material theme adaptive
   const { theme, updateTheme, resetTheme } = useDefaultMaterial3Theme({
@@ -86,15 +81,6 @@ export function Material3ThemeProvider({
   React.useEffect(() => {
     setBackgroundColorAsync(navigationTheme.colors.background);
   }, [navigationTheme]);
-
-  React.useEffect(() => {
-    if (!isSplashScreenVisible) {
-      NavigationBar.setBackgroundColorAsync(navigationTheme.colors.background);
-      NavigationBar.setButtonStyleAsync(
-        colorScheme === "dark" ? "light" : "dark"
-      );
-    }
-  }, [colorScheme, navigationTheme, isSplashScreenVisible]);
 
   return (
     <Material3ThemeProviderContext.Provider

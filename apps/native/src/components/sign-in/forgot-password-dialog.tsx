@@ -27,26 +27,22 @@ export function ForgotPasswordDialog({
       return;
     }
 
-    try {
-      setIsPending(true);
-      await sendPasswordResetEmail(email);
+    setIsPending(true);
+
+    const { error } = await sendPasswordResetEmail(email);
+
+    if (error) {
+      Snackbar({
+        text: error
+      });
+    } else {
       Snackbar({
         text: "Reset link sent to your email, if not found please check your spam folder"
       });
-    } catch (error) {
-      if (error instanceof Error) {
-        Snackbar({
-          text: error.message
-        });
-      } else {
-        Snackbar({
-          text: "Failed to send email, please try later"
-        });
-      }
-    } finally {
-      setIsPending(false);
-      setVisible(false);
     }
+
+    setIsPending(false);
+    setVisible(false);
   }
 
   return (

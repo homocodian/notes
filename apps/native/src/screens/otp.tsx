@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { useWindowDimensions, View } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import { BackHandler, useWindowDimensions, View } from "react-native";
 import OTPTextInput from "react-native-otp-textinput";
 import { Button, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -26,6 +26,20 @@ export default function OTP() {
     [width]
   );
 
+  useEffect(() => {
+    const unsubscribe = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        toast("Press skip to continue without verifying your email");
+        return true;
+      }
+    );
+
+    return () => {
+      unsubscribe.remove();
+    };
+  }, []);
+
   async function submitOtp() {
     if (otp.length < 8) {
       toast("Please enter a valid code");
@@ -38,20 +52,26 @@ export default function OTP() {
   }
 
   return (
-    <SafeAreaView className="flex-1">
-      <View
-        className="space-y-8 mt-12"
-        style={{
-          paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
-          paddingVertical: SCREEN_VERTICAL_PADDING
-        }}
+    <SafeAreaView
+      className="flex-1"
+      style={{
+        paddingHorizontal: SCREEN_HORIZONTAL_PADDING
+      }}
+    >
+      <Button
+        className="self-end"
+        onPress={() => setIsSignUp(false)}
+        disabled={isLoading}
       >
+        Skip
+      </Button>
+      <View className="space-y-8 mt-8">
         <View className="space-y-2">
           <Text variant="headlineLarge" className="font-bold text-center">
-            OTP Verification
+            Email verification
           </Text>
           <Text variant="bodyLarge" className="text-center">
-            Enter OTP sent to {user?.email}
+            Enter the code sent to {user?.email}
           </Text>
         </View>
         <View style={{ marginVertical: SCREEN_VERTICAL_PADDING }}>
@@ -75,7 +95,7 @@ export default function OTP() {
           <Button
             mode="contained"
             className="px-4"
-            disabled={isLoading}
+            disabled={isLoading || otp.length < 8}
             loading={isLoading}
             onPress={submitOtp}
           >
@@ -83,14 +103,6 @@ export default function OTP() {
           </Button>
         </View>
       </View>
-      <Button
-        mode="contained-tonal"
-        className="absolute bottom-4 right-2"
-        onPress={() => setIsSignUp(false)}
-        disabled={isLoading}
-      >
-        Skip
-      </Button>
     </SafeAreaView>
   );
 }

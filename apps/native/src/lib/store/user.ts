@@ -1,10 +1,10 @@
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 
-import { User } from "../validations/user";
+import { UserWithSession } from "../validations/user";
 
 interface UserState {
-  user: User | null;
+  user: UserWithSession | null;
   /**
    * ****************************************************
    * ⚠️ **NOTE**: Do not call this method to clear user state.
@@ -13,7 +13,10 @@ interface UserState {
    * @param user The new user object or null to clear the user.
    */
   setUser: (
-    user: User | null | ((user: User | null) => User),
+    user:
+      | UserWithSession
+      | null
+      | ((user: UserWithSession | null) => UserWithSession),
     isSignUp?: boolean
   ) => void;
   isSignUp: boolean;

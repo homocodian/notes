@@ -1,26 +1,33 @@
 import React, { useCallback } from "react";
 
 import NetInfo from "@react-native-community/netinfo";
+import * as Sentry from "@sentry/react-native";
 
 import { USER_SESSION_KEY } from "@/constant/auth";
 import { API } from "@/lib/api";
 import { APIError } from "@/lib/api-error";
 import { database } from "@/lib/db";
 import { getDeviceId, getDeviceInfo } from "@/lib/device";
+import { googleSignIn as NativeGoogleSignIn } from "@/lib/google-sign";
 import { deleteSecureValue, setSecureValue } from "@/lib/secure-store";
 import { useUserStore } from "@/lib/store/user";
 import { toast } from "@/lib/toast";
 import { RegisterAuthSchema } from "@/lib/validations/auth";
-import { User, userSchema } from "@/lib/validations/user";
+import { UserWithSession, userWithSessionSchema } from "@/lib/validations/user";
 
 type Context = {
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
-  user: User | null;
+  user: UserWithSession | null;
   createUser: (data: RegisterAuthSchema) => Promise<void>;
-  sendPasswordResetEmail: (email: string) => Promise<string>;
+  sendPasswordResetEmail: (
+    email: string
+  ) => Promise<{ data: null; error: string } | { data: string; error: null }>;
   verifyEmail: (code: string) => Promise<void>;
   isSignUp: boolean;
+  googleSignIn: () => Promise<
+    { user: UserWithSession; error: null } | { user: null; error: string }
+  >;
 };
 
 const AuthContext = React.createContext({} as Context);
@@ -45,10 +52,11 @@ export function AuthProvider(props: { children: React.ReactNode }) {
       if (state.isConnected) {
         API.get("/v1/auth/profile")
           .catch(() => {
+            toast("Session expired. Please login again");
             signOut();
           })
           .then((data) => {
-            const updatedUser = userSchema
+            const updatedUser = userWithSessionSchema
               .omit({ sessionToken: true })
               .safeParse(data);
             if (updatedUser.success) {
@@ -63,7 +71,7 @@ export function AuthProvider(props: { children: React.ReactNode }) {
 
   const signIn = useCallback(async (email: string, password: string) => {
     try {
-      const res: User = await API.post("/v1/auth/login", {
+      const res: UserWithSession = await API.post("/v1/auth/login", {
         data: { email, password, device: getDeviceInfo() }
       });
       await setSecureValue(USER_SESSION_KEY, JSON.stringify(res));
@@ -87,7 +95,7 @@ export function AuthProvider(props: { children: React.ReactNode }) {
         return;
       }
       try {
-        const res: User = await API.post("/v1/auth/register", {
+        const res: UserWithSession = await API.post("/v1/auth/register", {
           data: {
             email,
             password,
@@ -95,7 +103,7 @@ export function AuthProvider(props: { children: React.ReactNode }) {
             device: getDeviceInfo()
           }
         });
-        const user = userSchema.parse(res);
+        const user = userWithSessionSchema.parse(res);
         await setSecureValue(USER_SESSION_KEY, JSON.stringify(user));
         //  user and isSignUp -> true
         setUser(user, true);
@@ -113,7 +121,10 @@ export function AuthProvider(props: { children: React.ReactNode }) {
 
     await API.post("/v1/auth/logout", {
       data: { deviceId }
-    }).catch(() => {});
+    }).catch((error) => {
+      Sentry.captureException(error);
+      console.log("🚀 ~ signOut ~ error");
+    });
 
     try {
       const deleted = await deleteSecureValue(USER_SESSION_KEY);
@@ -127,14 +138,24 @@ export function AuthProvider(props: { children: React.ReactNode }) {
     } catch (error) {
       console.log("🚀 ~ signOut ~ error:", error);
       toast("Failed to logout");
+      Sentry.captureException(error);
     }
   }, [setUser]);
 
   const sendPasswordResetEmail = useCallback(async (email: string) => {
-    return await API.post<string>("/v1/auth/reset-password", {
-      data: { email },
-      responseType: "text"
-    });
+    try {
+      const data: string = await API.post<string>("/v1/auth/reset-password", {
+        data: { email },
+        responseType: "text"
+      });
+      return { data, error: null };
+    } catch (error) {
+      Sentry.captureException(error);
+      if (error instanceof APIError) {
+        return { data: null, error: error.message };
+      }
+      return { data: null, error: "Failed to send email, please try later" };
+    }
   }, []);
 
   const verifyEmail = useCallback(async (code: string) => {
@@ -150,6 +171,33 @@ export function AuthProvider(props: { children: React.ReactNode }) {
     } catch (error) {
       if (error instanceof APIError) toast(error.message);
       else toast("Something went wrong");
+      Sentry.captureException(error);
+    }
+  }, []);
+
+  const googleSignIn = useCallback(async () => {
+    try {
+      const { user, error } = await NativeGoogleSignIn();
+
+      if (!user) {
+        return { user: null, error };
+      }
+
+      const res: UserWithSession = await API.post("/v1/auth/google", {
+        data: { user, device: getDeviceInfo() }
+      });
+
+      await setSecureValue(USER_SESSION_KEY, JSON.stringify(res));
+
+      setUser(res);
+
+      return { user: res, error: null };
+    } catch (error) {
+      Sentry.captureException(error);
+      if (error instanceof APIError) {
+        return { user: null, error: error.message };
+      }
+      return { user: null, error: "Something went wrong" };
     }
   }, []);
 
@@ -162,6 +210,7 @@ export function AuthProvider(props: { children: React.ReactNode }) {
         isSignUp,
         createUser,
         verifyEmail,
+        googleSignIn,
         sendPasswordResetEmail
       }}
     >

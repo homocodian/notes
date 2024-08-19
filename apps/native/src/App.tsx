@@ -1,5 +1,6 @@
 import { PropsWithChildren, useEffect, useRef } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import {
   initialWindowMetrics,
   SafeAreaProvider
@@ -15,7 +16,6 @@ import * as Sentry from "@sentry/react-native";
 import { onlineManager } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import * as SplashScreen from "expo-splash-screen";
-import { StatusBar } from "expo-status-bar";
 import * as Updates from "expo-updates";
 
 import {
@@ -29,11 +29,12 @@ import { AuthProvider } from "./context/auth";
 import { useLoadPersistedSession } from "./hooks/use-load-persisted-session";
 import { asyncStoragePersister, queryClient } from "./lib/query-client";
 import { initSentry } from "./lib/sentry";
-import { useSplashScreenStatus } from "./lib/store/splash-screen-status";
 import { Routes } from "./routes";
 import { RootStackParamList } from "./types/navigation";
 
 import "@/styles/global.css";
+
+import { ThemeAwareSystemBars } from "./components/theme-aware-system-bars";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -41,11 +42,10 @@ const routingInstrumentation = initSentry();
 
 function InnerApp({ children }: PropsWithChildren) {
   const { isLoading } = useLoadPersistedSession();
-  const onSplashScreenHide = useSplashScreenStatus((state) => state.onHide);
 
   useEffect(() => {
     if (!isLoading) {
-      SplashScreen.hideAsync().then(onSplashScreenHide);
+      SplashScreen.hideAsync();
     }
   }, [isLoading]);
 
@@ -106,27 +106,29 @@ function App() {
   }, []);
 
   return (
-    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-      <PersistQueryClientProvider
-        client={queryClient}
-        persistOptions={{ persister: asyncStoragePersister }}
-      >
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <Material3ThemeProvider>
-            <ThemedNavigationContainer>
-              <InnerApp>
-                <AuthProvider>
-                  <Routes />
-                </AuthProvider>
-                <StatusBar style="auto" animated translucent />
-              </InnerApp>
-              <SnackbarContainer />
-              <Alerter />
-            </ThemedNavigationContainer>
-          </Material3ThemeProvider>
-        </GestureHandlerRootView>
-      </PersistQueryClientProvider>
-    </SafeAreaProvider>
+    <KeyboardProvider enabled={false} statusBarTranslucent>
+      <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+        <PersistQueryClientProvider
+          client={queryClient}
+          persistOptions={{ persister: asyncStoragePersister }}
+        >
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <Material3ThemeProvider>
+              <ThemedNavigationContainer>
+                <InnerApp>
+                  <AuthProvider>
+                    <Routes />
+                  </AuthProvider>
+                </InnerApp>
+                <SnackbarContainer />
+                <Alerter />
+              </ThemedNavigationContainer>
+              <ThemeAwareSystemBars />
+            </Material3ThemeProvider>
+          </GestureHandlerRootView>
+        </PersistQueryClientProvider>
+      </SafeAreaProvider>
+    </KeyboardProvider>
   );
 }
 
