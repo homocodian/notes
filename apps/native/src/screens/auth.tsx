@@ -89,7 +89,7 @@ export function Auth({ route, navigation }: RootStackScreenProps<"Auth">) {
           </ExternalLink>{" "}
           and{" "}
           <ExternalLink href="https://notes-ashish.netlify.app/privacy">
-            <Text className="text-blue-500 ml-2 underline">Privary policy</Text>
+            <Text className="text-blue-500 ml-2 underline">Privacy policy</Text>
           </ExternalLink>
         </Text>
       </View>

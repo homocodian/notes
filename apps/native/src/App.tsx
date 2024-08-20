@@ -1,3 +1,6 @@
+// prettier-ignore
+import { routingInstrumentation } from "./lib/sentry";
+
 import { PropsWithChildren, useEffect, useRef } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
@@ -28,7 +31,6 @@ import { SnackbarContainer } from "./components/ui/snackbar-container";
 import { AuthProvider } from "./context/auth";
 import { useLoadPersistedSession } from "./hooks/use-load-persisted-session";
 import { asyncStoragePersister, queryClient } from "./lib/query-client";
-import { initSentry } from "./lib/sentry";
 import { Routes } from "./routes";
 import { RootStackParamList } from "./types/navigation";
 
@@ -37,8 +39,6 @@ import "@/styles/global.css";
 import { ThemeAwareSystemBars } from "./components/theme-aware-system-bars";
 
 SplashScreen.preventAutoHideAsync();
-
-const routingInstrumentation = initSentry();
 
 function InnerApp({ children }: PropsWithChildren) {
   const { isLoading } = useLoadPersistedSession();
@@ -65,9 +65,7 @@ function ThemedNavigationContainer({ children }: PropsWithChildren) {
       theme={navigationTheme}
       onReady={() => {
         routeNameRef.current = navigationRef.getCurrentRoute()?.name;
-        routingInstrumentation?.registerNavigationContainer(
-          navigationRef.current
-        );
+        routingInstrumentation.registerNavigationContainer(navigationRef);
       }}
       onStateChange={async () => {
         const previousRouteName = routeNameRef.current;
@@ -132,4 +130,4 @@ function App() {
   );
 }
 
-export default __DEV__ ? App : Sentry.wrap(App);
+export default Sentry.wrap(App);

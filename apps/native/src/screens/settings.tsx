@@ -1,16 +1,18 @@
 import React from "react";
-import { TouchableOpacity, View } from "react-native";
+import { View } from "react-native";
 import {
   ActivityIndicator,
   Dialog,
   Divider,
   Portal,
   Surface,
-  Text
+  Text,
+  TouchableRipple
 } from "react-native-paper";
 
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import * as Sentry from "@sentry/react-native";
 import * as Application from "expo-application";
 
 import { CardButton } from "@/components/account/card-button";
@@ -23,6 +25,8 @@ import { useAuth } from "@/context/auth";
 import { useAppTheme } from "@/context/material-3-theme-provider";
 import { toast } from "@/lib/toast";
 
+const ADMIN_EMAILS = process.env.EXPO_PUBLIC_ADMIN_EMAIL?.split(",");
+
 export default function Settings() {
   const navigation = useNavigation();
   const theme = useAppTheme();
@@ -33,6 +37,18 @@ export default function Settings() {
     setVisible(true);
     await signOut();
     setVisible(false);
+  }
+
+  function testError() {
+    try {
+      throw new Error(`Test Error ${new Date()}}`);
+    } catch (error) {
+      Sentry.captureException(error);
+    }
+  }
+
+  function nativeCrash() {
+    Sentry.nativeCrash();
   }
 
   return (
@@ -87,8 +103,11 @@ export default function Settings() {
             </Surface>
           </Section>
 
-          <Surface style={{ borderRadius: theme.roundness * 2 }}>
-            <TouchableOpacity onPress={logout} disabled={visible}>
+          <Surface
+            style={{ borderRadius: theme.roundness * 2 }}
+            className="overflow-hidden"
+          >
+            <TouchableRipple onPress={logout} disabled={visible}>
               <View className="flex flex-row items-center py-4 px-4 space-x-4">
                 <MaterialIcons
                   name="logout"
@@ -102,8 +121,49 @@ export default function Settings() {
                   Log Out
                 </Text>
               </View>
-            </TouchableOpacity>
+            </TouchableRipple>
           </Surface>
+
+          {user?.email && ADMIN_EMAILS?.includes(user.email) ? (
+            <Section label="Account Settings" twClass="mt-5">
+              <Surface
+                style={{ borderRadius: theme.roundness * 2 }}
+                className="overflow-hidden"
+              >
+                <TouchableRipple onPress={testError}>
+                  <View className="flex flex-row items-center py-4 px-4 space-x-4">
+                    <MaterialIcons
+                      name="error"
+                      size={24}
+                      color={theme.colors.onSurface}
+                    />
+                    <Text
+                      variant="labelLarge"
+                      style={{ color: theme.colors.error }}
+                    >
+                      Test Error
+                    </Text>
+                  </View>
+                </TouchableRipple>
+                <Divider />
+                <TouchableRipple onPress={nativeCrash}>
+                  <View className="flex flex-row items-center py-4 px-4 space-x-4">
+                    <MaterialIcons
+                      name="error"
+                      size={24}
+                      color={theme.colors.onSurface}
+                    />
+                    <Text
+                      variant="labelLarge"
+                      style={{ color: theme.colors.error }}
+                    >
+                      Test Native Error
+                    </Text>
+                  </View>
+                </TouchableRipple>
+              </Surface>
+            </Section>
+          ) : null}
         </View>
 
         <View className="absolute bottom-3 w-screen flex justify-center items-center">

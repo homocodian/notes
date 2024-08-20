@@ -24,6 +24,9 @@ npm-debug.*
 yarn-debug.*
 yarn-error.*
 
+# Ignore files containing 'dump' in their filename
+*dump*
+
 # macOS
 .DS_Store
 *.pem

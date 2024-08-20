@@ -1,3 +1,4 @@
+import { withSentry } from "@sentry/react-native/expo";
 import { ExpoConfig } from "expo/config";
 
 import pkg from "./package.json";
@@ -86,13 +87,6 @@ const config: ExpoConfig = {
     ],
     "expo-font",
     "expo-secure-store",
-    [
-      "@sentry/react-native/expo",
-      {
-        organization: "homocodian",
-        project: "cinememo"
-      }
-    ],
     "@react-native-google-signin/google-signin"
   ],
   experiments: {
@@ -112,4 +106,8 @@ const config: ExpoConfig = {
   }
 };
 
-export default config;
+export default withSentry(config, {
+  organization: "homocodian",
+  project: "cinememo",
+  url: "https://sentry.io/"
+});
