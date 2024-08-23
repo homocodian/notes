@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/bun";
-import { and, desc, eq, getTableColumns, sql } from "drizzle-orm";
+import { and, desc, eq, getTableColumns, isNull, sql } from "drizzle-orm";
 import type { Context } from "elysia";
 import { User } from "lucia";
 
@@ -51,7 +51,11 @@ export async function getNotes({ user, query, error }: GetNotesProps) {
       })
       .from(noteTable)
       .where(
-        and(eq(noteTable.userId, user.id), eq(noteTable.category, category))
+        and(
+          eq(noteTable.userId, user.id),
+          eq(noteTable.category, category),
+          isNull(noteTable.deletedAt)
+        )
       )
       .orderBy(desc(noteTable.updatedAt))
       .innerJoin(userTable, eq(userTable.id, noteTable.userId));
