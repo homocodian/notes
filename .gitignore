@@ -65,3 +65,5 @@ build
 **/*.log
 package-lock.json
 **/*.bun
+
+*dump*

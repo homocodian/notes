@@ -45,7 +45,7 @@ function SideDrawer() {
               fontWeight="bold"
               py="1rem"
             >
-              Notes
+              Cinememo
             </Typography>
           </Box>
           <Divider />

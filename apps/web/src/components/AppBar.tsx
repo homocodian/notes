@@ -1,8 +1,11 @@
 import ClearIcon from "@mui/icons-material/Clear";
+import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
+import Alert from "@mui/material/Alert";
 import MuiAppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
+import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
 import Slide from "@mui/material/Slide";
 import Toolbar from "@mui/material/Toolbar";
@@ -30,6 +33,13 @@ function AppBar() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [shouldShowToolbar, setShouldShowToolbar] = useState(true);
   const [shouldShowSearchbar, setShouldShowSearchbar] = useState(false);
+  const [shouldShowBanner, setShouldShowBanner] = useState(() =>
+    !localStorage.getItem("banner")
+      ? true
+      : localStorage.getItem("banner") === "true"
+        ? true
+        : false
+  );
 
   const shouldShow = useMemo(() => {
     if (location.pathname.includes("/reset-password")) {
@@ -47,6 +57,27 @@ function AppBar() {
 
   return (
     <Fragment>
+      <Collapse in={shouldShowBanner}>
+        <Alert
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                localStorage.setItem("banner", "false");
+                setShouldShowBanner(false);
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          severity="info"
+        >
+          Previously known as &quot;Notes&quot; is now &quot;Cinememo&quot;.
+          Enjoy the new features!
+        </Alert>
+      </Collapse>
       <Slide direction="down" in={shouldShow}>
         <MuiAppBar position="static">
           <div ref={nodeRef} className="overflow-hidden">
@@ -80,7 +111,7 @@ function AppBar() {
                     </IconButton>
                   )}
                   <Typography component="div" variant="h6" sx={{ flexGrow: 1 }}>
-                    Notes
+                    Cinememo
                   </Typography>
                   <div className="space-x-2">
                     {user?.id ? (
