@@ -1,0 +1,23 @@
+{
+  "useTabs": false,
+  "tabWidth": 2,
+  "semi": true,
+  "jsxSingleQuote": false,
+  "singleQuote": false,
+  "trailingComma": "none",
+  "plugins": ["@ianvs/prettier-plugin-sort-imports"],
+  "importOrder": [
+    "^react",
+    "",
+    "<TYPES>",
+    "<TYPES>^[./]",
+    "",
+    "<THIRD_PARTY_MODULES>",
+    "",
+    "^@/(.*)$",
+    "",
+    "^[./]"
+  ],
+  "importOrderParserPlugins": ["typescript", "jsx", "decorators-legacy"],
+  "importOrderTypeScriptVersion": "5.3.3"
+}
