@@ -26,6 +26,7 @@ import {
   useMaterial3Theme
 } from "@/context/material-3-theme-provider";
 
+import { ThemeAwareSystemBars } from "./components/theme-aware-system-bars";
 import { Alerter } from "./components/ui/alerter";
 import { SnackbarContainer } from "./components/ui/snackbar-container";
 import { AuthProvider } from "./context/auth";
@@ -35,8 +36,6 @@ import { Routes } from "./routes";
 import { RootStackParamList } from "./types/navigation";
 
 import "@/styles/global.css";
-
-import { ThemeAwareSystemBars } from "./components/theme-aware-system-bars";
 
 SplashScreen.preventAutoHideAsync();
 

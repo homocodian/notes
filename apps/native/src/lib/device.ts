@@ -72,8 +72,8 @@ export function getDeviceInfo() {
 export async function getDeviceId() {
   const newUniqueId =
     Platform.OS === "android"
-      ? Application.getAndroidId() ?? Crypto.randomUUID()
-      : (await Application.getIosIdForVendorAsync()) ?? Crypto.randomUUID();
+      ? (Application.getAndroidId() ?? Crypto.randomUUID())
+      : ((await Application.getIosIdForVendorAsync()) ?? Crypto.randomUUID());
 
   let uniqueId = null;
 

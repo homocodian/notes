@@ -8,18 +8,18 @@ pnpm-debug.log*
 lerna-debug.log*
 
 # dependencies
-node_modules
-dist
-dist-ssr
-*.local
+**/node_modules/
+**/dist/
+**/dist-ssr/
+**/*.local
 /.pnp
 .pnp.js
 
 # Editor directories and files
-.vscode/*
+**/.vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+**/.idea/
+**/.DS_Store/
 *.suo
 *.ntvs*
 *.njsproj
@@ -29,17 +29,12 @@ dist-ssr
 output-metadata.json
 
 # Local Netlify folder
-.netlify
+**/.netlify/
 
 # rest client
-*.http
+**/.http
 
-# local env files
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+profile
 
 # testing
 coverage
@@ -49,21 +44,31 @@ coverage
 out
 
 # production
-build
+**/build/
 
 # misc
-.DS_Store
-*.pem
+**/.DS_Store/
+**/*.pem
 
 # vercel
-.vercel
+**/.vercel/
 
 **/*.trace
 **/*.zip
 **/*.tar.gz
 **/*.tgz
 **/*.log
-package-lock.json
 **/*.bun
 
 *dump*
+
+# expo
+**/.expo/
+**/build-inspect/
+.easignore
+**/ios/
+**/android/
+app.json
+
+**/google-services*.json
+.env*

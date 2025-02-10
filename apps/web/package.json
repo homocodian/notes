@@ -1,14 +1,18 @@
 {
-  "name": "@notes/web",
+  "name": "@cinememo/web",
   "version": "2.1.4",
   "private": true,
   "description": "client",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "bunx kill-port 4000 && vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "clean": "rimraf -rf node_modules"
   },
+  "trustedDependencies": [
+    "esbuild"
+  ],
   "dependencies": {
     "@babel/core": "^7.23.9",
     "@capacitor/clipboard": "^5.0.7",

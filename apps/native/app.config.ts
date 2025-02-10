@@ -74,12 +74,6 @@ const config: ExpoConfig = {
     [
       "expo-build-properties",
       {
-        android: {
-          kotlinVersion: "1.8.10",
-          packagingOptions: {
-            pickFirst: ["**/libc++_shared.so"]
-          }
-        },
         ios: {
           useFrameworks: "static"
         }

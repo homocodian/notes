@@ -1,4 +1,8 @@
 {
+  "cli": {
+    "version": ">= 14.7.1",
+    "appVersionSource": "local"
+  },
   "build": {
     "development": {
       "developmentClient": true,
